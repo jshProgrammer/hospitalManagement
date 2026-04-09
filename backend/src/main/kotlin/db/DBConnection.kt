@@ -1,4 +1,4 @@
-package org.hospitalmanagement
+//package org.hospitalmanagement
 
 import java.sql.DriverManager
 
@@ -13,31 +13,24 @@ fun loadEnv(filePath: String): Map<String, String> {
 }
 
 fun main() {
-    //val env = loadEnv(".env")
+    val env = loadEnv(".env")
 
-    //println(credentials)
-    //println(username)
-    //println(password)
-    DriverManager.getConnection(credentials, username, password).use { connection ->
-        val statement = connection.createStatement()
-        val resultSet = statement.executeQuery("SELECT * FROM users")
+    val url = env["DB_URL"]
+    var username = env["DB_USERNAME"]
+    var password = env["DB_PASSWORD"]
 
-        while (resultSet.next()) {
-            println(resultSet.getString("name"))
-        }
-    }
+    val conn = DriverManager.getConnection(url, username, password)//, username, password)
 
-    //val conn = DriverManager.getConnection(credentials, username, password)//, username, password)
-/*
     val stmt = conn.createStatement()
-    val rs = stmt.executeQuery("SELECT id, person FROM employee LIMIT 1")
+    val rs = stmt.executeQuery("SELECT * FROM public.employee\n" +
+            "ORDER BY id ASC LIMIT 100\n")
 
     while (rs.next()) {
-        println("Iwelche daten yey")
-        //println("${rs.getInt("id")} - ${rs.getString("name")}")
+        //println("Iwelche daten yey")
+        println(rs.getString("id"))
     }
 
     rs.close()
     stmt.close()
-    conn.close()*/
+    conn.close()
 }
