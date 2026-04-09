@@ -11,7 +11,7 @@ enum class DrugsType(val dbValue: String) {
     SUPPOSITORY("suppository");
 
     companion object {
-        fun fromDb(value: String): DrugType =
+        fun fromDb(value: String): DrugsType =
             values().find { it.dbValue == value }
                 ?: throw IllegalArgumentException("Unknown DrugType: $value")
     }

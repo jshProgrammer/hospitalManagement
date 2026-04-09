@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation("org.postgresql:postgresql:42.7.3")
 }
 
 tasks.test {
