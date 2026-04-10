@@ -1,7 +1,9 @@
 package org.hospitalmanagement
 
 import org.hospitalmanagement.db.repositories.DepartmentRepository
+import org.hospitalmanagement.db.repositories.DoctorRepository
 import org.hospitalmanagement.db.repositories.PatientRepository
+import org.hospitalmanagement.models.enums.DoctorsType
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -9,6 +11,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.data.util.Optionals.ifPresentOrElse
+import java.util.UUID
 
 @SpringBootApplication
 class HospitalApplication {
@@ -132,6 +135,7 @@ class HospitalApplication {
     }
      */
 
+    /*
     // "SELECT * FROM DEPARTMENT WHERE NAME CONTAINS ..."
     @Bean
     fun run(departmentRepository: DepartmentRepository) = CommandLineRunner {
@@ -140,6 +144,7 @@ class HospitalApplication {
                 println("ID: ${dep.id}, Name: ${dep.name} ${dep.building}")
             }
     }
+     */
 
     /*
     // "SELECT * FROM DEPARTMENT WHERE building = ..."
@@ -149,6 +154,57 @@ class HospitalApplication {
             .forEach { dep ->
                 println("ID: ${dep.id}, Name: ${dep.name} ${dep.building}")
             }
+    }
+     */
+
+    // MARK: Doctor Operations
+
+    /*
+    // "SELECT * FROM DOCTORS ORDER BY id ASC LIMIT 100"
+    @Bean
+    fun run(doctorRepository: DoctorRepository) = CommandLineRunner {
+        val topDoctors = doctorRepository.findAll(PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "id")))
+
+        topDoctors.forEach { doc ->
+            println("ID: ${doc.id}, Name: ${doc.employee.person.firstName} ${doc.employee.person.lastName}, Work phone: ${doc.work_phone}, Type: ${doc.type}")
+        }
+    }
+     */
+
+    /*
+    // "SELECT * FROM DOCTORS WHERE ID = ..."
+    @Bean
+    fun run(doctorRepository: DoctorRepository) = CommandLineRunner {
+        val doctor = doctorRepository.findById(UUID.fromString("a2ce7587-510f-4e2c-93c7-74f41ce6d9cb"))
+            .ifPresentOrElse(
+                { doc ->
+                    println("ID: ${doc.id}, Name: ${doc.employee.person.firstName} ${doc.employee.person.lastName}, Work phone: ${doc.work_phone}, Type: ${doc.type}")
+                },
+                {
+                    println("Doktor nicht gefunden")
+                }
+            )
+    }
+     */
+
+    // "SELECT * FROM DOCTORS WHERE employee.department = ..."
+    @Bean
+    fun run(doctorRepository: DoctorRepository) = CommandLineRunner {
+        val doctor = doctorRepository.findAllByEmployee_Department(20)
+            .forEach { doc ->
+                println("ID: ${doc.id}, Name: ${doc.employee.person.firstName} ${doc.employee.person.lastName}, Work phone: ${doc.work_phone}, Type: ${doc.type}")
+            }
+    }
+
+    /*
+    // "SELECT * FROM DOCTORS WHERE Type = ..."
+    @Bean
+    fun run(doctorRepository: DoctorRepository) = CommandLineRunner {
+        val doctors = doctorRepository.findByType(DoctorsType.CHIEF_PHYSICIAN)
+
+        doctors.forEach { doc ->
+            println("ID: ${doc.id}, Name: ${doc.employee.person.firstName} ${doc.employee.person.lastName}, Work phone: ${doc.work_phone}, Type: ${doc.type}")
+        }
     }
      */
 }
