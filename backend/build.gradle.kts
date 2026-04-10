@@ -1,8 +1,14 @@
 plugins {
     kotlin("jvm") version "2.3.0"
+
+    id("org.springframework.boot") version "3.3.0"
+    id("io.spring.dependency-management") version "1.1.5"
+
+    kotlin("plugin.spring") version "2.3.0"
+    kotlin("plugin.jpa") version "2.3.0"
 }
 
-group = "org.example"
+group = "org.hospitalmanagement"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -10,10 +16,20 @@ repositories {
 }
 
 dependencies {
-    testImplementation(kotlin("test"))
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
     implementation("org.postgresql:postgresql:42.7.3")
+
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+
+    testImplementation(kotlin("test"))
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+
+kotlin {
+    jvmToolchain(21)
 }

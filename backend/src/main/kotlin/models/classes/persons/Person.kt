@@ -1,8 +1,34 @@
-package org.example.models.classes.persons
+package org.hospitalmanagement.models.classes.persons
 
 import Gender
 import java.util.Date
+import jakarta.persistence.*
 
+@Entity
+@Table(name = "person")
+class Person(
+    @Id
+    val id: String,
+
+    @Enumerated(EnumType.STRING)
+    var gender: Gender,
+
+    var firstName: String,
+    var lastName: String,
+    var plz: Int,
+    var city: String,
+    var street: String,
+    var streetNo: Int,
+    var country: String,
+
+    @Temporal(TemporalType.DATE)
+    var birthday: Date,
+
+    var phone: String,
+    var email: String
+)
+
+/*
 data class Person(
     val id: String,
     val gender: Gender,
@@ -16,4 +42,4 @@ data class Person(
     val birthday: Date,
     val phone: String,
     val email: String
-)
+)*/
