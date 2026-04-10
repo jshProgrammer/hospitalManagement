@@ -1,7 +1,15 @@
 package org.hospitalmanagement.models.classes.facilities
 
-data class Department(
-    val id: Int,
+import jakarta.persistence.*
+
+@Entity
+@Table(name="department")
+class Department(
+    @Id
+    @GeneratedValue
+    val id: Long,
+
     val name: String,
+
     val building: String
 )

@@ -1,15 +1,14 @@
 package org.hospitalmanagement
 
-import org.hospitalmanagement.db.repositories.EmployeeRepository
+import org.hospitalmanagement.db.repositories.DepartmentRepository
 import org.hospitalmanagement.db.repositories.PatientRepository
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.data.domain.PageRequest
 import org.springframework.context.annotation.Bean
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
-import java.util.Arrays.sort
-import java.util.UUID
+import org.springframework.data.util.Optionals.ifPresentOrElse
 
 @SpringBootApplication
 class HospitalApplication {
@@ -71,7 +70,7 @@ class HospitalApplication {
     }
      */
 
-
+    /*
     // "SELECT * FROM PATIENT WHERE id = ae390908-184f-4a76-9ea2-08cd79de9569"
     @Bean
     fun run(patientRepository: PatientRepository) = CommandLineRunner {
@@ -85,7 +84,73 @@ class HospitalApplication {
                 }
             )
     }
+     */
 
+    // MARK: Department Operations
+
+    /*
+    // "SELECT * FROM DEPARTMENT ORDER BY id ASC LIMIT 100"
+    @Bean
+    fun run(departmentRepository: DepartmentRepository) = CommandLineRunner {
+        val topDepartments = departmentRepository.findAll(PageRequest.of(0, 100, Sort.by(Sort.Direction.ASC, "id")))
+
+        topDepartments.forEach { dep ->
+            println("ID: ${dep.id}, Name: ${dep.name} ${dep.building}")
+        }
+    }
+     */
+
+    /*
+    // "SELECT * FROM DEPARTMENT WHERE id = 1"
+    @Bean
+    fun run(departmentRepository: DepartmentRepository) = CommandLineRunner {
+        val dep = departmentRepository.findById(1)
+            .ifPresentOrElse(
+                { dep ->
+                    println("ID: ${dep.id}, Name: ${dep.name} ${dep.building}")
+                },
+                {
+                    println("Department nicht gefunden")
+                }
+            )
+    }
+    */
+
+    /*
+    // "SELECT * FROM DEPARTMENT WHERE NAME = .."
+    @Bean
+    fun run(departmentRepository: DepartmentRepository) = CommandLineRunner {
+        val dep = departmentRepository.findByName("Klinik und Poliklinik für Anästhesiologie, Intensivmedizin, Notfallmedizin und Schmerztherapie")
+            .ifPresentOrElse(
+                { dep ->
+                    println("ID: ${dep.id}, Name: ${dep.name} ${dep.building}")
+                },
+                {
+                    println("Department nicht gefunden")
+                }
+            )
+    }
+     */
+
+    // "SELECT * FROM DEPARTMENT WHERE NAME CONTAINS ..."
+    @Bean
+    fun run(departmentRepository: DepartmentRepository) = CommandLineRunner {
+        val dep = departmentRepository.findByNameContainingIgnoreCase("Zahn")
+            .forEach { dep ->
+                println("ID: ${dep.id}, Name: ${dep.name} ${dep.building}")
+            }
+    }
+
+    /*
+    // "SELECT * FROM DEPARTMENT WHERE building = ..."
+    @Bean
+    fun run(departmentRepository: DepartmentRepository) = CommandLineRunner {
+        val dep = departmentRepository.findByBuilding("1A")
+            .forEach { dep ->
+                println("ID: ${dep.id}, Name: ${dep.name} ${dep.building}")
+            }
+    }
+     */
 }
 
 fun main(args: Array<String>) {
