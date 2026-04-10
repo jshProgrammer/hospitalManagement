@@ -1,4 +1,4 @@
-package org.example.models.classes.facilities
+package org.hospitalmanagement.models.classes.facilities
 
 data class Station(
     var id: Int,

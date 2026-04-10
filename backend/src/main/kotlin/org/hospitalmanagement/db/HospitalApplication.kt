@@ -1,6 +1,6 @@
-package org.example.db
+package org.hospitalmanagement.db
 
-import org.example.db.repositories.EmployeeRepository
+import org.hospitalmanagement.db.repositories.EmployeeRepository
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

@@ -1,3 +1,5 @@
+package org.hospitalmanagement.models.enums
+
 enum class BookingState(val dbValue: String) {
     PENDING("pending"),
     CONFIRMED("confirmed"),

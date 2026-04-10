@@ -1,3 +1,5 @@
+package org.hospitalmanagement.models.enums
+
 enum class DoctorsType(val dbValue: String) {
     ASSISTANT_PHYSICIAN("assistant_physician"),
     SENIOR_PHYSICIAN("senior_physician"),

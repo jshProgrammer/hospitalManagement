@@ -1,4 +1,4 @@
-package org.example.models.classes.persons
+package org.hospitalmanagement.models.classes.persons
 
 data class Patient(
     val id: Long,

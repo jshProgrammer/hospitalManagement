@@ -1,5 +1,4 @@
-//package org.hospitalmanagement
-
+package org.hospitalmanagement.db
 import java.sql.DriverManager
 
 fun loadEnv(filePath: String): Map<String, String> {

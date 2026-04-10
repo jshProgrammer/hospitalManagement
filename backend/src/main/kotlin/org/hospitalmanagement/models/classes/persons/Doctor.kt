@@ -1,5 +1,5 @@
-package org.example.models.classes.persons
-import DoctorsType
+package org.hospitalmanagement.models.classes.persons
+import org.hospitalmanagement.models.enums.DoctorsType
 
 data class Doctor(
         val id: String,

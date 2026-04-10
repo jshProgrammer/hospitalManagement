@@ -1,7 +1,7 @@
-package org.example.models.classes.medication
+package org.hospitalmanagement.models.classes.medication
 
-import org.example.models.classes.persons.Doctor
-import org.example.models.classes.persons.Patient
+import org.hospitalmanagement.models.classes.persons.Doctor
+import org.hospitalmanagement.models.classes.persons.Patient
 import java.util.Date
 
 data class Diagnosis(

@@ -1,4 +1,6 @@
-package org.example.models.classes.facilities
+package org.hospitalmanagement.db
+
+import org.hospitalmanagement.models.classes.facilities.Station
 
 data class Room(
     val id: Long,

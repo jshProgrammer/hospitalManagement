@@ -1,3 +1,5 @@
+package org.hospitalmanagement.models.enums
+
 enum class DoseUnit(val dbValue: String) {
     MG("mg"),
     G("g"),

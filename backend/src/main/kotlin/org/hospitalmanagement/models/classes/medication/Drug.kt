@@ -1,6 +1,7 @@
-package org.example.models.classes.medication
+package org.hospitalmanagement.models.classes.medication
 
-import DrugsType
+import org.hospitalmanagement.models.enums.DrugsType
+
 
 data class Drug(
     val id: Long,

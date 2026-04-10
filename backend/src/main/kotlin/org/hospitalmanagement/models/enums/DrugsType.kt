@@ -1,3 +1,5 @@
+package org.hospitalmanagement.models.enums
+
 enum class DrugsType(val dbValue: String) {
     TABLET("tablet"),
     CAPSULE("capsule"),

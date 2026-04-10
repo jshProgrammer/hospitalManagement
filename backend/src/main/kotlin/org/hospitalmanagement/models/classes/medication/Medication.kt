@@ -1,4 +1,4 @@
-package org.example.models.classes.medication
+package org.hospitalmanagement.models.classes.medication
 
 import java.util.Date
 

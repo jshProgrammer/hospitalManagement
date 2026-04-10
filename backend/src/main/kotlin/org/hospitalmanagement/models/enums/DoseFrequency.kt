@@ -1,4 +1,4 @@
-package org.example.models.enums
+package org.hospitalmanagement.models.enums
 
 enum class DoseFrequency(val dbValue: String) {
     EVERY_X_DAYS("every_x_days"),

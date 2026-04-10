@@ -1,8 +1,8 @@
 package org.hospitalmanagement.models.classes.persons
 
-import Gender
 import java.util.Date
 import jakarta.persistence.*
+import org.hospitalmanagement.models.enums.Gender
 
 @Entity
 @Table(name = "person")

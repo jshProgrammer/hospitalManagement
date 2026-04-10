@@ -1,6 +1,6 @@
-package org.example.db.repositories
+package org.hospitalmanagement.db.repositories
 
-import org.example.models.classes.persons.Employee
+import org.hospitalmanagement.models.classes.persons.Employee
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
