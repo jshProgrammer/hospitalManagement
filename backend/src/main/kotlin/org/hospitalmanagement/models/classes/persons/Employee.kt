@@ -1,7 +1,6 @@
 package org.hospitalmanagement.models.classes.persons
 
 import jakarta.persistence.*
-import java.util.Date
 import java.util.UUID
 
 @Entity
@@ -18,10 +17,3 @@ class Employee(
     // TODO: probably connect to Department-object instead
     val department: Int
 )
-
-/*
-class Employee(
-    val id: String,
-    val person: Person,
-    val department: Department
-)*/
