@@ -3,12 +3,15 @@ package org.hospitalmanagement.models.classes.persons
 import java.util.Date
 import jakarta.persistence.*
 import org.hospitalmanagement.models.enums.Gender
+import java.util.UUID
 
 @Entity
 @Table(name = "person")
 class Person(
+    //TODO: try Int instead of UUID
     @Id
-    val id: String,
+    @GeneratedValue
+    var id: UUID? = null,
 
     @Enumerated(EnumType.STRING)
     var gender: Gender,

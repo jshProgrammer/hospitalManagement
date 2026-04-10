@@ -2,19 +2,21 @@ package org.hospitalmanagement.models.classes.persons
 
 import jakarta.persistence.*
 import java.util.Date
+import java.util.UUID
 
 @Entity
 @Table(name = "employee")
 class Employee(
     @Id
-    val id: String,
+    @GeneratedValue
+    val id: UUID? = null,
 
-    @OneToOne(fetch = FetchType.LAZY) // Lazy schont die Performance
-    @JoinColumn(name = "person_id") // Hier liegt der Fremdschlüssel in der DB
+    @OneToOne
+    @JoinColumn(name = "person", nullable = false)
     val person: Person,
 
-    // Falls Department noch nicht als Entity existiert, hier vorerst als String oder neue Entity
-    val departmentId: String
+    // TODO: probably connect to Department-object instead
+    val department: Int
 )
 
 /*
