@@ -27,3 +27,10 @@ replay_pid*
 .kotlin/
 
 .env
+
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+.idea/shelf
+.idea/GitCommitMessageStorage.xml
+.idea/git_toolbox_prj.xml
