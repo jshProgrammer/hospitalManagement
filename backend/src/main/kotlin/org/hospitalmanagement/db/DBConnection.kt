@@ -11,7 +11,7 @@ fun loadEnv(filePath: String): Map<String, String> {
         }
 }
 
-fun main() {
+/*fun main() {
     val env = loadEnv(".env")
 
     val url = env["DB_URL"]
@@ -32,4 +32,4 @@ fun main() {
     rs.close()
     stmt.close()
     conn.close()
-}
+}*/
