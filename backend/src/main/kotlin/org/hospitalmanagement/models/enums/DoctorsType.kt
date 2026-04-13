@@ -1,4 +1,6 @@
 package org.hospitalmanagement.models.enums
+import jakarta.persistence.AttributeConverter
+import jakarta.persistence.Converter
 
 enum class DoctorsType(val dbValue: String) {
     ASSISTANT_PHYSICIAN("assistant_physician"),
@@ -13,5 +15,19 @@ enum class DoctorsType(val dbValue: String) {
         fun fromDb(value: String): DoctorsType =
             values().find { it.dbValue == value }
                 ?: throw IllegalArgumentException("Unknown value: $value")
+    }
+}
+
+@Converter(autoApply = true)
+class DoctorsTypeConverter : AttributeConverter<DoctorsType, String> {
+
+    override fun convertToDatabaseColumn(attribute: DoctorsType?): String? {
+        return attribute?.dbValue
+    }
+
+    override fun convertToEntityAttribute(dbData: String?): DoctorsType? {
+        return dbData?.let {
+            DoctorsType.fromDb(it)
+        }
     }
 }
