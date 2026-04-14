@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "update": "npx npm-check-updates -u --peer && npm install"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.2",
