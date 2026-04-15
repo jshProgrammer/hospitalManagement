@@ -1,4 +1,4 @@
-package org.hospitalmanagement.db.repositories.facilities
+package org.hospitalmanagement.dbRepositories.facilities
 
 import org.hospitalmanagement.models.classes.facilities.Booking
 import org.hospitalmanagement.models.enums.BookingState

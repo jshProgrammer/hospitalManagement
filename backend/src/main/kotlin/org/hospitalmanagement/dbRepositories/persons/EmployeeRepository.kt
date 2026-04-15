@@ -1,4 +1,4 @@
-package org.hospitalmanagement.db.repositories.persons
+package org.hospitalmanagement.dbRepositories.persons
 
 import org.hospitalmanagement.models.classes.persons.Employee
 import org.springframework.data.domain.Page

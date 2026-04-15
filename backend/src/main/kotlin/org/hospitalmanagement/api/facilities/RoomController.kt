@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException
 @RestController
 @RequestMapping("/api/rooms")
 class RoomsController(private val roomsService: RoomsService) {
-
+    // TODO: add filter by station + FILTER extra or as filter parameter?
     @GetMapping
     fun getAll(
         pageable: Pageable

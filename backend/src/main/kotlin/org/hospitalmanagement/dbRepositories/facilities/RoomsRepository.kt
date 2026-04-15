@@ -1,4 +1,4 @@
-package org.hospitalmanagement.db.repositories.facilities
+package org.hospitalmanagement.dbRepositories.facilities
 
 import org.hospitalmanagement.db.Room
 import org.springframework.data.domain.Page

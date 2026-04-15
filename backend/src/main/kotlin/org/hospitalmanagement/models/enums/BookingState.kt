@@ -9,6 +9,7 @@ enum class BookingState(val dbValue: String) {
     CHECKED_IN("checked_in"),
     COMPLETED("completed"),
     CANCELLED("cancelled"),
+    RELOCATED("relocated"),
     NO_SHOW("no_show"),
     CHECKED_OUT_EARLY("checked_out_early");
 

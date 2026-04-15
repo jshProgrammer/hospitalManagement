@@ -1,7 +1,7 @@
 package org.hospitalmanagement.services
 
 import org.hospitalmanagement.db.Room
-import org.hospitalmanagement.db.repositories.facilities.RoomsRepository
+import org.hospitalmanagement.dbRepositories.facilities.RoomsRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -18,7 +18,4 @@ class RoomsService(private val roomsRepository: RoomsRepository) {
 
     fun findByFloor(floor: Long): List<Room>? =
         roomsRepository.findByfloor(floor)
-
-    fun create(room: Room): Room =
-        roomsRepository.save(room)
 }

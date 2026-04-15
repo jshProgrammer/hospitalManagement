@@ -2,6 +2,7 @@ package org.hospitalmanagement.api.facilities
 
 import org.hospitalmanagement.models.classes.facilities.Department
 import org.hospitalmanagement.service.facilities.DepartmentService
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -13,9 +14,19 @@ class DepartmentController(
     private val departmentService: DepartmentService
 ) {
     @GetMapping
-    fun getAll(
+    fun getDepartments(
         pageable: Pageable,
-    ) = departmentService.getAll(pageable)
+        @RequestParam(required = false) name: String?,
+        @RequestParam(required = false) nameContains: String?,
+        @RequestParam(required = false) building: String?
+    ): Page<Department> {
+        return departmentService.search(
+            pageable,
+            name,
+            nameContains,
+            building
+        )
+    }
 
     @GetMapping("/{id}")
     fun getById(@PathVariable id: Long): Department =
@@ -25,19 +36,4 @@ class DepartmentController(
                 "Department with id $id not found"
             )
 
-    @GetMapping("/name")
-    fun getByName(@RequestParam name: String): Department =
-        departmentService.getByName(name)
-            ?: throw ResponseStatusException(
-            HttpStatus.NOT_FOUND,
-            "Department with name $name not found"
-        )
-
-    @GetMapping("/search")
-    fun getByNameContainingIgnoreCase(@RequestParam name: String): List<Department> =
-        departmentService.getByNameContainingIgnoreCase(name)
-
-    @GetMapping("/building")
-    fun getByBuilding(@RequestParam building: String): List<Department> =
-        departmentService.getByBuilding(building)
 }

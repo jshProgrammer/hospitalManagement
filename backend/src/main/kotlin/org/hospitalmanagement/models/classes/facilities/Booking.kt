@@ -8,10 +8,10 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "bookings")
-class Booking(
+data class Booking(
     @Id
-    @GeneratedValue
-    val id: Long,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
 
     @Temporal(TemporalType.DATE)
     @Column(name = "\"from\"")
