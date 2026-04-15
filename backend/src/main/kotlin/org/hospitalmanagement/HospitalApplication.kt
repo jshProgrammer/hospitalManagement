@@ -287,13 +287,13 @@ class HospitalApplication {
             println("${drug.type}")
         }
     }*/
-    @Bean
+    /*@Bean
     fun run (doseRepository: DoseRepository) = CommandLineRunner {
         val doses = doseRepository.findByUnit(DoseUnit.DROP)
         doses.forEach { dose ->
             println("Dose ID: ${dose.id}, Amount: ${dose.amount}")
         }
-    }
+    }*/
 }
 
 fun main(args: Array<String>) {

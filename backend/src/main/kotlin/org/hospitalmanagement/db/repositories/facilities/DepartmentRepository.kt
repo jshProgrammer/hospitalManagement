@@ -1,4 +1,4 @@
-package org.hospitalmanagement.db.repositories
+package org.hospitalmanagement.db.repositories.facilities
 
 import org.hospitalmanagement.models.classes.facilities.Department
 import org.springframework.data.domain.Page

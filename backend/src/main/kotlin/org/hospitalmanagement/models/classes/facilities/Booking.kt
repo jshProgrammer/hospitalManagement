@@ -10,9 +10,11 @@ import jakarta.persistence.*
 @Table(name = "bookings")
 class Booking(
     @Id
+    @GeneratedValue
     val id: Long,
 
     @Temporal(TemporalType.DATE)
+    @Column(name = "\"from\"")
     val from: Date,
 
     @Temporal(TemporalType.DATE)
@@ -21,9 +23,9 @@ class Booking(
     @Convert(converter = BookingState.BookingStateConverter::class)
     val state: BookingState,
 
-    @OneToMany(cascade = [(CascadeType.ALL)])
+    @ManyToOne
     @JoinColumn(name = "room")
-    val room: List<Room>,
+    val room: Room,
 
     @ManyToOne
     @JoinColumn(name = "patient")

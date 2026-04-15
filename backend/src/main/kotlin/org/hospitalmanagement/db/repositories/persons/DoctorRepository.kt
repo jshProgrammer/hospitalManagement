@@ -1,4 +1,4 @@
-package org.hospitalmanagement.db.repositories
+package org.hospitalmanagement.db.repositories.persons
 
 import org.hospitalmanagement.models.classes.persons.Doctor
 import org.hospitalmanagement.models.enums.DoctorsType

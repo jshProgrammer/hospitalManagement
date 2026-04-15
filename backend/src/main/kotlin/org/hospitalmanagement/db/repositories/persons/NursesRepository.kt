@@ -1,4 +1,4 @@
-package org.hospitalmanagement.db.repositories
+package org.hospitalmanagement.db.repositories.persons
 
 import org.hospitalmanagement.models.classes.persons.Nurse
 import org.springframework.data.jpa.repository.JpaRepository

@@ -1,4 +1,4 @@
-package org.hospitalmanagement.db.repositories
+package org.hospitalmanagement.db.repositories.medication
 
 import org.hospitalmanagement.models.classes.medication.Drug
 import org.springframework.data.domain.Page
