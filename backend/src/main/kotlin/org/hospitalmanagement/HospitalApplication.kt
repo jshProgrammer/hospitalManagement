@@ -1,10 +1,9 @@
 package org.hospitalmanagement
 
-import org.hospitalmanagement.db.repositories.DepartmentRepository
-import org.hospitalmanagement.db.repositories.DiagnosisRepository
-import org.hospitalmanagement.db.repositories.DoctorRepository
-import org.hospitalmanagement.db.repositories.PatientRepository
+import org.hospitalmanagement.db.repositories.*
+import org.hospitalmanagement.models.enums.BookingState
 import org.hospitalmanagement.models.enums.DoctorsType
+import org.hospitalmanagement.models.enums.DoseUnit
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -13,6 +12,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.data.util.Optionals.ifPresentOrElse
 import java.util.UUID
+import org.springframework.data.domain.Pageable;
 
 @SpringBootApplication
 class HospitalApplication {
@@ -215,7 +215,7 @@ class HospitalApplication {
         val diagnosis = diagnosisRepository.findById(1)
         diagnosis.ifPresentOrElse(
             { diag ->
-                println("Doctor: ${diag.diagnosedBy.employee.person.firstName} ${diag.diagnosedBy.employee.person.lastName}")
+                println("Doctor: ${diag.diagnosedBy.employee.person.firstName} ${diag.diagnosedBy.employee.person.lastName} empid:${diag.diagnosedBy.employee.id} perid:${diag.diagnosedBy.employee.person.id},")
             },
             {
                 println("Diagnosis nicht gefunden")
@@ -223,7 +223,7 @@ class HospitalApplication {
         )
     }*/
     // SELECT * FROM DIAGNOSIS WHERE disease = "hematoma"
-    //TODO:Check Again, current connection is to persons, not patients
+    /*
     @Bean
     fun run(diagnosisRepository: DiagnosisRepository) = CommandLineRunner {
         val diagnosis = diagnosisRepository.findByDisease("hematoma")
@@ -231,8 +231,69 @@ class HospitalApplication {
         diagnosis.forEach { dia ->
             println("${dia.id} ${dia.diagnosedPatient.firstName}")
         }
+    }*/
+    // SELECT * FROM DIAGNOSIS WHERE medication = 8253
+    /*
+    @Bean
+    fun run(diagnosisRepository: DiagnosisRepository, medicationRepository: MedicationRepository) = CommandLineRunner {
+        val medication = medicationRepository.findById(8253L).orElse(null)
+        if (medication != null) {
+            val diagnosis = diagnosisRepository.findByMedication(medication)
+            diagnosis.forEach { dia ->
+                println("${dia.id} ${dia.diagnosedPatient.firstName}")
+            }
+        }
+    }*/
+    // SELECT * FROM DIAGNOSIS WHERE diagnosed_patient = "36bc3701-225b-457a-b268-257c36dce065"
+    /*@Bean
+    fun run(diagnosisRepository: DiagnosisRepository) = CommandLineRunner {
+        val diagnosis = diagnosisRepository.findByDiagnosedPatient_Id(UUID.fromString("36bc3701-225b-457a-b268-257c36dce065"))
+        diagnosis.forEach { dia ->
+            println("${dia.id} ${dia.diagnosedPatient.firstName}")
+        }
+    }*/
+    //SELECT * FROM NURSES WHERE id = "b0c46b07-7891-4cc8-b917-4f186660cbce"
+    /*@Bean
+    fun run(nursesRepository: NursesRepository) = CommandLineRunner {
+        val diagnosis = nursesRepository.findById(UUID.fromString("b0c46b07-7891-4cc8-b917-4f186660cbce"))
+        println("${diagnosis.get().station.name}")
+    }*/
+    //SELECT * FROM STATION WHERE id = 1
+    /*@Bean
+    fun run(stationRepository: StationRepository) = CommandLineRunner {
+        val diagnosis = stationRepository.findById(1)
+        println("${diagnosis.name}")
+    }*/
+    //SELECT * FROM ROOMS WHERE floor = 4
+    /*@Bean
+    fun run(roomsRepository: RoomsRepository) = CommandLineRunner {
+        val diagnosis = roomsRepository.findByfloor(4L)
+        diagnosis.forEach { dia ->
+            println("${dia.number} ")
+        }
+    }*/
+    //SELECT * FROM BOOKINGS WHERE state = "PENDING"
+    /*@Bean
+    fun run(bookingsRepository: BookingsRepository) = CommandLineRunner {
+        val bookings = bookingsRepository.findAllByState(BookingState.PENDING)
+        bookings.forEach { booking ->
+            println("Booking ID: ${booking.id}, Patient: ${booking.patient.person.firstName}")}
+    }*/
+    //SELECT * FROM DRUGS WHERE name = "Ibuprofen"
+    /*@Bean
+    fun run(drugsRepository: DrugsRepository)= CommandLineRunner {
+        val drug = drugsRepository.findByName("Ibuprofen")
+        if (drug != null) {
+            println("${drug.type}")
+        }
+    }*/
+    @Bean
+    fun run (doseRepository: DoseRepository) = CommandLineRunner {
+        val doses = doseRepository.findByUnit(DoseUnit.DROP)
+        doses.forEach { dose ->
+            println("Dose ID: ${dose.id}, Amount: ${dose.amount}")
+        }
     }
-
 }
 
 fun main(args: Array<String>) {
