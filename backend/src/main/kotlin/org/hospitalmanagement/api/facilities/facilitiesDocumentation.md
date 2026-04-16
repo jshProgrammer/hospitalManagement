@@ -1,10 +1,31 @@
 # Facilities
 Base URL: http://localhost:8080
-## Bookings
-### GET
-- **Endpoint**: `GET /api/facilities/bookings/1` 
 
-Response:
+## Sections
+- [Bookings](#bookings)
+  - [GET](#get)
+  - [POST](#post)
+- [Departments](#departments)
+  - [GET](#get-1)
+- [Rooms](#rooms)
+  - [GET](#get-2)
+- [Stations](#stations)
+  - [GET](#get-3)
+  
+## Bookings
+- **Endpoint**: `/api/facilities/bookings`
+
+### GET
+ 
+- `GET /api/bookings`: get all bookings
+- `GET /api/bookings/{BOOKING_ID}`: get booking with specific id
+- `GET /api/bookings?page=0&size=10`: get all bookings with pagination
+- `GET /api/bookings?state=COMPLETED`: get all bookings with filtering
+
+Please note that a `404 NOT FOUND` error will be returned if the booking with the specified ID does not exist.
+
+
+Example response for `GET /api/bookings/1`:
 ```json
 {
     "id": 1,
@@ -46,12 +67,6 @@ Response:
 }
 ```
 
-Example calls with filtering and pagination:
-- `GET /api/bookings`: get all bookings
-- `GET /api/bookings?page=0&size=10`: get all bookings with pagination
-- `GET /api/bookings?state=COMPLETED`: get all bookings with filtering
-
-Please note that a `404 NOT FOUND` error will be returned if the booking with the specified ID does not exist.
 
 ### POST
 
@@ -86,17 +101,16 @@ Please note that this functionality might be moved to /api/patients/PATIENTID/di
 
 
 ## Departments
-### GET
-- **Endpoint**: `GET /api/departments/1`
+- **Endpoint**: `/api/departments`
 
-Response:
-```json
-{
-    "id": 1,
-    "name": "Klinik und Poliklinik für Anästhesiologie, Intensivmedizin, Notfallmedizin und Schmerztherapie",
-    "building": "4B"
-}
-```
+
+### GET
+- `GET /api/departments`: get all departments
+- `GET /api/departments/{DEPARTMENT_ID}`: get department with specific id
+- `GET /api/departments?page=0&size=10`: get all departments with pagination
+- `GET /api/departments?nameContains=Kinder`: get all departments with filtering
+- `GET /api/departments?building=4C&nameContains=Kinder`: combine building and nameContains-filtering
+
 
 Please note that different filtering options are provided:
 - `nameContains`
@@ -105,18 +119,26 @@ Please note that different filtering options are provided:
 
 Using a combination of `name` and `nameContains` is forbidden!
 
-Example calls with filtering and pagination:
-- `GET /api/departments`: get all bookings
-- `GET /api/departments?page=0&size=10`: get all bookings with pagination
-- `GET api/departments?nameContains=Kinder`: get all bookings with filtering
-- `GET /api/departments?building=4C&nameContains=Kinder`: combine building and nameContains-filtering
+Example response for `GET /api/departments/1`:
+```json
+{
+    "id": 1,
+    "name": "Klinik und Poliklinik für Anästhesiologie, Intensivmedizin, Notfallmedizin und Schmerztherapie",
+    "building": "4B"
+}
+```
 
 
 ## Rooms
-### GET
-- **Endpoint**: `GET /api/rooms/ROOMID`
+- **Endpoint**: `/api/rooms`
 
-Response:
+### GET
+- `GET /api/rooms`: get all rooms
+- `GET /api/rooms/{ROOM_ID}`: get room with specific id
+- `GET /api/rooms/floor/FLOORNUMBER`: get all rooms of specific floor
+
+
+Example response for `GET /api/rooms/1`:
 ```json
 {
     "id": 1,
@@ -135,16 +157,19 @@ Response:
 }
 ```
 
-Alternative requests:
-- `GET /api/rooms`: get all rooms
-- `GET /api/rooms/floor/FLOORNUMBER`: get all rooms of specific floor
-
 ## Stations
+- **Endpoint**: `/api/stations`
 
 ### GET
-- **Endpoint**: `GET /api/stations/STATIONID` 
+- `GET /api/stations`: get all stations
+- `GET /api/stations/STATIONID`: get station with specific id
+- `GET /api/stations?name=Interdisziplinaere Intensivstation`: get station by exact name
+- `GET /api/stations?nameContains=Neuro`: get station that contains string
+- `GET /api/stations?departmentId=5`: get stations of specific department
+- `GET /api/stations?departmentId=5&nameContains=HNO`: combining multiple filters
 
-Response:
+
+Example response for `GET /api/stations/1`:
 ```json
 {
   "id": 1,
@@ -156,10 +181,3 @@ Response:
   }
 }
 ```
-
-Alternative requests with filtering and pagination:
-- `GET /api/stations`: get all stations
-- `GET /api/stations?name=Interdisziplinaere Intensivstation`: get station by exact name
-- `GET /api/stations?nameContains=Neuro`: get station that contains string
-- `GET /api/stations?departmentId=5`: get stations of specific department
-- `GET /api/stations?departmentId=5&nameContains=HNO`: combining multiple filters
