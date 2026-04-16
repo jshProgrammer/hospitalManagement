@@ -15,6 +15,7 @@ Please note that different filtering options are provided:
 - `nameContains`
 - `name`
 - `activeIngredient`
+- `type` (case-insensitive)
 
 Using a combination of `name` and `nameContains` is forbidden!
 

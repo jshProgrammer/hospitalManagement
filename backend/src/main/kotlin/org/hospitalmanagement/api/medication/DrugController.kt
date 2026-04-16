@@ -1,6 +1,7 @@
 package org.hospitalmanagement.api.facilities
 
 import org.hospitalmanagement.models.classes.medication.Drug
+import org.hospitalmanagement.models.enums.DrugsType
 import org.hospitalmanagement.services.facilities.DrugService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -18,6 +19,7 @@ class DrugController(private val drugService: DrugService) {
         @RequestParam(required = false) name: String?,
         @RequestParam(required = false) nameContains: String?,
         @RequestParam(required = false) activeIngredient: String?,
+        @RequestParam(required = false) type: String?,
         @RequestParam(required = false) criticalAmountInDays: Int?
     ): Page<Drug> {
         return drugService.search(
@@ -25,6 +27,7 @@ class DrugController(private val drugService: DrugService) {
             name,
             nameContains,
             activeIngredient,
+            type,
             criticalAmountInDays
         )
     }
