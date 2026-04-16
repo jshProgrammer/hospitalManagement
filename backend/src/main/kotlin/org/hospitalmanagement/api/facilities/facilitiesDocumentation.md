@@ -13,7 +13,7 @@ Base URL: http://localhost:8080
   - [GET](#get-3)
   
 ## Bookings
-- **Endpoint**: `/api/facilities/bookings`
+- **Endpoint**: `/api/bookings`
 
 ### GET
  
@@ -99,6 +99,7 @@ In the header section:
 Please note that this functionality might be moved to /api/patients/PATIENTID/discharge and is not finished yet!
 - **Endpoint**: `POST /api/bookings/PATIENTID/discharge`
 
+- - -
 
 ## Departments
 - **Endpoint**: `/api/departments`
@@ -128,6 +129,7 @@ Example response for `GET /api/departments/1`:
 }
 ```
 
+- - -
 
 ## Rooms
 - **Endpoint**: `/api/rooms`
@@ -156,6 +158,8 @@ Example response for `GET /api/rooms/1`:
     "beds": 1
 }
 ```
+
+- - -
 
 ## Stations
 - **Endpoint**: `/api/stations`
