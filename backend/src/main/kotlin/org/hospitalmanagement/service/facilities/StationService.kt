@@ -1,10 +1,8 @@
 package org.hospitalmanagement.services.facilities
 
-import org.hospitalmanagement.dbRepositories.facilities.DepartmentSpecifications
 import org.hospitalmanagement.models.classes.facilities.Station
 import org.hospitalmanagement.dbRepositories.facilities.StationRepository
 import org.hospitalmanagement.dbRepositories.facilities.StationSpecifications
-import org.hospitalmanagement.models.classes.facilities.Department
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.Specification
