@@ -1,6 +1,6 @@
 package org.hospitalmanagement
 
-import org.hospitalmanagement.db.repositories.*
+
 import org.hospitalmanagement.models.enums.BookingState
 import org.hospitalmanagement.models.enums.DoctorsType
 import org.hospitalmanagement.models.enums.DoseUnit

@@ -15,4 +15,5 @@ interface EmployeeRepository : JpaRepository<Employee, String> {
     fun findAllByDepartment(department: Int): List<Employee>
     fun findAllByDepartment(department: Int, pageable: Pageable): Page<Employee>
     fun findById(id: UUID): Optional<Employee> // uses the employee id, NOT the person id
+    fun existsByPersonId(personId: UUID): Boolean
 }

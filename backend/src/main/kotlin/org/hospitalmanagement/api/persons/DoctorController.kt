@@ -1,0 +1,52 @@
+package org.hospitalmanagement.api.persons
+
+import org.hospitalmanagement.api.persons.requestModels.DoctorCreationResponse
+import org.hospitalmanagement.api.persons.requestModels.DoctorRequest
+import org.hospitalmanagement.api.persons.requestModels.EmployeeCreationRequest
+import org.hospitalmanagement.api.persons.requestModels.PersonCreateRequest
+import org.hospitalmanagement.models.enums.DoctorsType
+import org.hospitalmanagement.service.persons.DoctorService
+import org.springframework.web.bind.annotation.*
+import java.util.UUID
+
+@RestController
+@RequestMapping("/api/doctors")
+class DoctorController(private val doctorService: DoctorService) {
+
+    // Step 1: POST new person + employee data → returns matches or created doctor
+    @PostMapping("/new")
+    fun createDoctor(
+        @RequestBody personData: PersonCreateRequest,
+        @RequestParam department: Int,
+        @RequestParam workPhone: String,
+        @RequestParam doctorType: String
+    ): DoctorCreationResponse =
+        doctorService.createDoctorWithSearch(
+            personData,
+            EmployeeCreationRequest(
+                department = department,
+                workPhone = workPhone,
+                doctorType = enumValueOf<DoctorsType>(doctorType)
+            )
+        )
+
+    // Step 2: POST existing personId → creates employee + doctor from existing person
+    @PostMapping("/new/{personId}")
+    fun createDoctorWithExisting(
+        @PathVariable personId: UUID,
+        @RequestBody employeeData: EmployeeCreationRequest
+    ): DoctorRequest =
+        doctorService.createDoctorWithExistingPerson(personId, employeeData)
+
+    @GetMapping("/{id}")
+    fun getById(@PathVariable id: UUID) =
+        doctorService.getById(id)
+
+    @GetMapping
+    fun getAll(pageable: org.springframework.data.domain.Pageable) =
+        doctorService.getAll(pageable)
+
+    @GetMapping("/type/{type}")
+    fun getByType(@PathVariable type: String) =
+        doctorService.getByType(enumValueOf<DoctorsType>(type).toString())
+}
