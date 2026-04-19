@@ -1,4 +1,4 @@
-export default function App() {
+export default function Test() {
   return (
     <div className="min-h-screen bg-background text-text p-8">
       {/* Header */}
