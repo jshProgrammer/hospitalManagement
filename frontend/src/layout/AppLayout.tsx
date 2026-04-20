@@ -14,13 +14,13 @@ const links = [
 
 export default function AppLayout() {
   return (
-    <div className="bg-accent text-text flex h-screen gap-4 overflow-hidden p-4">
+    <div className="bg-accent text-dark flex h-screen gap-4 overflow-hidden p-4">
       <aside className="border-border bg-background w-64 shrink-0 rounded-xl p-4">
         <div className="flex flex-col gap-3">
           <HomeIcon />
           <nav className="flex flex-col gap-3">
             {links.map(item => (
-              <NavItem key={item.to} to={item.to} label={item.label} />
+              <NavItem to={item.to} label={item.label} />
             ))}
           </nav>
         </div>

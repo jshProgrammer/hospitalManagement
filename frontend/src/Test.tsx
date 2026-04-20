@@ -9,7 +9,7 @@ export default function Test() {
         <div className="bg-background text-dark h-full p-8">
           <div className="space-y-8">
             {/* Buttons */}
-            <section className="bg-surface shadow-soft border-border rounded-xl border p-6">
+            <section className="bg-surface border-border rounded-xl border p-6">
               <h2 className="mb-4 text-xl font-semibold">Buttons</h2>
 
               <div className="flex gap-4">
@@ -22,19 +22,19 @@ export default function Test() {
               <h2 className="mb-4 text-xl font-semibold">Cards</h2>
 
               <div className="grid gap-6 md:grid-cols-3">
-                <div className="bg-surface shadow-soft border-border rounded-xl border p-4">
+                <div className="bg-surface border-border rounded-xl border p-4">
                   <h3 className="font-semibold">Standard</h3>
                   <p className="text-dark text-sm">Ruhiger dunkler Container</p>
                 </div>
 
-                <div className="bg-highlight shadow-soft text-dark rounded-xl p-4">
+                <div className="bg-highlight text-dark rounded-xl p-4">
                   <h3 className="font-semibold">Blue Highlight</h3>
                 </div>
               </div>
             </section>
 
             {/* Status */}
-            <section className="bg-surface shadow-soft border-border rounded-xl border p-6">
+            <section className="bg-surface border-border rounded-xl border p-6">
               <h2 className="mb-4 text-xl font-semibold">Status</h2>
 
               <div className="flex gap-4">

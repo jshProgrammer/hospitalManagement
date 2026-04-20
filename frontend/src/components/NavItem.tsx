@@ -8,7 +8,6 @@ type NavItemProps = {
 export default function NavItem({ to, label }: NavItemProps) {
   return (
     <NavLink
-      key={to}
       to={to}
       className={({ isActive }) =>
         [
