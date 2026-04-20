@@ -1,11 +1,11 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Patients } from './pages/Patients.tsx'
 import { Doctors } from './pages/Doctors.tsx'
 import { Nurses } from './pages/Nurses.tsx'
 import { Departments } from './pages/Departments.tsx'
 import { Stations } from './pages/Stations.tsx'
 import { Drugs } from './pages/Drugs.tsx'
-import AppLayout from './components/AppLayout.tsx'
+import AppLayout from './layout/AppLayout.tsx'
 import Test from './Test.tsx'
 
 export default function App() {

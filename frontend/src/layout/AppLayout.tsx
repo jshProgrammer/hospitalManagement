@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom'
-import HomeIcon from './HomeIcon.tsx'
-import NavItem from './NavItem.tsx'
+import HomeIcon from '../components/HomeIcon.tsx'
+import NavItem from '../components/NavItem.tsx'
 
 const links = [
   { to: '/patients', label: 'Patients' },
