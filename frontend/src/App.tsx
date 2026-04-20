@@ -7,6 +7,7 @@ import { Stations } from './pages/Stations.tsx'
 import { Drugs } from './pages/Drugs.tsx'
 import AppLayout from './layout/AppLayout.tsx'
 import Test from './Test.tsx'
+import NotFound from './pages/NotFound.tsx'
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/stations" element={<Stations />} />
           <Route path="/drugs" element={<Drugs />} />
           <Route path="/test" element={<Test />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </BrowserRouter>
