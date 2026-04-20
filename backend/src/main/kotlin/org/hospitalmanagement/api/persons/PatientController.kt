@@ -37,7 +37,7 @@ class PatientController(private val patientService: PatientService) {
     @GetMapping
     fun getAll(): Page<Patient> =
         patientService.getAll(Pageable.unpaged())
-
+//TODO: Like in Drug Controller or as below?
     @GetMapping("/{firstName}/{lastName}")
     fun getByFirstNameAndLastName(
         @PathVariable firstName: String,
@@ -50,5 +50,8 @@ class PatientController(private val patientService: PatientService) {
                      "Patient with name $firstName $lastName not found"
                  )
              }
+
+    //TODO: GET BOOKINGS/Diagnosis/Medication/Drugs BY PATIENT?? /patients/patientId/boookings?
+
 
 }

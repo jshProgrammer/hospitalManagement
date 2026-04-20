@@ -6,7 +6,9 @@ import org.hospitalmanagement.api.persons.requestModels.EmployeeCreationRequest
 import org.hospitalmanagement.api.persons.requestModels.PersonCreateRequest
 import org.hospitalmanagement.models.enums.DoctorsType
 import org.hospitalmanagement.service.persons.DoctorService
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 import java.util.UUID
 
 @RestController
@@ -41,12 +43,20 @@ class DoctorController(private val doctorService: DoctorService) {
     @GetMapping("/{id}")
     fun getById(@PathVariable id: UUID) =
         doctorService.getById(id)
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Doctor with id $id not found"
+            )
 
     @GetMapping
     fun getAll(pageable: org.springframework.data.domain.Pageable) =
         doctorService.getAll(pageable)
-
+//TODO: AGAIN WITH PARAMETERS?
     @GetMapping("/type/{type}")
     fun getByType(@PathVariable type: String) =
         doctorService.getByType(enumValueOf<DoctorsType>(type).toString())
+
+    //TODO: DIAGNOSED BY Doctor??
+    //TODO: GET BY NAME??
+    //TODO: GET BOOKING BY ROOM?
 }

@@ -5,7 +5,9 @@ import org.hospitalmanagement.api.persons.requestModels.NurseCreationResponse
 import org.hospitalmanagement.api.persons.requestModels.NurseRequest
 import org.hospitalmanagement.api.persons.requestModels.PersonCreateRequest
 import org.hospitalmanagement.service.persons.NurseService
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 import java.util.UUID
 
 @RestController
@@ -35,6 +37,10 @@ class NurseController(private val nurseService: NurseService) {
     @GetMapping("/{id}")
     fun getById(@PathVariable id: UUID) =
         nurseService.getById(id)
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Nurse with id $id not found"
+            )
 
     @GetMapping
     fun getAll(pageable: org.springframework.data.domain.Pageable) =
@@ -43,4 +49,10 @@ class NurseController(private val nurseService: NurseService) {
     @GetMapping("/station/{stationId}")
     fun getByStationId(@PathVariable stationId: Long) =
         nurseService.getByStationId(stationId)
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Nurses for station with id $stationId not found"
+            )
+
+    //TODO: GET BY NAME + Combination Filters??
 }
