@@ -1,6 +1,7 @@
 package org.hospitalmanagement
 
 import org.hospitalmanagement.db.repositories.DepartmentRepository
+import org.hospitalmanagement.db.repositories.DiagnosisRepository
 import org.hospitalmanagement.db.repositories.DoctorRepository
 import org.hospitalmanagement.db.repositories.PatientRepository
 import org.hospitalmanagement.models.enums.DoctorsType
@@ -188,13 +189,13 @@ class HospitalApplication {
      */
 
     // "SELECT * FROM DOCTORS WHERE employee.department = ..."
-    @Bean
+    /*@Bean
     fun run(doctorRepository: DoctorRepository) = CommandLineRunner {
         val doctor = doctorRepository.findAllByEmployee_Department(20)
             .forEach { doc ->
                 println("ID: ${doc.id}, Name: ${doc.employee.person.firstName} ${doc.employee.person.lastName}, Work phone: ${doc.work_phone}, Type: ${doc.type}")
             }
-    }
+    }*/
 
     /*
     // "SELECT * FROM DOCTORS WHERE Type = ..."
@@ -207,6 +208,31 @@ class HospitalApplication {
         }
     }
      */
+    //SELECT * FROM DIAGNOSIS WHERE id = 1
+    //TODO: Double Check Data base, got some weird results
+    /*@Bean
+    fun run(diagnosisRepository: DiagnosisRepository) = CommandLineRunner {
+        val diagnosis = diagnosisRepository.findById(1)
+        diagnosis.ifPresentOrElse(
+            { diag ->
+                println("Doctor: ${diag.diagnosedBy.employee.person.firstName} ${diag.diagnosedBy.employee.person.lastName}")
+            },
+            {
+                println("Diagnosis nicht gefunden")
+            }
+        )
+    }*/
+    // SELECT * FROM DIAGNOSIS WHERE disease = "hematoma"
+    //TODO:Check Again, current connection is to persons, not patients
+    @Bean
+    fun run(diagnosisRepository: DiagnosisRepository) = CommandLineRunner {
+        val diagnosis = diagnosisRepository.findByDisease("hematoma")
+
+        diagnosis.forEach { dia ->
+            println("${dia.id} ${dia.diagnosedPatient.firstName}")
+        }
+    }
+
 }
 
 fun main(args: Array<String>) {

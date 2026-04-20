@@ -1,5 +1,8 @@
 package org.hospitalmanagement.models.enums
 
+import jakarta.persistence.AttributeConverter
+import jakarta.persistence.Converter
+
 enum class DoseFrequency(val dbValue: String) {
     EVERY_X_DAYS("every_x_days"),
     X_DAILY("x daily"),
@@ -11,5 +14,15 @@ enum class DoseFrequency(val dbValue: String) {
         fun fromDb(value: String): DoseFrequency =
             values().find { it.dbValue == value }
                 ?: throw IllegalArgumentException("Unknown value: $value")
+    }
+    @Converter(autoApply = true)
+    class DoseFrequencyConverter : AttributeConverter<DoseFrequency, String> {
+        override fun convertToDatabaseColumn(attribute: DoseFrequency?): String? {
+            return attribute?.dbValue
+        }
+
+        override fun convertToEntityAttribute(dbData: String?): DoseFrequency? {
+            return dbData?.let { DoseFrequency.fromDb(it) }
+        }
     }
 }
