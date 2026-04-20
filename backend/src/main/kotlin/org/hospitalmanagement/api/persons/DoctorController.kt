@@ -1,9 +1,6 @@
 package org.hospitalmanagement.api.persons
 
-import org.hospitalmanagement.api.persons.requestModels.DoctorCreationResponse
-import org.hospitalmanagement.api.persons.requestModels.DoctorRequest
-import org.hospitalmanagement.api.persons.requestModels.EmployeeCreationRequest
-import org.hospitalmanagement.api.persons.requestModels.PersonCreateRequest
+import org.hospitalmanagement.api.persons.requestModels.*
 import org.hospitalmanagement.models.enums.DoctorsType
 import org.hospitalmanagement.service.persons.DoctorService
 import org.springframework.http.HttpStatus
@@ -18,17 +15,26 @@ class DoctorController(private val doctorService: DoctorService) {
     // Step 1: POST new person + employee data → returns matches or created doctor
     @PostMapping("/new")
     fun createDoctor(
-        @RequestBody personData: PersonCreateRequest,
-        @RequestParam department: Int,
-        @RequestParam workPhone: String,
-        @RequestParam doctorType: String
+        @RequestBody request: DoctorCreationRequest
     ): DoctorCreationResponse =
         doctorService.createDoctorWithSearch(
-            personData,
+            PersonCreateRequest(
+                gender = request.gender,
+                firstName = request.firstName,
+                lastName = request.lastName,
+                email = request.email,
+                phoneNumber = request.phoneNumber,
+                plz = request.plz,
+                city = request.city,
+                street = request.street,
+                houseNumber = request.houseNumber,
+                country = request.country,
+                birthday = request.birthday
+            ),
             EmployeeCreationRequest(
-                department = department,
-                workPhone = workPhone,
-                doctorType = enumValueOf<DoctorsType>(doctorType)
+                department = request.department,
+                workPhone = request.workPhone,
+                doctorType = request.doctorType
             )
         )
 
