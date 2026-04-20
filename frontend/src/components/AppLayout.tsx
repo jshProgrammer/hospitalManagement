@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import HomeIcon from './HomeIcon.tsx'
+import NavItem from './NavItem.tsx'
 
 const links = [
   { to: '/patients', label: 'Patients' },
@@ -18,21 +19,7 @@ export default function AppLayout() {
         <HomeIcon />
         <nav className="flex flex-col gap-2">
           {links.map(item => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                [
-                  'rounded-lg px-4 py-3 text-sm font-medium transition-colors',
-
-                  isActive
-                    ? 'bg-accent-active'
-                    : 'text-text bg-accent hover:bg-accent-hover hover:text-white',
-                ].join(' ')
-              }
-            >
-              {item.label}
-            </NavLink>
+            <NavItem key={item.to} to={item.to} label={item.label} />
           ))}
         </nav>
       </aside>
