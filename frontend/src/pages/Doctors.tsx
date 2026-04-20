@@ -1,3 +1,5 @@
+import PageHeader from '../layout/PageHeader.tsx'
+
 export function Doctors() {
-  return 'Doctors'
+  return <PageHeader title={'Doctors'} />
 }

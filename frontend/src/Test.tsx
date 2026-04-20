@@ -1,15 +1,10 @@
 import Button from './components/Button.tsx'
+import PageHeader from './layout/PageHeader.tsx'
 
 export default function Test() {
-  // @ts-ignore
   return (
     <div className="bg-background text-text h-full p-8">
-      {/* Header */}
-      <header className="bg-primary shadow-soft mb-10 rounded-xl p-6">
-        <h1 className="text-text-on-dark text-3xl font-bold">Dark Mode Preview</h1>
-        <p className="text-text-secondary">Modernes Farbschema für deine App</p>
-      </header>
-
+      <PageHeader title={'Design Schema Test'} />
       <div className="space-y-8">
         {/* Buttons */}
         <section className="bg-surface shadow-soft border-border rounded-xl border p-6">
