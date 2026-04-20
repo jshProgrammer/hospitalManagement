@@ -3,7 +3,7 @@ import Button from './components/Button.tsx'
 export default function Test() {
   // @ts-ignore
   return (
-    <div className="bg-background text-text min-h-screen p-8">
+    <div className="bg-background text-text h-full p-8">
       {/* Header */}
       <header className="bg-primary shadow-soft mb-10 rounded-xl p-6">
         <h1 className="text-text-on-dark text-3xl font-bold">Dark Mode Preview</h1>
