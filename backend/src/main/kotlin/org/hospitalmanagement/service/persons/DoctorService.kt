@@ -33,7 +33,7 @@ class DoctorService(
             val newPerson = personService.createPerson(personData)
             val employee = employeeRepository.save(Employee(person = newPerson, department = employeeData.department))
             val doctor = doctorRepository.save(
-                Doctor(employee = employee, work_phone = employeeData.workPhone, type = employeeData.doctorType!!)
+                employeeData.workPhone?.let { Doctor(employee = employee, work_phone = it, type = employeeData.doctorType!!) }
             )
             DoctorCreationResponse(potentialMatches = null, createdDoctor = toRequest(doctor))
         }
@@ -44,7 +44,7 @@ class DoctorService(
         val person = personService.findById(personId)
         val employee = employeeRepository.save(Employee(person = person, department = employeeData.department))
         val doctor = doctorRepository.save(
-            Doctor(employee = employee, work_phone = employeeData.workPhone, type = employeeData.doctorType!!)
+            employeeData.workPhone?.let { Doctor(employee = employee, work_phone = it, type = employeeData.doctorType!!) }
         )
         return toRequest(doctor)
     }
