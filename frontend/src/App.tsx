@@ -6,6 +6,7 @@ import { Departments } from './pages/Departments.tsx'
 import { Stations } from './pages/Stations.tsx'
 import { Drugs } from './pages/Drugs.tsx'
 import AppLayout from './components/AppLayout.tsx'
+import Test from './Test.tsx'
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/departments" element={<Departments />} />
           <Route path="/stations" element={<Stations />} />
           <Route path="/drugs" element={<Drugs />} />
+          <Route path="/test" element={<Test />} />
         </Route>
       </Routes>
     </BrowserRouter>

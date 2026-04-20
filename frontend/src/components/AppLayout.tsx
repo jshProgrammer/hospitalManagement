@@ -8,6 +8,7 @@ const links = [
   { to: '/departments', label: 'Departments' },
   { to: '/stations', label: 'Stations' },
   { to: '/drugs', label: 'Drugs' },
+  { to: '/test', label: 'Test' },
 ]
 
 export default function AppLayout() {
