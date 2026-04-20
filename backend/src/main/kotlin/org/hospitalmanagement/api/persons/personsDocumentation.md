@@ -122,7 +122,7 @@ Response:
 
 ### POST 
 
-Calls are the same for patients, but with different endpoints: 
+Calls are the same as for doctors, but with different endpoints and without work-phone: 
 - **Endpoint**: `POST /api/nurses/new/0d39c174-968c-4b38-ba09-72f7bab732c7`
 - **Endpoint**: `POST /api/patients/new`
 - - -
