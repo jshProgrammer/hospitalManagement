@@ -1,0 +1,26 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-primary: #50a600;
+  --color-accent: #0050a6;
+
+  /* Backgrounds */
+  --color-background: #ccdced;
+  --color-surface: #ffffff;
+  --color-border: #99b9db;
+  --color-highlight: #7fa7d2;
+
+  /* Text */
+  --color-light: #e6ebf5;
+  --color-dark: #111111;
+
+  /* Accent States */
+  --color-accent-hover: #4c84c0;
+  --color-accent-active: #7fa7d2;
+  --color-blue-hover: #1d4ed8;
+
+  /* Status */
+  --color-success: #32b46e;
+  --color-warning: #ffb432;
+  --color-error: #ff5a5a;
+}
