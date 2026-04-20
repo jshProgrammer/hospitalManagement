@@ -1,4 +1,7 @@
+import Button from './components/Button.tsx'
+
 export default function Test() {
+  // @ts-ignore
   return (
     <div className="bg-background text-text min-h-screen p-8">
       {/* Header */}
@@ -13,9 +16,7 @@ export default function Test() {
           <h2 className="mb-4 text-xl font-semibold">Buttons</h2>
 
           <div className="flex gap-4">
-            <button className="bg-accent hover:bg-accent-hover active:bg-accent-active rounded-lg px-4 py-2 font-medium text-white transition">
-              Primary
-            </button>
+            <Button label="Primary" onClick={function (): void {}} />
           </div>
         </section>
 
