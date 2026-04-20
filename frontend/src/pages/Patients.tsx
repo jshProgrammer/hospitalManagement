@@ -1,5 +1,5 @@
-import PageHeader from '../layout/PageHeader.tsx'
+import MainPage from '../layout/MainPage.tsx'
 
 export function Patients() {
-  return <PageHeader title={'Patients'} />
+  return <MainPage title={'Patients'} children={'Some Patients'} />
 }

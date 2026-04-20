@@ -27,7 +27,7 @@ export default function AppLayout() {
       </aside>
 
       <main className="min-w-0 flex-1">
-        <div className="bg-background h-full rounded-xl p-4">
+        <div className="bg-background h-full rounded-xl p-8">
           <Outlet />
         </div>
       </main>
