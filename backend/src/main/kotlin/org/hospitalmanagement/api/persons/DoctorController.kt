@@ -57,12 +57,12 @@ class DoctorController(private val doctorService: DoctorService) {
     @GetMapping
     fun getAll(pageable: org.springframework.data.domain.Pageable) =
         doctorService.getAll(pageable)
-//TODO: AGAIN WITH PARAMETERS?
+//TODO: AGAIN WITH PARAMETERS, YES
     @GetMapping("/type/{type}")
     fun getByType(@PathVariable type: String) =
         doctorService.getByType(enumValueOf<DoctorsType>(type).toString())
 
-    //TODO: DIAGNOSED BY Doctor??
-    //TODO: GET BY NAME??
+    //TODO: DIAGNOSED BY Doctor ->
+    //TODO: GET BY NAME -> YES
     //TODO: GET BOOKING BY ROOM?
 }

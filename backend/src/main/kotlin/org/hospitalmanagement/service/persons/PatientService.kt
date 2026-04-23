@@ -6,6 +6,7 @@ import org.hospitalmanagement.api.persons.requestModels.PersonCreateRequest
 import org.hospitalmanagement.dbRepositories.persons.PatientRepository
 import org.hospitalmanagement.dbRepositories.persons.PersonRepository
 import org.hospitalmanagement.models.classes.persons.Patient
+import org.hospitalmanagement.models.enums.Gender
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
@@ -65,4 +66,21 @@ class PatientService(
         id = patient.id,
         personId = patient.person.id!!
     )
+
+    /*fun searchPatients(
+        pageable: Pageable,
+        firstName: String?,
+        lastName: String?,
+        email: String?,
+        phone: String?,
+        gender: Gender?,
+        city: String?,
+        country: String?,
+        birthday: Date?,
+        plz: Int,
+        street: String?,
+        streetNo: Int?): Page<Patient>{
+        
+    }*/
+
 }

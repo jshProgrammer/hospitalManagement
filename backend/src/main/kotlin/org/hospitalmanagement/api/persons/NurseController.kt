@@ -32,7 +32,7 @@ class NurseController(private val nurseService: NurseService) {
             ),
             EmployeeCreationRequest(
                 department = request.department,
-
+                workPhone = null,
                 stationId = request.stationId
             )
         )
@@ -65,5 +65,5 @@ class NurseController(private val nurseService: NurseService) {
                 "Nurses for station with id $stationId not found"
             )
 
-    //TODO: GET BY NAME + Combination Filters??
+    //TODO: GET BY NAME + Combination Filters -> YES
 }
