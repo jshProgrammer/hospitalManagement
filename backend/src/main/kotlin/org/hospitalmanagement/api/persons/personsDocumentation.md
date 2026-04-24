@@ -122,7 +122,7 @@ Response:
 
 ### POST 
 
-Calls are the same for patients, but with different endpoints: 
+Calls are the same as for doctors, but with different endpoints and without work-phone: 
 - **Endpoint**: `POST /api/nurses/new/0d39c174-968c-4b38-ba09-72f7bab732c7`
 - **Endpoint**: `POST /api/patients/new`
 - - -
@@ -169,7 +169,7 @@ Calls are again the same as for patients, but again with different endpoints:
 - **Endpoint**: `POST /api/doctors/new`
 
 Example Creation Call (needs a bit more beautyfying, but you get the idea):
- POST http://localhost:8080/api/doctors/new?department=1&workPhone=+49 931 123456&doctorType=ATTENDING_PHYSICIAN
+ POST http://localhost:8080/api/doctors/new
 Request body
 ```json
 {
@@ -183,7 +183,10 @@ Request body
   "street": "Domstraße",
   "houseNumber": "5",
   "country": "Deutschland",
-  "birthday": "1985-03-15"
+  "birthday": "1985-03-15", 
+  "department": "1", 
+  "workPhone": "+49 931 123456",
+  "doctorType": "ATTENDING_PHYSICIAN"
 }
 ```
 
