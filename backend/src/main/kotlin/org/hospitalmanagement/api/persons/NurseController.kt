@@ -1,11 +1,16 @@
 package org.hospitalmanagement.api.persons
 
 import org.hospitalmanagement.api.persons.requestModels.*
+import org.hospitalmanagement.models.classes.persons.Nurse
+import org.hospitalmanagement.models.classes.persons.Patient
+import org.hospitalmanagement.models.enums.Gender
 import org.hospitalmanagement.service.persons.NurseService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
-import java.util.UUID
+import java.util.*
 
 @RestController
 @RequestMapping("/api/nurses")
@@ -64,6 +69,41 @@ class NurseController(private val nurseService: NurseService) {
                 HttpStatus.NOT_FOUND,
                 "Nurses for station with id $stationId not found"
             )
+
+    @GetMapping()
+    fun getPatient(
+        pageable: Pageable,
+        @RequestParam(required = false) firstName: String?,
+        @RequestParam(required = false) lastName: String?,
+        @RequestParam(required = false) email: String?,
+        @RequestParam(required = false) phone: String?,
+        @RequestParam(required = false) gender: Gender?,
+        @RequestParam(required = false) city: String?,
+        @RequestParam(required = false) country: String?,
+        @RequestParam(required = false) birthday: Date?,
+        @RequestParam(required = false) plz: Int,
+        @RequestParam(required = false) street: String?,
+        @RequestParam(required = false) streetNo: Int?,
+        @RequestParam(required = false) stationId: Int?,
+        @RequestParam(required = false) departmentId: Int?,
+    ): Page<Nurse> {
+        return nurseService.searchNurses(
+            pageable,
+            firstName,
+            lastName,
+            email,
+            phone,
+            gender,
+            city,
+            country,
+            birthday,
+            plz,
+            street,
+            streetNo,
+            stationId,
+            departmentId
+        )
+    }
 
     //TODO: GET BY NAME + Combination Filters -> YES
 }

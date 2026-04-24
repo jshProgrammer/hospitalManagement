@@ -59,7 +59,20 @@ class PatientController(
         @RequestParam(required = false) street: String?,
         @RequestParam(required = false) streetNo: Int?
         ): Page<Patient> {
-        return patientService.searchPatients()
+        return patientService.searchPatients(
+            pageable,
+            firstName,
+            lastName,
+            email,
+            phone,
+            gender,
+            city,
+            country,
+            birthday,
+            plz,
+            street,
+            streetNo
+        )
     }
 
     @GetMapping("/{firstName}/{lastName}")
