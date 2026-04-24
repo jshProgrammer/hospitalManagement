@@ -1,0 +1,89 @@
+package org.hospitalmanagement.services.medication
+
+import org.hospitalmanagement.api.medication.requestModels.DiagnosisRequest
+import org.hospitalmanagement.dbRepositories.medication.DiagnosisRepository
+import org.hospitalmanagement.dbRepositories.medication.MedicationRepository
+import org.hospitalmanagement.dbRepositories.persons.DoctorRepository
+import org.hospitalmanagement.dbRepositories.persons.PersonRepository
+import org.hospitalmanagement.models.classes.medication.Diagnosis
+import org.hospitalmanagement.models.enums.DrugsType
+import org.hospitalmanagement.specifications.medication.DiagnosisSpecification
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Service
+import org.springframework.web.server.ResponseStatusException
+import java.util.Date
+import java.util.UUID
+
+@Service
+class DiagnosisService(
+    private val diagnosisRepository: DiagnosisRepository,
+    private val medicationRepository: MedicationRepository,
+    private val doctorRepository: DoctorRepository,
+    private val personRepository: PersonRepository
+) {
+
+    fun search(
+        pageable: Pageable,
+        disease: String?,
+        diseaseContains: String?,
+        medicationId: Long?,
+        drugType: DrugsType?,
+        diagnosedByDoctorId: UUID?,
+        diagnosedPatientId: UUID?,
+        diagnosedAfter: Date?,
+        diagnosedBefore: Date?
+    ): Page<Diagnosis> {
+        val spec = DiagnosisSpecification.build(
+            disease, diseaseContains, medicationId, drugType,
+            diagnosedByDoctorId, diagnosedPatientId, diagnosedAfter, diagnosedBefore
+        )
+        return diagnosisRepository.findAll(spec, pageable)
+    }
+
+    fun findById(id: Long): Diagnosis? =
+        diagnosisRepository.findById(id).orElse(null)
+
+    fun create(request: DiagnosisRequest): Diagnosis {
+        val medication = medicationRepository.findById(request.medicationId)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Medication with id ${request.medicationId} not found") }
+        val doctor = doctorRepository.findById(request.diagnosedBy)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Doctor with id ${request.diagnosedBy} not found") }
+        val patient = personRepository.findById(request.diagnosedPatient)
+            //ROT?? .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Person with id ${request.diagnosedPatient} not found") }
+
+        return diagnosisRepository.save(
+            Diagnosis(
+                id = 0,
+                disease = request.disease,
+                medication = medication,
+                diagnosedBy = doctor,
+                diagnosedPatient = patient,
+                diagnosedAt = request.diagnosedAt
+            )
+        )
+    }
+
+    fun update(id: Long, request: DiagnosisRequest): Diagnosis? {
+        if (!diagnosisRepository.existsById(id)) return null
+
+        val medication = medicationRepository.findById(request.medicationId)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Medication with id ${request.medicationId} not found") }
+        val doctor = doctorRepository.findById(request.diagnosedBy)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Doctor with id ${request.diagnosedBy} not found") }
+        val patient = personRepository.findById(request.diagnosedPatient)
+            //ROT?? .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Person with id ${request.diagnosedPatient} not found") }
+
+        return diagnosisRepository.save(
+            Diagnosis(
+                id = id,
+                disease = request.disease,
+                medication = medication,
+                diagnosedBy = doctor,
+                diagnosedPatient = patient,
+                diagnosedAt = request.diagnosedAt
+            )
+        )
+    }
+}
