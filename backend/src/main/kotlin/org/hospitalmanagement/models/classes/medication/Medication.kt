@@ -9,7 +9,8 @@ import jakarta.persistence.*
 @Table(name = "medication")
 class Medication(
     @Id
-    val id: Long,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long = 0,
 
     @OneToOne
     @JoinColumn(name = "dosis")
