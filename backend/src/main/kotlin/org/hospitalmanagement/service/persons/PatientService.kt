@@ -6,9 +6,11 @@ import org.hospitalmanagement.api.persons.requestModels.PersonCreateRequest
 import org.hospitalmanagement.dbRepositories.persons.PatientRepository
 import org.hospitalmanagement.dbRepositories.persons.PersonRepository
 import org.hospitalmanagement.models.classes.persons.Patient
+import org.hospitalmanagement.models.classes.persons.Person
 import org.hospitalmanagement.models.enums.Gender
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
@@ -67,7 +69,7 @@ class PatientService(
         personId = patient.person.id!!
     )
 
-    /*fun searchPatients(
+    fun searchPatients(
         pageable: Pageable,
         firstName: String?,
         lastName: String?,
@@ -77,10 +79,71 @@ class PatientService(
         city: String?,
         country: String?,
         birthday: Date?,
-        plz: Int,
+        plz: Int?,
         street: String?,
         streetNo: Int?): Page<Patient>{
-        
-    }*/
+        var spec: Specification<Patient>? = null
+
+        if (firstName != null) {
+            spec = (spec ?: Specification.where(null))
+                .and(PatientSpecifications.hasFirstName(firstName))
+        }
+
+        if (lastName != null) {
+            spec = (spec ?: Specification.where(null))
+                .and(PatientSpecifications.hasLastName(lastName))
+        }
+
+        if (email != null) {
+            spec = (spec ?: Specification.where(null))
+                .and(PatientSpecifications.hasEmail(email))
+        }
+
+        if (phone != null) {
+            spec = (spec ?: Specification.where(null))
+                .and(PatientSpecifications.hasPhone(phone))
+        }
+
+        if (gender != null) {
+            spec = (spec ?: Specification.where(null))
+                .and(PatientSpecifications.hasGender(gender))
+        }
+
+        if (city != null) {
+            spec = (spec ?: Specification.where(null))
+                .and(PatientSpecifications.hasCity(city))
+        }
+
+        if (country != null) {
+            spec = (spec ?: Specification.where(null))
+                .and(PatientSpecifications.hasCountry(country))
+        }
+
+        if (birthday != null) {
+            spec = (spec ?: Specification.where(null))
+                .and(PatientSpecifications.hasBirthday(birthday))
+        }
+
+        if (plz != null) {
+            spec = (spec ?: Specification.where(null))
+                .and(PatientSpecifications.hasPlz(plz))
+        }
+
+        if (street != null) {
+            spec = (spec ?: Specification.where(null))
+                .and(PatientSpecifications.hasStreet(street))
+        }
+
+        if (streetNo != null) {
+            spec = (spec ?: Specification.where(null))
+                .and(PatientSpecifications.hasStreetNo(streetNo))
+        }
+
+        return if (spec != null) {
+            patientRepository.findAll(spec, pageable)
+        } else {
+            patientRepository.findAll(pageable)
+        }
+    }
 
 }
