@@ -144,6 +144,16 @@ class NurseService(
                 .and(NurseSpecifications.hasStreetNo(streetNo))
         }
 
+        if (departmentId != null) {
+            spec = (spec ?: Specification.where(null))
+                .and(NurseSpecifications.hasDepartmentId(departmentId))
+        }
+
+        if (stationId != null) {
+            spec = (spec ?: Specification.where(null))
+                .and(NurseSpecifications.hasStationId(stationId))
+        }
+
         return if (spec != null) {
             nursesRepository.findAll(spec, pageable)
         } else {

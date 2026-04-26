@@ -1,5 +1,6 @@
 package org.hospitalmanagement.dbRepositories.persons
 
+import jakarta.persistence.Id
 import org.hospitalmanagement.models.classes.persons.Nurse
 import org.hospitalmanagement.models.enums.Gender
 import org.springframework.data.jpa.domain.Specification
@@ -89,6 +90,22 @@ object NurseSpecifications {
             cb.equal(
                 cb.lower(root.get<Any>("person").get("country")),
                 country.lowercase()
+            )
+        }
+
+    fun hasDepartmentId(departmentId: Int): Specification<Nurse> =
+        Specification{root, _, cb ->
+            cb.equal(
+                cb.lower(root.get<Any>("employee").get("departmentId")),
+                departmentId
+            )
+        }
+
+    fun hasStationId(stationId: Int): Specification<Nurse> =
+        Specification{root, _, cb ->
+            cb.equal(
+                cb.lower(root.get<Any>("nurse").get("stationId")),
+                stationId
             )
         }
 }
