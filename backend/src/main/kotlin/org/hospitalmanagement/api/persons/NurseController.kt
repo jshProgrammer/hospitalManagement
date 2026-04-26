@@ -71,7 +71,7 @@ class NurseController(private val nurseService: NurseService) {
             )
 
     @GetMapping()
-    fun getPatient(
+    fun getNurse(
         pageable: Pageable,
         @RequestParam(required = false) firstName: String?,
         @RequestParam(required = false) lastName: String?,

@@ -1,12 +1,16 @@
 package org.hospitalmanagement.api.persons
 
 import org.hospitalmanagement.api.persons.requestModels.*
+import org.hospitalmanagement.models.classes.persons.Doctor
 import org.hospitalmanagement.models.enums.DoctorsType
+import org.hospitalmanagement.models.enums.Gender
 import org.hospitalmanagement.service.persons.DoctorService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
-import java.util.UUID
+import java.util.*
 
 @RestController
 @RequestMapping("/api/doctors")
@@ -62,6 +66,43 @@ class DoctorController(private val doctorService: DoctorService) {
     fun getByType(@PathVariable type: String) =
         doctorService.getByType(enumValueOf<DoctorsType>(type).toString())
 
+
+    @GetMapping()
+    fun getDoctor(
+        pageable: Pageable,
+        @RequestParam(required = false) firstName: String?,
+        @RequestParam(required = false) lastName: String?,
+        @RequestParam(required = false) email: String?,
+        @RequestParam(required = false) phone: String?,
+        @RequestParam(required = false) gender: Gender?,
+        @RequestParam(required = false) city: String?,
+        @RequestParam(required = false) country: String?,
+        @RequestParam(required = false) birthday: Date?,
+        @RequestParam(required = false) plz: Int,
+        @RequestParam(required = false) street: String?,
+        @RequestParam(required = false) streetNo: Int?,
+        @RequestParam(required = false) type: DoctorsType?,
+        @RequestParam(required = false) departmentId: Int?,
+        @RequestParam(required = false) workphone: Int?,
+    ): Page<Doctor> {
+        return doctorService.searchDoctors(
+            pageable,
+            firstName,
+            lastName,
+            email,
+            phone,
+            gender,
+            city,
+            country,
+            birthday,
+            plz,
+            street,
+            streetNo,
+            type,
+            departmentId,
+            workphone
+        )
+    }
     //TODO: DIAGNOSED BY Doctor ->
     //TODO: GET BY NAME -> YES
     //TODO: GET BOOKING BY ROOM?
