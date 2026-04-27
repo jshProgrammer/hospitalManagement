@@ -1,5 +1,6 @@
 package org.hospitalmanagement.api.persons
 
+import org.hospitalmanagement.api.facilities.requestModels.RelocateRequest
 import org.hospitalmanagement.api.persons.requestModels.PatientCreationResponse
 import org.hospitalmanagement.api.persons.requestModels.PatientRequest
 import org.hospitalmanagement.api.persons.requestModels.PersonCreateRequest
@@ -9,6 +10,7 @@ import org.hospitalmanagement.models.classes.medication.Drug
 import org.hospitalmanagement.models.classes.medication.Medication
 import org.hospitalmanagement.models.classes.persons.Patient
 import org.hospitalmanagement.models.enums.Gender
+import org.hospitalmanagement.service.facilities.BookingService
 import org.hospitalmanagement.service.persons.PatientService
 import org.hospitalmanagement.service.persons.PersonService
 import org.springframework.data.domain.Page
@@ -22,7 +24,7 @@ import java.util.*
 @RequestMapping("/api/patients")
 class PatientController(
     private val patientService: PatientService,
-    private val personService: PersonService
+    private val bookingService: BookingService
 ) {
 
     // Step 1: POST new person data → returns matches or created patient
@@ -59,7 +61,7 @@ class PatientController(
         @RequestParam(required = false) city: String?,
         @RequestParam(required = false) country: String?,
         @RequestParam(required = false) birthday: Date?,
-        @RequestParam(required = false) plz: Int,
+        @RequestParam(required = false) plz: Int?,
         @RequestParam(required = false) street: String?,
         @RequestParam(required = false) streetNo: Int?
         ): Page<Patient> {
