@@ -8,6 +8,7 @@ import org.hospitalmanagement.dbRepositories.facilities.StationRepository
 import org.hospitalmanagement.dbRepositories.persons.EmployeeRepository
 import org.hospitalmanagement.dbRepositories.persons.NurseSpecifications
 import org.hospitalmanagement.dbRepositories.persons.NursesRepository
+import org.hospitalmanagement.models.classes.persons.Doctor
 import org.hospitalmanagement.models.classes.persons.Employee
 import org.hospitalmanagement.models.classes.persons.Nurse
 import org.hospitalmanagement.models.enums.Gender
@@ -64,7 +65,7 @@ class NurseService(
         val station = stationRepository.findById(employeeData.stationId!!)
             .orElseThrow { IllegalArgumentException("Station nicht gefunden: ${employeeData.stationId}") }
         val employee = employeeRepository.save(Employee(person = person, department = employeeData.department))
-        return nursesRepository.save(Nurse(id = employee.id!!, station = station))
+        return nursesRepository.save(Nurse(employee = employee, id = employee.id!!, station = station))
     }
 
     private fun toRequest(nurse: Nurse) = NurseRequest(

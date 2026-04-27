@@ -12,6 +12,11 @@ class Nurse (
     @Id
     val id: UUID,
 
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "id")
+    val employee: Employee,
+
     @ManyToOne
     @JoinColumn(name = "station")
     val station: Station,
