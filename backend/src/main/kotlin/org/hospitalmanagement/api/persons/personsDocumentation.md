@@ -110,6 +110,26 @@ Response:
   }
 }
 ```
+
+### Relocating patient
+- **Endpoint**: `POST /api/patients/{PATIENT_ID}/relocate`
+
+In the header section:
+```json
+{
+  "room_id": 1
+}
+```
+This action will set the `until` attribute of the booking with the old room and the `state` to `RELOCATED`.
+A new booking entry that is being returned will be added with the new `room_id` and a `CONFIRMED`state.
+
+
+### Discharging patient
+- **Endpoint**: `POST /api/patients/{PATIENT_ID}/discharge`
+
+This action will set the `until` attribute of the newest booking that is either `confirmed` or `checked_in`to the current date.
+Besides, it will set the `state` to `COMPLETED`.
+
 - - -
 
 ## Nurses

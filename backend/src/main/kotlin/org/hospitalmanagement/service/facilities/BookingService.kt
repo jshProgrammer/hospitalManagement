@@ -75,8 +75,12 @@ class BookingService(
     }
 
     private fun update(id: Long, until: Date?, state: BookingState?): Booking {
-        val existing = bookingsRepository.findById(id)
-            .orElseThrow { RuntimeException("Booking not found") }
+        // TODO: is it ensured that we really have only one ongoing booking in the DB?
+        val existing = bookingsRepository.findFirstByPatientIdAndStateIn(
+            id,
+            listOf(BookingState.CONFIRMED, BookingState.CHECKED_IN)
+        )
+            .orElseThrow { RuntimeException("No checked-in or confirmed booking with patient id $id found") }
 
         val updated = existing.copy(
             until = until ?: existing.until,

@@ -162,6 +162,8 @@ class PatientService(
         diagnosisRepository.findByDiagnosedPatientId(UUID.fromString(personID.toString()), pageable)
      */
 
+    /*
     fun getMedicationsByPersonID(personID: Long, pageable: Pageable): Page<Medication> =
         diagnosisRepository.getMedicationsByPersonID(personID, pageable)
+     */
 }

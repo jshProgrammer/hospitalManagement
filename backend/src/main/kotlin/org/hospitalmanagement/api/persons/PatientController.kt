@@ -98,6 +98,17 @@ class PatientController(
     fun getBookingsById(@PathVariable id: Long, pageable: Pageable): Page<Booking> =
         patientService.getBookingsByPersonID(id, pageable)
 
+    @PostMapping("/{id}/discharge")
+    fun discharge(@PathVariable id: Long): Booking =
+        bookingService.discharge(id)
+
+    @PostMapping("/{id}/relocate")
+    fun relocate(
+        @PathVariable id: Long,
+        @RequestBody request: RelocateRequest
+    ): Booking =
+        bookingService.relocate(id, request.roomId)
+
     /*
     // TODO: solve wrong DB dependency (Person instead of Patient)
     @GetMapping("/{id}/diagnoses")

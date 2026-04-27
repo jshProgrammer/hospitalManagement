@@ -41,19 +41,6 @@ class BookingController(
     fun create(@RequestBody bookingRequest: BookingRequest): Booking =
         bookingService.create(bookingRequest)
 
-    // TODO: is it clear that the patient id is meant here? perhaps use request body instead or put it in PatientController?
-    // TODO: discharge and relocating take booking id currently! change as soon as discussed in team
-    @PostMapping("/{id}/discharge")
-    fun discharge(@PathVariable id: Long): Booking =
-        bookingService.discharge(id)
-
-    @PostMapping("/{id}/relocate")
-    fun relocate(
-        @PathVariable id: Long,
-        @RequestBody request: RelocateRequest
-    ): Booking =
-        bookingService.relocate(id, request.roomId)
-
     /*
     // not yet necessary as discharge and relocate are separate POST-calls
     @PatchMapping("/{id}")

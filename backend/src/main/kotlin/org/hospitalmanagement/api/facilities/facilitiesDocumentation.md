@@ -83,22 +83,6 @@ In the header section:
     "patient_id": 613
 }
 ```
-
-#### Relocating patient
-Please note that this functionality might be moved to /api/patients/PATIENTID/relocate and is not finished yet!
-- **Endpoint**: `POST /api/bookings/PATIENTID/relocate`
-
-In the header section:
-```json
-{
-  "room_id": 1
-}
-```
-
-#### Patient discharge
-Please note that this functionality might be moved to /api/patients/PATIENTID/discharge and is not finished yet!
-- **Endpoint**: `POST /api/bookings/PATIENTID/discharge`
-
 - - -
 
 ## Departments
