@@ -19,9 +19,15 @@ class RoomsController(
     // TODO: add filter by station + FILTER extra or as filter parameter?
     @GetMapping
     fun getAll(
-        pageable: Pageable
+        pageable: Pageable,
+        @RequestParam(required = false) stationID: Long?,
+        @RequestParam(required = false) number: Long?,
     ): Page<Room> =
-        roomsService.getAll(pageable)
+        roomsService.search(
+            pageable,
+            stationID,
+            number
+        )
 
     @GetMapping("/{id}")
     fun getById(@PathVariable id: Long): Room =

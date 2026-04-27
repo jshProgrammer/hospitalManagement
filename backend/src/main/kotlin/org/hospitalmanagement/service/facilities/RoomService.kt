@@ -2,16 +2,37 @@ package org.hospitalmanagement.services
 
 import org.hospitalmanagement.db.Room
 import org.hospitalmanagement.dbRepositories.facilities.RoomsRepository
-import org.hospitalmanagement.models.classes.facilities.Booking
+import org.hospitalmanagement.dbRepositories.facilities.RoomsSpecifications
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 
 @Service
 class RoomsService(private val roomsRepository: RoomsRepository) {
+    fun search(
+        pageable: Pageable,
+        stationID: Long?,
+        number: Long?
+    ): Page<Room> {
+        var spec: Specification<Room>? = null
 
-    fun getAll(pageable: Pageable): Page<Room> =
-        roomsRepository.findAll(pageable)
+        if (stationID != null) {
+            spec = Specification.where(RoomsSpecifications.hasStationID(stationID))
+        }
+
+        if (number != null) {
+            spec = (spec ?: Specification.where(null))
+                .and(RoomsSpecifications.hasNumber(number))
+        }
+
+        return if (spec != null) {
+            roomsRepository.findAll(spec, pageable)
+        } else {
+            roomsRepository.findAll(pageable)
+        }
+    }
+
 
     fun getById(id: Long): Room? =
         roomsRepository.findById(id)
