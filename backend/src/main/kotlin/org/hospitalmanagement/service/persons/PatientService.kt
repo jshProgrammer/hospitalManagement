@@ -4,9 +4,11 @@ import org.hospitalmanagement.api.persons.requestModels.PatientCreationResponse
 import org.hospitalmanagement.api.persons.requestModels.PatientRequest
 import org.hospitalmanagement.api.persons.requestModels.PersonCreateRequest
 import org.hospitalmanagement.dbRepositories.facilities.BookingsRepository
+import org.hospitalmanagement.dbRepositories.medication.DiagnosisRepository
 import org.hospitalmanagement.dbRepositories.persons.PatientRepository
 import org.hospitalmanagement.dbRepositories.persons.PersonRepository
 import org.hospitalmanagement.models.classes.facilities.Booking
+import org.hospitalmanagement.models.classes.medication.Diagnosis
 import org.hospitalmanagement.models.classes.persons.Patient
 import org.hospitalmanagement.models.classes.persons.Person
 import org.hospitalmanagement.models.enums.Gender
@@ -23,7 +25,8 @@ class PatientService(
     private val patientRepository: PatientRepository,
     private val personService: PersonService,
     private val personRepository: PersonRepository,
-    private val bookingsRepository: BookingsRepository
+    private val bookingsRepository: BookingsRepository,
+    private val diagnosisRepository: DiagnosisRepository
 ) {
     fun getAll(pageable: Pageable): Page<Patient> =
         patientRepository.findAll(pageable)
@@ -152,5 +155,9 @@ class PatientService(
     fun getBookingsByPersonID(personID: Long, pageable: Pageable): Page<Booking> =
         bookingsRepository.findByPatientId(personID, pageable)
 
-
+    /*
+    fun getDiagnoses(personID: Long, pageable: Pageable): Page<Diagnosis> =
+        // TODO: fix UUID <-> Long mapping
+        diagnosisRepository.findByDiagnosedPatientId(UUID.fromString(personID.toString()), pageable)
+     */
 }

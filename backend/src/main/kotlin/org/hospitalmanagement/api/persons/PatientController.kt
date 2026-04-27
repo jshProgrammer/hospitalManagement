@@ -98,14 +98,16 @@ class PatientController(
         patientService.getBookingsByPersonID(id, pageable)
 
     /*
-    @GetMapping("/{id}/diagnosis")
-    fun getDiagnosisByID(@PathVariable id: Long): Page<Diagnosis> =
-        patientService.getById(id)
+    @GetMapping("/{id}/diagnoses")
+    fun getDiagnosesByID(@PathVariable id: Long, pageable: Pageable): Page<Diagnosis> =
+        patientService.getDiagnoses(id, pageable)
             ?: throw ResponseStatusException(
                 HttpStatus.NOT_FOUND,
                 "Patient with id $id not found"
             )
+     */
 
+    /*
     @GetMapping("/{id}/medication")
     fun getMedicationByID(@PathVariable id: Long): Page<Medication> =
         patientService.getById(id)
