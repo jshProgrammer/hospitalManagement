@@ -3,6 +3,10 @@ package org.hospitalmanagement.api.persons
 import org.hospitalmanagement.api.persons.requestModels.PatientCreationResponse
 import org.hospitalmanagement.api.persons.requestModels.PatientRequest
 import org.hospitalmanagement.api.persons.requestModels.PersonCreateRequest
+import org.hospitalmanagement.models.classes.facilities.Booking
+import org.hospitalmanagement.models.classes.medication.Diagnosis
+import org.hospitalmanagement.models.classes.medication.Drug
+import org.hospitalmanagement.models.classes.medication.Medication
 import org.hospitalmanagement.models.classes.persons.Patient
 import org.hospitalmanagement.models.enums.Gender
 import org.hospitalmanagement.service.persons.PatientService
@@ -89,6 +93,33 @@ class PatientController(
              }
 
     //TODO: GET BOOKINGS/Diagnosis/Medication/Drugs BY PATIENT (IN PATIENT PACKEN) APPROVED /patients/patientId/boookings?
+    @GetMapping("/{id}/bookings")
+    fun getBookingsById(@PathVariable id: Long, pageable: Pageable): Page<Booking> =
+        patientService.getBookingsByPersonID(id, pageable)
 
+    /*
+    @GetMapping("/{id}/diagnosis")
+    fun getDiagnosisByID(@PathVariable id: Long): Page<Diagnosis> =
+        patientService.getById(id)
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Patient with id $id not found"
+            )
 
+    @GetMapping("/{id}/medication")
+    fun getMedicationByID(@PathVariable id: Long): Page<Medication> =
+        patientService.getById(id)
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Patient with id $id not found"
+            )
+
+    @GetMapping("/{id}/drugs")
+    fun getDrugsByID(@PathVariable id: Long): Page<Drug> =
+        patientService.getById(id)
+            ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Patient with id $id not found"
+            )
+    */
 }

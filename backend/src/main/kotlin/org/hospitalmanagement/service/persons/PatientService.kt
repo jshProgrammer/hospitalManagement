@@ -3,8 +3,10 @@ package org.hospitalmanagement.service.persons
 import org.hospitalmanagement.api.persons.requestModels.PatientCreationResponse
 import org.hospitalmanagement.api.persons.requestModels.PatientRequest
 import org.hospitalmanagement.api.persons.requestModels.PersonCreateRequest
+import org.hospitalmanagement.dbRepositories.facilities.BookingsRepository
 import org.hospitalmanagement.dbRepositories.persons.PatientRepository
 import org.hospitalmanagement.dbRepositories.persons.PersonRepository
+import org.hospitalmanagement.models.classes.facilities.Booking
 import org.hospitalmanagement.models.classes.persons.Patient
 import org.hospitalmanagement.models.classes.persons.Person
 import org.hospitalmanagement.models.enums.Gender
@@ -20,7 +22,8 @@ import java.util.*
 class PatientService(
     private val patientRepository: PatientRepository,
     private val personService: PersonService,
-    private val personRepository: PersonRepository
+    private val personRepository: PersonRepository,
+    private val bookingsRepository: BookingsRepository
 ) {
     fun getAll(pageable: Pageable): Page<Patient> =
         patientRepository.findAll(pageable)
@@ -145,5 +148,9 @@ class PatientService(
             patientRepository.findAll(pageable)
         }
     }
+
+    fun getBookingsByPersonID(personID: Long, pageable: Pageable): Page<Booking> =
+        bookingsRepository.findByPatientId(personID, pageable)
+
 
 }

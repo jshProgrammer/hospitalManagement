@@ -21,6 +21,7 @@ Base URL: http://localhost:8080
 - `GET /api/patients?page=0&size=10`: get all patients with pagination
 - `GET /api/patients/{patient_id}`: get patient with specific id
 - `GET /api/patients/{firstName}/{lastName}`: get all patients with first and last name
+- `GET /api/{patient_id}/bookings")`: get all bookings per patient id
 
 Please note that a `404 NOT FOUND` error will be returned if the patient with the specified ID/variables does not exist.
 
