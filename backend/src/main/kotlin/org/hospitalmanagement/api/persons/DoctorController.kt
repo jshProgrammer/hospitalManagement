@@ -58,15 +58,6 @@ class DoctorController(private val doctorService: DoctorService) {
                 "Doctor with id $id not found"
             )
 
-    /*@GetMapping
-    fun getAll(pageable: org.springframework.data.domain.Pageable) =
-        doctorService.getAll(pageable)*/
-//TODO: AGAIN WITH PARAMETERS, YES
-    @GetMapping("/type/{type}")
-    fun getByType(@PathVariable type: String) =
-        doctorService.getByType(enumValueOf<DoctorsType>(type).toString())
-
-
     @GetMapping()
     fun getDoctors(
         pageable: Pageable,

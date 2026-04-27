@@ -20,11 +20,11 @@ Base URL: http://localhost:8080
 
 - `GET /api/patients?page=0&size=10`: get all patients with pagination
 - `GET /api/patients/{patient_id}`: get patient with specific id
-- `GET /api/patients/{firstName}/{lastName}`: get all patients with first and last name
 - `GET /api/{patient_id}/bookings")`: get all bookings per patient id
 
 Please note that a `404 NOT FOUND` error will be returned if the patient with the specified ID/variables does not exist.
 
+Filtering is possible based on all attributes.
 
 Example response for `GET /api/patients/1`:
 ```json
@@ -154,8 +154,8 @@ Calls are the same as for doctors, but with different endpoints and without work
 ### GET
 - `GET /api/doctors/{Id}`: get doctor based on ID
 - `GET /api/doctors?page=0&size=10`: get all doctors with pagination
-- `GET /api/docotors/type/{type}`: get Docotors based on type
 
+Filtering is possible based on all attributes, e.g. `GET api/doctors?type=HEAD_OF_DEPARTMENT`
 
 Example response for `GET /api/doctors/b354c383-615e-4b05-afc2-4aba9b2d2174`:
 ```json

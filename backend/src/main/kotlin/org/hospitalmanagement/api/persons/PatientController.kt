@@ -45,11 +45,6 @@ class PatientController(
                 "Patient with id $id not found"
             )
 
-    /*@GetMapping
-    fun getAll(): Page<Patient> =
-        patientService.getAll(Pageable.unpaged())*/
-//TODO: Change to parameter as in Drugs
-
     @GetMapping()
     fun getPatients(
         pageable: Pageable,
