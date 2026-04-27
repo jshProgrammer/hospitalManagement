@@ -47,6 +47,9 @@ class BookingService(
         return bookingsRepository.save(booking)
     }
 
+    fun getByRoom(roomId: Long, pageable: Pageable): Page<Booking> =
+        bookingsRepository.findByRoomId(roomId, pageable)
+
     fun discharge(patientId: Long): Booking {
         val today = LocalDate.now()
         val date = Date.from(today.atStartOfDay(ZoneId.systemDefault()).toInstant())

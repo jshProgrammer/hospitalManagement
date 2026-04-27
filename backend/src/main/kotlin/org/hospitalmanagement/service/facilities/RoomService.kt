@@ -2,6 +2,7 @@ package org.hospitalmanagement.services
 
 import org.hospitalmanagement.db.Room
 import org.hospitalmanagement.dbRepositories.facilities.RoomsRepository
+import org.hospitalmanagement.models.classes.facilities.Booking
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service

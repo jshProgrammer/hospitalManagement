@@ -11,4 +11,5 @@ import org.springframework.data.domain.Pageable;
 interface BookingsRepository: JpaRepository<Booking, Long> {
     override fun findAll(pageable: Pageable): Page<Booking>
     fun findAllByState(state: BookingState): MutableList<Booking>
+    fun findByRoomId(roomId: Long, pageable: Pageable): Page<Booking>
 }

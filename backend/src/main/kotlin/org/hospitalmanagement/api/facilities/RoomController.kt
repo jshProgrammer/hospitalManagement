@@ -1,6 +1,8 @@
 package org.hospitalmanagement.api.facilities
 
 import org.hospitalmanagement.db.Room
+import org.hospitalmanagement.models.classes.facilities.Booking
+import org.hospitalmanagement.service.facilities.BookingService
 import org.hospitalmanagement.services.RoomsService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -10,7 +12,10 @@ import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("/api/rooms")
-class RoomsController(private val roomsService: RoomsService) {
+class RoomsController(
+    private val roomsService: RoomsService,
+    private val bookingService: BookingService
+) {
     // TODO: add filter by station + FILTER extra or as filter parameter?
     @GetMapping
     fun getAll(
@@ -33,4 +38,11 @@ class RoomsController(private val roomsService: RoomsService) {
                 HttpStatus.NOT_FOUND,
                 "Room with id $floor not found"
             )
+
+    @GetMapping("/{id}/bookings")
+    fun getBookingsPerRoom(
+        @PathVariable id: Long,
+        pageable: Pageable
+    ): Page<Booking> =
+        bookingService.getByRoom(id, pageable)
 }

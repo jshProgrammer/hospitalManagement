@@ -18,6 +18,5 @@ interface DoctorRepository : JpaRepository<Doctor, String>, JpaSpecificationExec
     fun findAllByEmployee_Department(department: Int): List<Doctor>
     fun findAllByEmployee_Department(department: Int, pageable: Pageable): Page<Doctor>
     fun findById(id: UUID): Optional<Doctor>
-    //TODO: fun findByWork_phone(work_phone: String): Optional<Doctor>
     fun findByType(type: DoctorsType): List<Doctor>
 }

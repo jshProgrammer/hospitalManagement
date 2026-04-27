@@ -104,6 +104,4 @@ class DoctorController(private val doctorService: DoctorService) {
         )
     }
     //TODO: DIAGNOSED BY Doctor ->
-    //TODO: GET BY NAME -> YES
-    //TODO: GET BOOKING BY ROOM?
 }

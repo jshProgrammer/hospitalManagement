@@ -138,7 +138,7 @@ Example response for `GET /api/departments/1`:
 - `GET /api/rooms`: get all rooms
 - `GET /api/rooms/{ROOM_ID}`: get room with specific id
 - `GET /api/rooms/floor/FLOORNUMBER`: get all rooms of specific floor
-
+- `GET /api/rooms/{ROOM_ID}/bookings`: get all bookings per room id
 
 Example response for `GET /api/rooms/1`:
 ```json

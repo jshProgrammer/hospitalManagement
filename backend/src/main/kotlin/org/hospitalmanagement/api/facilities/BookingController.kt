@@ -5,6 +5,7 @@ import org.hospitalmanagement.api.facilities.requestModels.RelocateRequest
 import org.hospitalmanagement.models.classes.facilities.Booking
 import org.hospitalmanagement.models.enums.BookingState
 import org.hospitalmanagement.service.facilities.BookingService
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
