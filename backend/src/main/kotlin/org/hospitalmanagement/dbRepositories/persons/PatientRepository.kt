@@ -10,7 +10,6 @@ import java.util.*
 
 @Repository
 interface PatientRepository : JpaRepository<Patient, String>, JpaSpecificationExecutor<Patient> {
-    //TODO: add other CRUD operations (specifically delete, update, add)
     override fun findAll(pageable: Pageable): Page<Patient>
     fun findById(id: Long): Optional<Patient> // uses the patient id, NOT the person id
     fun existsByPersonId(personId: UUID): Boolean

@@ -209,7 +209,6 @@ class HospitalApplication {
     }
      */
     //SELECT * FROM DIAGNOSIS WHERE id = 1
-    //TODO: Double Check Data base, got some weird results
     /*@Bean
     fun run(diagnosisRepository: DiagnosisRepository) = CommandLineRunner {
         val diagnosis = diagnosisRepository.findById(1)

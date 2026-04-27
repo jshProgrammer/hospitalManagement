@@ -1,6 +1,5 @@
 package org.hospitalmanagement.dbRepositories.persons
 
-import jakarta.persistence.Id
 import org.hospitalmanagement.models.classes.persons.Nurse
 import org.hospitalmanagement.models.enums.Gender
 import org.springframework.data.jpa.domain.Specification

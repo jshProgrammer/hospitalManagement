@@ -10,6 +10,5 @@ import java.util.Optional
 
 @Repository
 interface DepartmentRepository : JpaRepository<Department, Long>, JpaSpecificationExecutor<Department> {
-    //TODO: add other CRUD operations (update, add)
     override fun findById(id: Long): Optional<Department>
 }

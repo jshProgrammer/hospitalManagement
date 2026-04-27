@@ -15,8 +15,7 @@ class Doctor(
         @JoinColumn(name = "id")
         val employee: Employee,
 
-        // TODO: probably rename to workPhone
-        // TODO: automatically add '+' to output as not included in db
+        // + not included in workPhone
         val workPhone: String,
 
         @Convert(converter = DoctorsTypeConverter::class)

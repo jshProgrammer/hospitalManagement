@@ -94,5 +94,4 @@ class DoctorController(private val doctorService: DoctorService) {
             workPhone
         )
     }
-    //TODO: DIAGNOSED BY Doctor ->
 }

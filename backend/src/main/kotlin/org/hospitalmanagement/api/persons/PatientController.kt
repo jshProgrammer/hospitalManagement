@@ -110,21 +110,4 @@ class PatientController(
     fun getDiagnosesByID(@PathVariable id: Long, pageable: Pageable): Page<Diagnosis> =
         patientService.getDiagnoses(id, pageable)
      */
-
-
-    // TODO: does "get medication per patient ID" really make sense
-    //  => medication is part of diagnoses that can be returned with method above
-    /*@GetMapping("/{id}/medication")
-    fun getMedicationByID(@PathVariable id: Long, pageable: Pageable): Page<Medication> =
-        patientService.getMedicationsByPersonID(id)
-     */
-    /*
-    @GetMapping("/{id}/drugs")
-    fun getDrugsByID(@PathVariable id: Long): Page<Drug> =
-        patientService.getById(id)
-            ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "Patient with id $id not found"
-            )
-    */
 }

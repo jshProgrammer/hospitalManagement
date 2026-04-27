@@ -13,7 +13,6 @@ import java.util.UUID
 
 @Repository
 interface DoctorRepository : JpaRepository<Doctor, String>, JpaSpecificationExecutor<Doctor> {
-    //TODO: add other CRUD operations (specifically delete, update, add)
     override fun findAll(pageable: Pageable): Page<Doctor>
     fun findAllByEmployee_Department(department: Int): List<Doctor>
     fun findAllByEmployee_Department(department: Int, pageable: Pageable): Page<Doctor>
