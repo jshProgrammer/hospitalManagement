@@ -39,13 +39,13 @@ class PatientController(
                 "Patient with id $id not found"
             )
 
-    @GetMapping
+    /*@GetMapping
     fun getAll(): Page<Patient> =
-        patientService.getAll(Pageable.unpaged())
+        patientService.getAll(Pageable.unpaged())*/
 //TODO: Change to parameter as in Drugs
 
     @GetMapping()
-    fun getPatient(
+    fun getPatients(
         pageable: Pageable,
         @RequestParam(required = false) firstName: String?,
         @RequestParam(required = false) lastName: String?,

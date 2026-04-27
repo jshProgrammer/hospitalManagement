@@ -58,9 +58,9 @@ class NurseController(private val nurseService: NurseService) {
                 "Nurse with id $id not found"
             )
 
-    @GetMapping
+   /* @GetMapping
     fun getAll(pageable: org.springframework.data.domain.Pageable) =
-        nurseService.getAll(pageable)
+        nurseService.getAll(pageable)*/
 
     @GetMapping("/station/{stationId}")
     fun getByStationId(@PathVariable stationId: Long) =
@@ -71,7 +71,7 @@ class NurseController(private val nurseService: NurseService) {
             )
 
     @GetMapping()
-    fun getNurse(
+    fun getNurses(
         pageable: Pageable,
         @RequestParam(required = false) firstName: String?,
         @RequestParam(required = false) lastName: String?,
