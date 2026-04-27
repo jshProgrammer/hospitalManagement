@@ -74,7 +74,7 @@ class DoctorController(private val doctorService: DoctorService) {
         @RequestParam(required = false) streetNo: Int?,
         @RequestParam(required = false) type: DoctorsType?,
         @RequestParam(required = false) departmentId: Int?,
-        @RequestParam(required = false) workphone: Int?,
+        @RequestParam(required = false) workPhone: String?,
     ): Page<Doctor> {
         return doctorService.searchDoctors(
             pageable,
@@ -91,7 +91,7 @@ class DoctorController(private val doctorService: DoctorService) {
             streetNo,
             type,
             departmentId,
-            workphone
+            workPhone
         )
     }
     //TODO: DIAGNOSED BY Doctor ->

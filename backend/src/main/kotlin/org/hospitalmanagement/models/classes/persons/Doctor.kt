@@ -17,7 +17,7 @@ class Doctor(
 
         // TODO: probably rename to workPhone
         // TODO: automatically add '+' to output as not included in db
-        val work_phone: String,
+        val workPhone: String,
 
         @Convert(converter = DoctorsTypeConverter::class)
         val type: DoctorsType

@@ -155,11 +155,12 @@ object DoctorSpecifications {
             )
         }
 
-    fun hasWorkphone(workphone: Int): Specification<Doctor> =
+    fun hasWorkphone(workphone: String): Specification<Doctor> =
         Specification { root, _, cb ->
+
             cb.equal(
-                root.get<Int>("workphone"),
-                workphone
+                cb.lower(root.get<String>("workPhone")),
+                workphone.lowercase()
             )
         }
 }

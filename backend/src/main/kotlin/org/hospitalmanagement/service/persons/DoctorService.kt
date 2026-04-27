@@ -9,7 +9,6 @@ import org.hospitalmanagement.dbRepositories.persons.EmployeeRepository
 import org.hospitalmanagement.dbRepositories.persons.DoctorSpecifications
 import org.hospitalmanagement.models.classes.persons.Doctor
 import org.hospitalmanagement.models.classes.persons.Employee
-import org.hospitalmanagement.models.classes.persons.Nurse
 import org.hospitalmanagement.models.enums.DoctorsType
 import org.hospitalmanagement.models.enums.Gender
 import org.springframework.data.domain.Page
@@ -37,7 +36,7 @@ class DoctorService(
             val newPerson = personService.createPerson(personData)
             val employee = employeeRepository.save(Employee(person = newPerson, department = employeeData.department))
             val doctor = doctorRepository.save(
-                employeeData.workPhone?.let { Doctor(employee = employee, work_phone = it, type = employeeData.doctorType!!) }
+                employeeData.workPhone?.let { Doctor(employee = employee, workPhone = it, type = employeeData.doctorType!!) }
             )
             DoctorCreationResponse(potentialMatches = null, createdDoctor = toRequest(doctor))
         }
@@ -48,7 +47,7 @@ class DoctorService(
         val person = personService.findById(personId)
         val employee = employeeRepository.save(Employee(person = person, department = employeeData.department))
         val doctor = doctorRepository.save(
-            employeeData.workPhone?.let { Doctor(employee = employee, work_phone = it, type = employeeData.doctorType!!) }
+            employeeData.workPhone?.let { Doctor(employee = employee, workPhone = it, type = employeeData.doctorType!!) }
         )
         return toRequest(doctor)
     }
@@ -57,7 +56,7 @@ class DoctorService(
         id = doctor.id!!,
         employeeId = doctor.employee.id!!,
         personId = doctor.employee.person.id!!,
-        workPhone = doctor.work_phone,
+        workPhone = doctor.workPhone,
         type = doctor.type,
         department = doctor.employee.department
     )
@@ -86,7 +85,7 @@ class DoctorService(
         streetNo: Int?,
         Type: DoctorsType?,
         departmentId: Int?,
-        workphone: Int?,
+        workphone: String?,
     ): Page<Doctor>{
         var spec: Specification<Doctor>? = null
 
