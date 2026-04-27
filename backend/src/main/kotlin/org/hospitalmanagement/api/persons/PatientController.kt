@@ -92,30 +92,25 @@ class PatientController(
                  )
              }
 
-    //TODO: GET BOOKINGS/Diagnosis/Medication/Drugs BY PATIENT (IN PATIENT PACKEN) APPROVED /patients/patientId/boookings?
     @GetMapping("/{id}/bookings")
     fun getBookingsById(@PathVariable id: Long, pageable: Pageable): Page<Booking> =
         patientService.getBookingsByPersonID(id, pageable)
 
     /*
+    // TODO: solve wrong DB dependency (Person instead of Patient)
     @GetMapping("/{id}/diagnoses")
     fun getDiagnosesByID(@PathVariable id: Long, pageable: Pageable): Page<Diagnosis> =
         patientService.getDiagnoses(id, pageable)
-            ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "Patient with id $id not found"
-            )
      */
 
-    /*
-    @GetMapping("/{id}/medication")
-    fun getMedicationByID(@PathVariable id: Long): Page<Medication> =
-        patientService.getById(id)
-            ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "Patient with id $id not found"
-            )
 
+    // TODO: does "get medication per patient ID" really make sense
+    //  => medication is part of diagnoses that can be returned with method above
+    /*@GetMapping("/{id}/medication")
+    fun getMedicationByID(@PathVariable id: Long, pageable: Pageable): Page<Medication> =
+        patientService.getMedicationsByPersonID(id)
+     */
+    /*
     @GetMapping("/{id}/drugs")
     fun getDrugsByID(@PathVariable id: Long): Page<Drug> =
         patientService.getById(id)

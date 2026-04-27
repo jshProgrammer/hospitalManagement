@@ -9,6 +9,7 @@ import org.hospitalmanagement.dbRepositories.persons.PatientRepository
 import org.hospitalmanagement.dbRepositories.persons.PersonRepository
 import org.hospitalmanagement.models.classes.facilities.Booking
 import org.hospitalmanagement.models.classes.medication.Diagnosis
+import org.hospitalmanagement.models.classes.medication.Medication
 import org.hospitalmanagement.models.classes.persons.Patient
 import org.hospitalmanagement.models.classes.persons.Person
 import org.hospitalmanagement.models.enums.Gender
@@ -160,4 +161,7 @@ class PatientService(
         // TODO: fix UUID <-> Long mapping
         diagnosisRepository.findByDiagnosedPatientId(UUID.fromString(personID.toString()), pageable)
      */
+
+    fun getMedicationsByPersonID(personID: Long, pageable: Pageable): Page<Medication> =
+        diagnosisRepository.getMedicationsByPersonID(personID, pageable)
 }
