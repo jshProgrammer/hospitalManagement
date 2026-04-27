@@ -1,6 +1,10 @@
 package org.hospitalmanagement.dbRepositories.persons
 
+import org.hospitalmanagement.models.classes.facilities.Station
+import org.hospitalmanagement.models.classes.persons.Doctor
+import org.hospitalmanagement.models.classes.persons.Employee
 import org.hospitalmanagement.models.classes.persons.Nurse
+import org.hospitalmanagement.models.classes.persons.Person
 import org.hospitalmanagement.models.enums.Gender
 import org.springframework.data.jpa.domain.Specification
 import java.util.*
@@ -8,89 +12,133 @@ import java.util.*
 object NurseSpecifications {
     fun hasFirstName(firstName: String): Specification<Nurse> =
         Specification { root, _, cb ->
+
+            val employee = root.get<Employee>("employee")
+            val person = employee.get<Person>("person")
+
             cb.equal(
-                cb.lower(root.get<Any>("person").get("firstName")),
+                cb.lower(person.get("firstName")),
                 firstName.lowercase()
             )
         }
 
     fun hasLastName(lastName: String): Specification<Nurse> =
         Specification { root, _, cb ->
+
+            val employee = root.get<Employee>("employee")
+            val person = employee.get<Person>("person")
+
             cb.equal(
-                cb.lower(root.get<Any>("person").get("lastName")),
+                cb.lower(person.get("lastName")),
                 lastName.lowercase()
             )
         }
 
     fun hasEmail(email: String): Specification<Nurse> =
         Specification { root, _, cb ->
+
+            val employee = root.get<Employee>("employee")
+            val person = employee.get<Person>("person")
+
             cb.equal(
-                cb.lower(root.get<Any>("person").get("email")),
+                cb.lower(person.get("email")),
                 email.lowercase()
             )
         }
 
     fun hasCity(city: String): Specification<Nurse> =
         Specification { root, _, cb ->
+
+            val employee = root.get<Employee>("employee")
+            val person = employee.get<Person>("person")
+
             cb.equal(
-                cb.lower(root.get<Any>("person").get("city")),
+                cb.lower(person.get("city")),
                 city.lowercase()
             )
         }
 
     fun hasBirthday(birthday: Date): Specification<Nurse> =
         Specification { root, _, cb ->
+
+            val employee = root.get<Employee>("employee")
+            val person = employee.get<Person>("person")
+
             cb.equal(
-                root.get<Any>("person").get<Date>("birthday"),
+                cb.lower(person.get("birthday")),
                 birthday
             )
         }
 
-    // Felder die direkt in  liegen:
     fun hasGender(gender: Gender): Specification<Nurse> =
         Specification { root, _, cb ->
-            cb.equal(root.get<Gender>("gender"), gender)
+
+            val employee = root.get<Employee>("employee")
+            val person = employee.get<Person>("person")
+
+            cb.equal(person.get<Gender>("gender"), gender)
         }
 
     fun hasPlz(plz: Int): Specification<Nurse> =
         Specification { root, _, cb ->
+
+            val employee = root.get<Employee>("employee")
+            val person = employee.get<Person>("person")
+
             cb.equal(
-                root.get<Any>("person").get<Int>("plz"),
+                person.get<Int>("plz"),
                 plz
             )
         }
 
     fun hasStreet(street: String): Specification<Nurse> =
         Specification { root, _, cb ->
+
+            val employee = root.get<Employee>("employee")
+            val person = employee.get<Person>("person")
+
             cb.equal(
-                cb.lower(root.get<Any>("person").get("street")),
+                cb.lower(person.get("street")),
                 street.lowercase()
             )
         }
 
     fun hasStreetNo(streetNo: Int): Specification<Nurse> =
         Specification { root, _, cb ->
+
+            val employee = root.get<Employee>("employee")
+            val person = employee.get<Person>("person")
+
             cb.equal(
-                root.get<Any>("person").get<Int>("streetNo"),
+                person.get<Int>("streetNo"),
                 streetNo
             )
         }
 
     fun hasPhone(phone: String): Specification<Nurse> =
         Specification { root, _, cb ->
+
+            val employee = root.get<Employee>("employee")
+            val person = employee.get<Person>("person")
+
             cb.equal(
-                root.get<Any>("person").get<String>("phone"),
-                phone
+                cb.lower(person.get("phone")),
+                phone.lowercase()
             )
         }
 
     fun hasCountry(country: String): Specification<Nurse> =
         Specification { root, _, cb ->
+
+            val employee = root.get<Employee>("employee")
+            val person = employee.get<Person>("person")
+
             cb.equal(
-                cb.lower(root.get<Any>("person").get("country")),
+                cb.lower(person.get("country")),
                 country.lowercase()
             )
         }
+
 
     fun hasDepartmentId(departmentId: Int): Specification<Nurse> =
         Specification{root, _, cb ->
@@ -101,9 +149,12 @@ object NurseSpecifications {
         }
 
     fun hasStationId(stationId: Int): Specification<Nurse> =
-        Specification{root, _, cb ->
+        Specification { root, _, cb ->
+
+            val station = root.get<Station>("station")
+
             cb.equal(
-                cb.lower(root.get<Any>("nurse").get("stationId")),
+                station.get<Int>("id"),
                 stationId
             )
         }
