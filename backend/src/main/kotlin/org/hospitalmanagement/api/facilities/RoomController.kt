@@ -16,7 +16,6 @@ class RoomsController(
     private val roomsService: RoomsService,
     private val bookingService: BookingService
 ) {
-    // TODO: add filter by station + FILTER extra or as filter parameter?
     @GetMapping
     fun getAll(
         pageable: Pageable,

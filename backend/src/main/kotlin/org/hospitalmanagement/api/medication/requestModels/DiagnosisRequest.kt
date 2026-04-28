@@ -14,7 +14,7 @@ data class DiagnosisRequest(
     val diagnosedBy: UUID,
 
     @JsonProperty("diagnosed_patient")
-    val diagnosedPatient: UUID,
+    val diagnosedPatient: Long,
 
     @JsonProperty("diagnosed_at")
     val diagnosedAt: Date

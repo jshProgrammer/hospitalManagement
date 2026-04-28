@@ -4,6 +4,7 @@ import org.hospitalmanagement.api.medication.requestModels.DiagnosisRequest
 import org.hospitalmanagement.dbRepositories.medication.DiagnosisRepository
 import org.hospitalmanagement.dbRepositories.medication.MedicationRepository
 import org.hospitalmanagement.dbRepositories.persons.DoctorRepository
+import org.hospitalmanagement.dbRepositories.persons.PatientRepository
 import org.hospitalmanagement.dbRepositories.persons.PersonRepository
 import org.hospitalmanagement.models.classes.medication.Diagnosis
 import org.hospitalmanagement.models.enums.DrugsType
@@ -21,7 +22,7 @@ class DiagnosisService(
     private val diagnosisRepository: DiagnosisRepository,
     private val medicationRepository: MedicationRepository,
     private val doctorRepository: DoctorRepository,
-    private val personRepository: PersonRepository
+    private val patientRepository: PatientRepository
 ) {
 
     fun search(
@@ -50,8 +51,8 @@ class DiagnosisService(
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Medication with id ${request.medicationId} not found") }
         val doctor = doctorRepository.findById(request.diagnosedBy)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Doctor with id ${request.diagnosedBy} not found") }
-        val patient = personRepository.findById(request.diagnosedPatient)
-            //ROT?? .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Person with id ${request.diagnosedPatient} not found") }
+        val patient = patientRepository.findById(request.diagnosedPatient)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Patient with id ${request.diagnosedPatient} not found") }
 
         return diagnosisRepository.save(
             Diagnosis(
@@ -72,8 +73,8 @@ class DiagnosisService(
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Medication with id ${request.medicationId} not found") }
         val doctor = doctorRepository.findById(request.diagnosedBy)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Doctor with id ${request.diagnosedBy} not found") }
-        val patient = personRepository.findById(request.diagnosedPatient)
-            //ROT?? .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Person with id ${request.diagnosedPatient} not found") }
+        val patient = patientRepository.findById(request.diagnosedPatient)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Patient with id ${request.diagnosedPatient} not found") }
 
         return diagnosisRepository.save(
             Diagnosis(

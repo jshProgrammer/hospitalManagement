@@ -26,7 +26,7 @@ class Diagnosis(
 
     @ManyToOne
     @JoinColumn(name = "diagnosed_patient")
-    val diagnosedPatient: Person,
+    val diagnosedPatient: Patient,
 
     val diagnosedAt: Date
 )
