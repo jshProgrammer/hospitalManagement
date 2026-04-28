@@ -268,8 +268,14 @@ Request body:
 }
 ```
 
-#### Updating existing diagnosis
-- **Endpoint**: `PUT /api/diagnoses/{DIAGNOSIS_ID}`
+#### Terminating diagnosis:
+- **Endpoint**: `POST /api/diagnoses/{DIAGNOSIS_ID}/terminate`
+
+Please note that a `404 NOT FOUND` error will be returned if the diagnosis with the specified ID does not exist.
+The current date and time of the backend will be stored in the DB for `diagnosed_end`.
+
+#### Updating existing diagnosis (might not be useful)
+- **Endpoint**: `POST /api/diagnoses/{DIAGNOSIS_ID}`
 
 Please note that a `404 NOT FOUND` error will be returned if the diagnosis with the specified ID does not exist.
 

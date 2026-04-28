@@ -5,7 +5,6 @@ import org.hospitalmanagement.dbRepositories.medication.DiagnosisRepository
 import org.hospitalmanagement.dbRepositories.medication.MedicationRepository
 import org.hospitalmanagement.dbRepositories.persons.DoctorRepository
 import org.hospitalmanagement.dbRepositories.persons.PatientRepository
-import org.hospitalmanagement.dbRepositories.persons.PersonRepository
 import org.hospitalmanagement.models.classes.medication.Diagnosis
 import org.hospitalmanagement.models.enums.DrugsType
 import org.hospitalmanagement.specifications.medication.DiagnosisSpecification
@@ -14,6 +13,8 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.Date
 import java.util.UUID
 
@@ -61,7 +62,8 @@ class DiagnosisService(
                 medication = medication,
                 diagnosedBy = doctor,
                 diagnosedPatient = patient,
-                diagnosedAt = request.diagnosedAt
+                diagnosedAt = request.diagnosedAt,
+                null
             )
         )
     }
@@ -70,11 +72,26 @@ class DiagnosisService(
         if (!diagnosisRepository.existsById(id)) return null
 
         val medication = medicationRepository.findById(request.medicationId)
-            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Medication with id ${request.medicationId} not found") }
+            .orElseThrow {
+                ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Medication with id ${request.medicationId} not found"
+                )
+            }
         val doctor = doctorRepository.findById(request.diagnosedBy)
-            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Doctor with id ${request.diagnosedBy} not found") }
+            .orElseThrow {
+                ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Doctor with id ${request.diagnosedBy} not found"
+                )
+            }
         val patient = patientRepository.findById(request.diagnosedPatient)
-            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Patient with id ${request.diagnosedPatient} not found") }
+            .orElseThrow {
+                ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Patient with id ${request.diagnosedPatient} not found"
+                )
+            }
 
         return diagnosisRepository.save(
             Diagnosis(
@@ -83,7 +100,30 @@ class DiagnosisService(
                 medication = medication,
                 diagnosedBy = doctor,
                 diagnosedPatient = patient,
-                diagnosedAt = request.diagnosedAt
+                diagnosedAt = request.diagnosedAt,
+                null
+            )
+        )
+    }
+
+    fun terminate(id: Long): Diagnosis? {
+        if (!diagnosisRepository.existsById(id)) return null
+
+        val diagnosis: Diagnosis = diagnosisRepository.findById(id)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Diagnosis with id $id not found") }
+
+        val now = LocalDateTime.now()
+        val date = Date.from(now.atZone(ZoneId.systemDefault()).toInstant())
+
+        return diagnosisRepository.save(
+            Diagnosis(
+                id,
+                diagnosis.disease,
+                diagnosis.medication,
+                diagnosis.diagnosedBy,
+                diagnosis.diagnosedPatient,
+                diagnosis.diagnosedAt,
+                date
             )
         )
     }

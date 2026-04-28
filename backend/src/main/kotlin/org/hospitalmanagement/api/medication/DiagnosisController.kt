@@ -13,8 +13,6 @@ import org.springframework.web.server.ResponseStatusException
 import java.util.Date
 import java.util.UUID
 
-//TODO: Diagnose beenden
-
 @RestController
 @RequestMapping("/api/diagnoses")
 class DiagnosisController(private val diagnosisService: DiagnosisService) {
@@ -46,8 +44,15 @@ class DiagnosisController(private val diagnosisService: DiagnosisService) {
     fun create(@RequestBody request: DiagnosisRequest): Diagnosis =
         diagnosisService.create(request)
 
+    // might not be used
     @PostMapping("/{id}")
     fun update(@PathVariable id: Long, @RequestBody request: DiagnosisRequest): Diagnosis =
         diagnosisService.update(id, request)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Diagnosis with id $id not found")
+
+    @PostMapping("/{id}/terminate")
+    fun terminate(@PathVariable id: Long): Diagnosis {
+        return diagnosisService.terminate(id)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Diagnosis with id $id not found")
+    }
 }

@@ -9,7 +9,7 @@ import org.hospitalmanagement.models.enums.BookingState
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
 
@@ -51,15 +51,15 @@ class BookingService(
         bookingsRepository.findByRoomId(roomId, pageable)
 
     fun discharge(patientId: Long): Booking {
-        val today = LocalDate.now()
-        val date = Date.from(today.atStartOfDay(ZoneId.systemDefault()).toInstant())
+        val now = LocalDateTime.now()
+        val date = Date.from(now.atZone(ZoneId.systemDefault()).toInstant())
 
         return update(patientId, date, BookingState.COMPLETED)
     }
 
     fun relocate(patientId: Long, roomId: Long): Booking {
-        val today = LocalDate.now()
-        val date = Date.from(today.atStartOfDay(ZoneId.systemDefault()).toInstant())
+        val now = LocalDateTime.now()
+        val date = Date.from(now.atZone(ZoneId.systemDefault()).toInstant())
 
         // close old booking
         update(patientId, date, BookingState.RELOCATED)

@@ -6,6 +6,8 @@ import org.hospitalmanagement.models.classes.persons.Doctor
 import org.hospitalmanagement.models.classes.persons.Patient
 import org.hospitalmanagement.models.classes.persons.Person
 import java.util.Date
+import java.util.Optional
+
 @Entity
 @Table(name = "diagnosis")
 class Diagnosis(
@@ -28,5 +30,8 @@ class Diagnosis(
     @JoinColumn(name = "diagnosed_patient")
     val diagnosedPatient: Patient,
 
-    val diagnosedAt: Date
+    val diagnosedAt: Date,
+
+
+    val diagnosedEnd: Date?
 )
