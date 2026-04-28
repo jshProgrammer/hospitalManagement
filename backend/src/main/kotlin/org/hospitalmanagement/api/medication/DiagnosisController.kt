@@ -40,13 +40,13 @@ class DiagnosisController(private val diagnosisService: DiagnosisService) {
     fun getById(@PathVariable id: Long): Diagnosis =
         diagnosisService.findById(id)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Diagnosis with id $id not found")
-//Post geht noch net
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun create(@RequestBody request: DiagnosisRequest): Diagnosis =
         diagnosisService.create(request)
 
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     fun update(@PathVariable id: Long, @RequestBody request: DiagnosisRequest): Diagnosis =
         diagnosisService.update(id, request)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Diagnosis with id $id not found")

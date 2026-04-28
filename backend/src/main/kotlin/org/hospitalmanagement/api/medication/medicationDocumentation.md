@@ -254,34 +254,32 @@ Example response for `GET /api/diagnoses/1`:
 
 ### POST
 
-Geht noch nicht
-
+#### Creating new diagnosis
 - **Endpoint**: `POST /api/diagnoses`
 
-Request body (UUIDs mit echten ersetzen):
+Request body:
 ```json
 {
   "disease": "Diabetes Mellitus Typ 2",
   "medication_id": 1,
-  "diagnosed_by": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-  "diagnosed_patient": "6efe7d24-3bc9-4de8-a981-7f859b01c59f",
+  "diagnosed_by": "a5cb8acc-9836-40c5-8db3-63ba5b09d773",
+  "diagnosed_patient": 1,
   "diagnosed_at": "2024-03-01"
 }
 ```
 
-### PUT
-
+#### Updating existing diagnosis
 - **Endpoint**: `PUT /api/diagnoses/{DIAGNOSIS_ID}`
 
 Please note that a `404 NOT FOUND` error will be returned if the diagnosis with the specified ID does not exist.
 
-Request body (UUIDs mit echten ersetzen):
+Request body:
 ```json
 {
   "disease": "Diabetes Mellitus Typ 1",
   "medication_id": 1,
-  "diagnosed_by": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-  "diagnosed_patient": "6efe7d24-3bc9-4de8-a981-7f859b01c59f",
+  "diagnosed_by": "a5cb8acc-9836-40c5-8db3-63ba5b09d773",
+  "diagnosed_patient": 1,
   "diagnosed_at": "2024-03-01"
 }
 ```
