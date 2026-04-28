@@ -156,14 +156,7 @@ class PatientService(
     fun getBookingsByPersonID(personID: Long, pageable: Pageable): Page<Booking> =
         bookingsRepository.findByPatientId(personID, pageable)
 
-    /*
-    fun getDiagnoses(personID: Long, pageable: Pageable): Page<Diagnosis> =
-        // TODO: fix UUID <-> Long mapping
-        diagnosisRepository.findByDiagnosedPatientId(UUID.fromString(personID.toString()), pageable)
-     */
 
-    /*
-    fun getMedicationsByPersonID(personID: Long, pageable: Pageable): Page<Medication> =
-        diagnosisRepository.getMedicationsByPersonID(personID, pageable)
-     */
+    fun getDiagnoses(patientID: Long, pageable: Pageable): Page<Diagnosis> =
+        diagnosisRepository.findByDiagnosedPatientId(patientID, pageable)
 }

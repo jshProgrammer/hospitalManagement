@@ -11,5 +11,5 @@ import java.util.UUID
 
 @Repository
 interface DiagnosisRepository : JpaRepository<Diagnosis, Long>, JpaSpecificationExecutor<Diagnosis> {
-    //fun findByDiagnosedPatientId(diagnosedPatient: UUID, pageable: Pageable): Page<Diagnosis>
+    fun findByDiagnosedPatientId(diagnosedPatientID: Long, pageable: Pageable): Page<Diagnosis>
 }

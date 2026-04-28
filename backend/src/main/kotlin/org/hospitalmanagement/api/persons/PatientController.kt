@@ -104,10 +104,7 @@ class PatientController(
     ): Booking =
         bookingService.relocate(id, request.roomId)
 
-    /*
-    // TODO: solve wrong DB dependency (Person instead of Patient)
     @GetMapping("/{id}/diagnoses")
     fun getDiagnosesByID(@PathVariable id: Long, pageable: Pageable): Page<Diagnosis> =
         patientService.getDiagnoses(id, pageable)
-     */
 }
