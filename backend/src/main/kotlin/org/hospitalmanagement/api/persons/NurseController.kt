@@ -81,7 +81,7 @@ class NurseController(private val nurseService: NurseService) {
         @RequestParam(required = false) street: String?,
         @RequestParam(required = false) streetNo: Int?,
         @RequestParam(required = false) stationId: Int?,
-        @RequestParam(required = false) departmentId: Int?,
+        @RequestParam(required = false) departmentId: Long?,
     ): Page<Nurse> {
         return nurseService.searchNurses(
             pageable,

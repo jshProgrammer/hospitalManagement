@@ -11,8 +11,8 @@ import java.util.UUID
 @Repository
 interface EmployeeRepository : JpaRepository<Employee, String> {
     override fun findAll(pageable: Pageable): Page<Employee>
-    fun findAllByDepartment(department: Int): List<Employee>
-    fun findAllByDepartment(department: Int, pageable: Pageable): Page<Employee>
+    fun findAllByDepartment(department: Long): List<Employee>
+    fun findAllByDepartment(department: Long, pageable: Pageable): Page<Employee>
     fun findById(id: UUID): Optional<Employee> // uses the employee id, NOT the person id
     fun existsByPersonId(personId: UUID): Boolean
 }

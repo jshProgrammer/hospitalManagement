@@ -1,5 +1,6 @@
 package org.hospitalmanagement.models.classes.persons
 import jakarta.persistence.*
+import org.hibernate.annotations.ColumnTransformer
 import org.hospitalmanagement.models.enums.DoctorsType
 import org.hospitalmanagement.models.enums.DoctorsTypeConverter
 import java.util.UUID
@@ -19,5 +20,6 @@ class Doctor(
         val workPhone: String,
 
         @Convert(converter = DoctorsTypeConverter::class)
+        @ColumnTransformer(read = "type::text", write = "?::doctors_type")
         val type: DoctorsType
 )

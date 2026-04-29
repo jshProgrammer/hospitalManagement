@@ -73,7 +73,7 @@ class DoctorController(private val doctorService: DoctorService) {
         @RequestParam(required = false) street: String?,
         @RequestParam(required = false) streetNo: Int?,
         @RequestParam(required = false) type: DoctorsType?,
-        @RequestParam(required = false) departmentId: Int?,
+        @RequestParam(required = false) departmentId: Long?,
         @RequestParam(required = false) workPhone: String?,
     ): Page<Doctor> {
         return doctorService.searchDoctors(

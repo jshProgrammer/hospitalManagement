@@ -14,8 +14,8 @@ import java.util.UUID
 @Repository
 interface DoctorRepository : JpaRepository<Doctor, String>, JpaSpecificationExecutor<Doctor> {
     override fun findAll(pageable: Pageable): Page<Doctor>
-    fun findAllByEmployee_Department(department: Int): List<Doctor>
-    fun findAllByEmployee_Department(department: Int, pageable: Pageable): Page<Doctor>
+    fun findAllByEmployee_Department(department: Long): List<Doctor>
+    fun findAllByEmployee_Department(department: Long, pageable: Pageable): Page<Doctor>
     fun findById(id: UUID): Optional<Doctor>
     fun findByType(type: DoctorsType): List<Doctor>
 }

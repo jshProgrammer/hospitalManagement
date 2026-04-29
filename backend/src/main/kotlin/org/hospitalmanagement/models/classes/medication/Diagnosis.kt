@@ -30,8 +30,12 @@ class Diagnosis(
     @JoinColumn(name = "diagnosed_patient")
     val diagnosedPatient: Patient,
 
+    @Temporal(TemporalType.DATE)
+    @Column(name = "diagnosed_at")
     val diagnosedAt: Date,
 
 
+    @Temporal(TemporalType.DATE)
+    @Column(name = "diagnosed_end")
     val diagnosedEnd: Date?
 )

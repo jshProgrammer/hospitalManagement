@@ -9,5 +9,5 @@ data class DoctorRequest(
     val personId: UUID,
     val workPhone: String,
     val type: DoctorsType,
-    val department: Int
+    val department: Long
 )

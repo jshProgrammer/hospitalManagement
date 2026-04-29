@@ -15,5 +15,5 @@ class Employee(
     val person: Person,
 
     // could be connected to Department-object, but probably unnecessary (network traffic)
-    val department: Int
+    val department: Long
 )

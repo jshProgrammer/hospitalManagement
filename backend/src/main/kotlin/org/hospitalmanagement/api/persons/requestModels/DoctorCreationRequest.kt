@@ -18,7 +18,7 @@ data class DoctorCreationRequest (
     val country: String,
     val birthday: Date,
 
-    val department: Int,
+    val department: Long,
     val workPhone: String,
     val doctorType: DoctorsType
     )

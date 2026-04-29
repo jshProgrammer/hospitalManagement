@@ -20,7 +20,9 @@ class Medication(
     @JoinColumn(name = "drug")
     val drug: Drug,
 
+    @Temporal(TemporalType.DATE)
     val started: Date?,
 
+    @Temporal(TemporalType.DATE)
     val ended: Date?
 )

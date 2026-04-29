@@ -140,10 +140,10 @@ object NurseSpecifications {
         }
 
 
-    fun hasDepartmentId(departmentId: Int): Specification<Nurse> =
+    fun hasDepartmentId(departmentId: Long): Specification<Nurse> =
         Specification{root, _, cb ->
             cb.equal(
-                cb.lower(root.get<Any>("employee").get("departmentId")),
+                root.get<Employee>("employee").get<Long>("department"),
                 departmentId
             )
         }

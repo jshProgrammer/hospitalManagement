@@ -16,6 +16,6 @@ data class NurseCreationRequest(
     val country: String,
     val birthday: Date,
 
-    val department: Int,
+    val department: Long,
     val stationId: Long
 )

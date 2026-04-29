@@ -84,7 +84,7 @@ class DoctorService(
         street: String?,
         streetNo: Int?,
         Type: DoctorsType?,
-        departmentId: Int?,
+        departmentId: Long?,
         workphone: String?,
     ): Page<Doctor>{
         var spec: Specification<Doctor>? = null
