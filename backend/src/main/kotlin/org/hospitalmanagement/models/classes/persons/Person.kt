@@ -8,7 +8,6 @@ import java.util.UUID
 @Entity
 @Table(name = "person")
 class Person(
-    //TODO: try Int instead of UUID
     @Id
     @GeneratedValue
     var id: UUID? = null,

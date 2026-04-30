@@ -1,7 +1,13 @@
 package org.hospitalmanagement.models.classes.facilities
+import jakarta.persistence.*
 
-data class Station(
-    var id: Int,
+@Entity
+@Table(name = "station")
+class Station(
+    @Id
+    var id: Long,
     var name: String,
+    @ManyToOne
+    @JoinColumn(name = "department")
     var department: Department
 )

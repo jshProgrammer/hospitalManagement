@@ -14,6 +14,6 @@ class Employee(
     @JoinColumn(name = "person", nullable = false)
     val person: Person,
 
-    // TODO: probably connect to Department-object instead
-    val department: Int
+    // could be connected to Department-object, but probably unnecessary (network traffic)
+    val department: Long
 )
