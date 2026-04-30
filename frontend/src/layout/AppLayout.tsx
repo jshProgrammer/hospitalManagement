@@ -1,16 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import HomeIcon from '../components/HomeIcon.tsx'
 import NavItem from '../components/NavItem.tsx'
-
-const links = [
-  { to: '/patients', label: 'Patients' },
-  { to: '/doctors', label: 'Doctors' },
-  { to: '/nurses', label: 'Nurses' },
-  { to: '/departments', label: 'Departments' },
-  { to: '/stations', label: 'Stations' },
-  { to: '/drugs', label: 'Drugs' },
-  { to: '/test', label: 'Test' },
-]
+import { links } from '../App.tsx'
 
 export default function AppLayout() {
   return (
