@@ -37,7 +37,7 @@ object DiagnosisSpecification {
             doctorId?.let { cb.equal(root.get<Any>("diagnosedBy").get<UUID>("id"), it) }
         }
 
-    fun hasDiagnosedPatientId(patientId: UUID?): Specification<Diagnosis> =
+    fun hasDiagnosedPatientId(patientId: Long?): Specification<Diagnosis> =
         Specification { root, _, cb ->
             patientId?.let { cb.equal(root.get<Any>("diagnosedPatient").get<UUID>("id"), it) }
         }
@@ -58,7 +58,7 @@ object DiagnosisSpecification {
         medicationId: Long?,
         drugType: DrugsType?,
         diagnosedByDoctorId: UUID?,
-        diagnosedPatientId: UUID?,
+        diagnosedPatientId: Long?,
         diagnosedAfter: Date?,
         diagnosedBefore: Date?
     ): Specification<Diagnosis> =

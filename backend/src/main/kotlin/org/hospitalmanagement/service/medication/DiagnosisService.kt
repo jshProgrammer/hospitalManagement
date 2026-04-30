@@ -33,7 +33,7 @@ class DiagnosisService(
         medicationId: Long?,
         drugType: DrugsType?,
         diagnosedByDoctorId: UUID?,
-        diagnosedPatientId: UUID?,
+        diagnosedPatientId: Long?,
         diagnosedAfter: Date?,
         diagnosedBefore: Date?
     ): Page<Diagnosis> {

@@ -34,13 +34,12 @@ class MedicationController(private val medicationService: MedicationService) {
         medicationService.findById(id)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Medication with id $id not found")
 
-    //POST funktioniert nicht, idk why
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun create(@RequestBody request: MedicationRequest): Medication =
         medicationService.create(request)
 
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     fun update(@PathVariable id: Long, @RequestBody request: MedicationRequest): Medication =
         medicationService.update(id, request)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Medication with id $id not found")

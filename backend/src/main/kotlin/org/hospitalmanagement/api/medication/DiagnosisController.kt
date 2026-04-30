@@ -25,7 +25,7 @@ class DiagnosisController(private val diagnosisService: DiagnosisService) {
         @RequestParam(required = false) medicationId: Long?,
         @RequestParam(required = false) drugType: DrugsType?,
         @RequestParam(required = false) diagnosedByDoctorId: UUID?,
-        @RequestParam(required = false) diagnosedPatientId: UUID?,
+        @RequestParam(required = false) diagnosedPatientId: Long?,
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) diagnosedAfter: Date?,
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) diagnosedBefore: Date?
     ): Page<Diagnosis> =

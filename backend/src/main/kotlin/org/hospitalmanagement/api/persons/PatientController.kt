@@ -76,19 +76,6 @@ class PatientController(
         )
     }
 
-    @GetMapping("/{firstName}/{lastName}")
-    fun getByFirstNameAndLastName(
-        @PathVariable firstName: String,
-        @PathVariable lastName: String
-    ): Patient =
-        patientService.getByFirstNameAndLastName(firstName, lastName)
-             .orElseThrow {
-                 ResponseStatusException(
-                     HttpStatus.NOT_FOUND,
-                     "Patient with name $firstName $lastName not found"
-                 )
-             }
-
     @GetMapping("/{id}/bookings")
     fun getBookingsById(@PathVariable id: Long, pageable: Pageable): Page<Booking> =
         patientService.getBookingsByPersonID(id, pageable)

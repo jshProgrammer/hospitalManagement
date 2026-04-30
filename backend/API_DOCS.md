@@ -4,7 +4,27 @@ Base URL when running locally: `http://localhost:8080`
 
 All collection endpoints that accept `Pageable` also accept Spring pagination parameters such as `page`, `size`, and `sort`.
 
-Date values are accepted as ISO date strings unless noted otherwise, for example `2024-03-01`.
+Date values are accepted as ISO date strings unless noted otherwise(Datetime used in Medication, Diagnosis and Booking), for example `2024-03-01`.
+
+## Sections
+- [Enviroment](#environment)
+- [Enums](#enum-values)
+- [Facilities](#facilities)
+  - [Departments](#departments)
+  - [Stations](#stations)
+  - [Rooms](#rooms)
+  - [Bookings](#bookings)
+- [Persons](#persons)
+  - [Patients](#patients)
+  - [Doctors](#doctors)
+  - [Nurses](#nurses)
+- [Medication-Domain](#medication-domain)
+  - [Drugs](#drugs)
+  - [Doses](#doses)
+  - [Medications](#medications)
+  - [Diagnoses](#diagnoses)
+- [Common-Responses](#common-responses)
+
 
 ## Environment
 
@@ -92,12 +112,13 @@ DATABASE_PASSWORD=password
 | --- | --- | --- | --- |
 | `state` | `BookingState` | no | Filter by booking state. |
 
-`POST /api/bookings` request body:
+`POST /api/bookings` request body (`BookingRequest` Object):
+(until is optional)
 
 ```json
 {
   "from": "2024-03-01",
-  "until": "2024-03-05",
+  "until": "2024-03-05", 
   "state": "CONFIRMED",
   "room_id": 1,
   "patient_id": 1
@@ -108,17 +129,16 @@ DATABASE_PASSWORD=password
 
 ### Patients
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| `POST` | `/api/patients/new` | Create a patient from new person data, or return potential duplicate person matches. |
-| `POST` | `/api/patients/new/{personId}` | Create a patient from an existing person UUID. |
-| `GET` | `/api/patients` | List/search patients. |
-| `GET` | `/api/patients/{id}` | Get one patient by patient id. |
-| `GET` | `/api/patients/{firstName}/{lastName}` | Get one patient by exact first and last name. |
-| `GET` | `/api/patients/{id}/bookings` | List bookings for a patient. |
-| `POST` | `/api/patients/{id}/discharge` | Discharge a patient from the current booking. |
-| `POST` | `/api/patients/{id}/relocate` | Relocate a patient to another room. |
-| `GET` | `/api/patients/{id}/diagnoses` | List diagnoses for a patient. |
+| Method | Endpoint | Description | Pageable |
+| --- | --- | --- |----------|
+| `POST` | `/api/patients/new` | Create a patient from new person data, or return potential duplicate person matches. | -        |
+| `POST` | `/api/patients/new/{personId}` | Create a patient from an existing person UUID. | -        |
+| `GET` | `/api/patients` | List/search patients. | Yes      |
+| `GET` | `/api/patients/{id}` | Get one patient by patient id. | -        |
+| `GET` | `/api/patients/{id}/bookings` | List bookings for a patient. | Yes      |
+| `POST` | `/api/patients/{id}/discharge` | Discharge a patient from the current booking. | -        |
+| `POST` | `/api/patients/{id}/relocate` | Relocate a patient to another room. | -        |
+| `GET` | `/api/patients/{id}/diagnoses` | List diagnoses for a patient. | Yes      |
 
 `GET /api/patients` query parameters:
 
@@ -136,7 +156,7 @@ DATABASE_PASSWORD=password
 | `street` | string | no | Exact street. |
 | `streetNo` | int | no | House number. |
 
-`POST /api/patients/new` request body:
+`POST /api/patients/new` request body (`PersonCreateRequest` Object):
 
 ```json
 {
@@ -154,7 +174,7 @@ DATABASE_PASSWORD=password
 }
 ```
 
-`POST /api/patients/{id}/relocate` request body:
+`POST /api/patients/{id}/relocate` request body (`RelocateRequest` Object):
 
 ```json
 {
@@ -190,7 +210,7 @@ DATABASE_PASSWORD=password
 | `departmentId` | long | no | Filter by department id. |
 | `workPhone` | string | no | Exact work phone. |
 
-`POST /api/doctors/new` request body:
+`POST /api/doctors/new` request body (`DoctorCreationRequest` Object):
 
 ```json
 {
@@ -211,7 +231,7 @@ DATABASE_PASSWORD=password
 }
 ```
 
-`POST /api/doctors/new/{personId}` request body:
+`POST /api/doctors/new/{personId}` request body (`EmployeeCreationRequest` Object):
 
 ```json
 {
@@ -250,7 +270,7 @@ DATABASE_PASSWORD=password
 | `stationId` | int | no | Filter by station id. |
 | `departmentId` | long | no | Filter by department id. |
 
-`POST /api/nurses/new` request body:
+`POST /api/nurses/new` request body (`NurseCreationRequest` Object):
 
 ```json
 {
@@ -270,7 +290,7 @@ DATABASE_PASSWORD=password
 }
 ```
 
-`POST /api/nurses/new/{personId}` request body:
+`POST /api/nurses/new/{personId}` request body (`EmployeeCreationRequest` Object):
 
 ```json
 {
@@ -281,7 +301,7 @@ DATABASE_PASSWORD=password
 }
 ```
 
-## Medication
+## Medication Domain
 
 ### Drugs
 
@@ -292,13 +312,13 @@ DATABASE_PASSWORD=password
 
 `GET /api/drugs` query parameters:
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `name` | string | no | Exact drug name. |
-| `nameContains` | string | no | Case-insensitive drug name search. |
-| `activeIngredient` | string | no | Exact active ingredient. |
-| `type` | string | no | Drug type database value, for example `tablet` or `injection`. |
-| `criticalAmountInDays` | int | no | Filter by stock threshold logic in the service. |
+| Name | Type | Required | Description                                                                                                 |
+| --- | --- | --- |-------------------------------------------------------------------------------------------------------------|
+| `name` | string | no | Exact drug name.                                                                                            |
+| `nameContains` | string | no | Case-insensitive drug name search.                                                                          |
+| `activeIngredient` | string | no | Exact active ingredient.                                                                                    |
+| `type` | string | no | Drug type database value, for example `tablet` or `injection`.                                              |
+| `criticalAmountInDays` | int | no | Filter by stock threshold logic in the service. Is not taken into consideration. Is not included in DB yet. |
 
 ### Doses
 
@@ -319,11 +339,11 @@ DATABASE_PASSWORD=password
 ### Medications
 
 | Method | Endpoint | Description |
-| --- | --- | --- |
-| `GET` | `/api/medications` | List/search medications. |
-| `GET` | `/api/medications/{id}` | Get one medication by id. |
+|--------| --- | --- |
+| `GET`  | `/api/medications` | List/search medications. |
+| `GET`  | `/api/medications/{id}` | Get one medication by id. |
 | `POST` | `/api/medications` | Create a medication. |
-| `PUT` | `/api/medications/{id}` | Update a medication. |
+| `POST`   | `/api/medications/{id}` | Update a medication. |
 
 `GET /api/medications` query parameters:
 
@@ -336,7 +356,7 @@ DATABASE_PASSWORD=password
 | `startedBefore` | date | no | Include medications started on or before this date. |
 | `active` | boolean | no | `true` for no end date, `false` for ended medications. |
 
-`POST /api/medications` and `PUT /api/medications/{id}` request body:
+`POST /api/medications` and `POST /api/medications/{id}` request body (`MedicationRequest` Object):
 
 ```json
 {
@@ -359,18 +379,18 @@ DATABASE_PASSWORD=password
 
 `GET /api/diagnoses` query parameters:
 
-| Name | Type | Required | Description |
-| --- | --- | --- | --- |
-| `disease` | string | no | Exact disease. |
-| `diseaseContains` | string | no | Case-insensitive disease search. |
-| `medicationId` | long | no | Filter by medication id. |
+| Name | Type        | Required | Description |
+| --- |-------------| --- | --- |
+| `disease` | string      | no | Exact disease. |
+| `diseaseContains` | string      | no | Case-insensitive disease search. |
+| `medicationId` | long        | no | Filter by medication id. |
 | `drugType` | `DrugsType` | no | Filter by drug type. |
-| `diagnosedByDoctorId` | UUID | no | Filter by diagnosing doctor UUID. |
-| `diagnosedPatientId` | UUID | no | Filter by diagnosed patient UUID as currently declared by the controller. |
-| `diagnosedAfter` | date | no | Include diagnoses on or after this date. |
-| `diagnosedBefore` | date | no | Include diagnoses on or before this date. |
+| `diagnosedByDoctorId` | UUID        | no | Filter by diagnosing doctor UUID. |
+| `diagnosedPatientId` | Long           | no | Filter by diagnosed patient UUID as currently declared by the controller. |
+| `diagnosedAfter` | date        | no | Include diagnoses on or after this date. |
+| `diagnosedBefore` | date        | no | Include diagnoses on or before this date. |
 
-`POST /api/diagnoses` and `POST /api/diagnoses/{id}` request body:
+`POST /api/diagnoses` and `POST /api/diagnoses/{id}` request body (`DiagnosisRequest` Object):
 
 ```json
 {
@@ -399,3 +419,5 @@ Successful `GET` collection endpoints usually return Spring `Page` JSON:
 ```
 
 Most `GET /{id}` endpoints return `404 NOT_FOUND` when the resource does not exist.
+
+When combining `nameContains` and `name` filtering, a `400 BAD_REQUEST` error is being returned
