@@ -6,7 +6,7 @@ import jakarta.persistence.*
 @Table(name ="patient")
 data class Patient(
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
 
     @OneToOne

@@ -1,4 +1,4 @@
-package org.hospitalmanagement.db.repositories
+package org.hospitalmanagement.dbRepositories.persons
 
 import org.hospitalmanagement.models.classes.persons.Employee
 import org.springframework.data.domain.Page
@@ -10,9 +10,9 @@ import java.util.UUID
 
 @Repository
 interface EmployeeRepository : JpaRepository<Employee, String> {
-    //TODO: add other CRUD operations (specifically delete, update, add)
     override fun findAll(pageable: Pageable): Page<Employee>
-    fun findAllByDepartment(department: Int): List<Employee>
-    fun findAllByDepartment(department: Int, pageable: Pageable): Page<Employee>
+    fun findAllByDepartment(department: Long): List<Employee>
+    fun findAllByDepartment(department: Long, pageable: Pageable): Page<Employee>
     fun findById(id: UUID): Optional<Employee> // uses the employee id, NOT the person id
+    fun existsByPersonId(personId: UUID): Boolean
 }
