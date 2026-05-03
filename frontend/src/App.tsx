@@ -6,10 +6,18 @@ import { Departments } from './pages/Departments.tsx'
 import { Stations } from './pages/Stations.tsx'
 import { Drugs } from './pages/Drugs.tsx'
 import AppLayout from './layout/AppLayout.tsx'
-import Test from './Test.tsx'
 import NotFound from './pages/NotFound.tsx'
 
-export default function App() {
+export const links = [
+  { to: '/patients', label: 'Patients' },
+  { to: '/doctors', label: 'Doctors' },
+  { to: '/nurses', label: 'Nurses' },
+  { to: '/departments', label: 'Departments' },
+  { to: '/stations', label: 'Stations' },
+  { to: '/drugs', label: 'Drugs' },
+]
+
+export function App() {
   return (
     <BrowserRouter>
       <Routes>
@@ -21,7 +29,6 @@ export default function App() {
           <Route path="/departments" element={<Departments />} />
           <Route path="/stations" element={<Stations />} />
           <Route path="/drugs" element={<Drugs />} />
-          <Route path="/test" element={<Test />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
