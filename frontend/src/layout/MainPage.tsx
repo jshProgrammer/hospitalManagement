@@ -10,7 +10,7 @@ export default function MainPage({ title, children }: MainPageProps) {
   return (
     <div className="flex h-full flex-col">
       <PageHeader title={title} />
-      <div className="flex-1">
+      <div className="min-h-0 flex-1">
         <div className="bg-surface border-border h-full rounded-xl border shadow-sm">
           {children}
         </div>
