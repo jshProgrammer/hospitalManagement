@@ -10,12 +10,15 @@ type TableProps<T> = {
 
 export default function Table<T>({ columns, data }: TableProps<T>) {
   return (
-    <div className="border-border overflow-auto rounded-xl border">
-      <table className="w-full text-center text-sm">
-        <thead className="bg-accent text-light sticky top-0 z-10">
-          <tr className="divide-border divide-x">
+    <div className="h-full overflow-auto">
+      <table className="w-full min-w-max text-left text-sm">
+        <thead className="bg-surface-muted text-muted border-border sticky top-0 z-10 border-b">
+          <tr>
             {columns.map(column => (
-              <th key={String(column.key)} className="px-3 py-3 font-semibold">
+              <th
+                key={String(column.key)}
+                className="px-4 py-3 text-xs font-semibold tracking-wide whitespace-nowrap uppercase"
+              >
                 {column.header}
               </th>
             ))}
@@ -23,9 +26,9 @@ export default function Table<T>({ columns, data }: TableProps<T>) {
         </thead>
         <tbody className="divide-border divide-y">
           {data.map((row, rowIndex) => (
-            <tr key={rowIndex} className="divide-border even:bg-background odd:bg-surface divide-x">
+            <tr key={rowIndex} className="hover:bg-primary-muted/60 transition-colors">
               {columns.map(column => (
-                <td key={String(column.key)} className="text-dark px-3 py-3 whitespace-nowrap">
+                <td key={String(column.key)} className="text-dark px-4 py-3 whitespace-nowrap">
                   {String(row[column.key] ?? '')}
                 </td>
               ))}

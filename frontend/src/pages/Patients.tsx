@@ -67,5 +67,9 @@ const patients: Patient[] = [
 ]
 
 export function Patients() {
-  return <MainPage title={'Patients'} children={<Table columns={columns} data={patients} />} />
+  return (
+    <MainPage title="Patients" description="Patient registry and contact information">
+      <Table columns={columns} data={patients} />
+    </MainPage>
+  )
 }

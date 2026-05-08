@@ -11,13 +11,17 @@ export default function NavItem({ to, label }: NavItemProps) {
       to={to}
       className={({ isActive }) =>
         [
-          'rounded-lg px-4 py-3 text-sm font-medium shadow-sm transition hover:scale-105 hover:shadow-md active:scale-95 active:shadow-inner',
+          'group border-border flex items-center gap-3 rounded-lg border px-3 py-2.5 text-sm font-medium transition-colors',
           isActive
-            ? 'bg-accent-active text-dark'
-            : 'text-light bg-accent hover:bg-accent-hover border-border transition hover:text-white',
+            ? 'bg-primary-muted text-primary border-highlight'
+            : 'text-muted bg-surface hover:bg-surface-muted hover:text-dark',
         ].join(' ')
       }
     >
+      <span
+        className="bg-border group-aria-[current=page]:bg-primary h-2 w-2 rounded-full"
+        aria-hidden="true"
+      />
       {label}
     </NavLink>
   )
