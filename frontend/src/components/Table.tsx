@@ -10,8 +10,8 @@ type TableProps<T> = {
 
 export default function Table<T>({ columns, data }: TableProps<T>) {
   return (
-    <div className="border-border overflow-auto rounded-xl border">
-      <table className="w-full text-center text-sm">
+    <div className="border-border max-h-full overflow-auto rounded-xl border">
+      <table className="w-full min-w-max text-center text-sm">
         <thead className="bg-accent text-light sticky top-0 z-10">
           <tr className="divide-border divide-x">
             {columns.map(column => (
