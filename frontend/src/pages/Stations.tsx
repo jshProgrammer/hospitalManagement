@@ -12,10 +12,19 @@ const columns = [
 ] satisfies { key: keyof Station; header: string }[]
 
 export function Stations() {
-  const { data, loading, error } = usePageData<StationApi, Station>(
+  const { data, loading, error, reload } = usePageData<StationApi, Station>(
     '/api/stations?sort=id,asc&size=30',
     mapStation
   )
 
-  return <MainPage title="Stations" columns={columns} data={data} loading={loading} error={error} />
+  return (
+    <MainPage
+      title="Stations"
+      columns={columns}
+      data={data}
+      loading={loading}
+      error={error}
+      onRetry={reload}
+    />
+  )
 }

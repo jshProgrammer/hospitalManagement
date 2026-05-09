@@ -27,10 +27,19 @@ const columns = [
 ] satisfies { key: keyof Nurse; header: string }[]
 
 export function Nurses() {
-  const { data, loading, error } = usePageData<NurseApi, Nurse>(
+  const { data, loading, error, reload } = usePageData<NurseApi, Nurse>(
     '/api/nurses?sort=id,asc&size=30',
     mapNurse
   )
 
-  return <MainPage title="Nurses" columns={columns} data={data} loading={loading} error={error} />
+  return (
+    <MainPage
+      title="Nurses"
+      columns={columns}
+      data={data}
+      loading={loading}
+      error={error}
+      onRetry={reload}
+    />
+  )
 }
