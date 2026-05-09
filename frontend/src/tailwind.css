@@ -1,8 +1,7 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-primary: #50a600;
-  --color-accent: #0050a6;
+  --color-accent: #3272b7;
 
   /* Backgrounds */
   --color-background: #ccdced;
@@ -14,13 +13,21 @@
   --color-light: #e6ebf5;
   --color-dark: #111111;
 
-  /* Accent States */
-  --color-accent-hover: #4c84c0;
-  --color-accent-active: #7fa7d2;
-  --color-blue-hover: #1d4ed8;
-
   /* Status */
   --color-success: #32b46e;
   --color-warning: #ffb432;
   --color-error: #ff5a5a;
+}
+
+@keyframes custom-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.animate-custom-bounce {
+  animation: custom-bounce 1s infinite;
 }

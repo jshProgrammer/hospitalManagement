@@ -13,8 +13,8 @@ export default function NavItem({ to, label }: NavItemProps) {
         [
           'rounded-lg px-4 py-3 text-sm font-medium shadow-sm transition-transform hover:scale-105 hover:shadow-md active:scale-95 active:shadow-inner',
           isActive
-            ? 'bg-accent-active text-dark'
-            : 'text-light bg-accent hover:bg-accent-hover border-border transition hover:text-white',
+            ? 'bg-highlight text-dark'
+            : 'text-light bg-accent hover:bg-highlight hover:text-dark border-border transition',
         ].join(' ')
       }
     >
