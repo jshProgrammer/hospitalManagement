@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react'
 import MainPage from '../layout/MainPage.tsx'
-import Table from '../components/Table.tsx'
-import type { Drug, DrugPage } from '../types/Drug.tsx'
+import type { Drug, DrugApi } from '../types/Drug.tsx'
 import { mapDrug } from '../mapper/drugMapper.tsx'
+import { usePageData } from '../hooks/usePageData.tsx'
 
 const columns = [
   { key: 'id', header: 'ID' },
@@ -13,22 +12,9 @@ const columns = [
 ] satisfies { key: keyof Drug; header: string }[]
 
 export function Drugs() {
-  const [drugs, setDrugs] = useState<Drug[]>([])
-
-  useEffect(() => {
-    async function fetchDrugs() {
-      const response = await fetch('api/drugs?sort=id,asc&size=30')
-      const data: DrugPage = await response.json()
-
-      setDrugs(data.content.map(mapDrug))
-    }
-
-    fetchDrugs().catch(console.error)
-  }, [])
-
-  return (
-    <MainPage title="Drugs">
-      <Table columns={columns} data={drugs} />
-    </MainPage>
+  const { data, loading, error } = usePageData<DrugApi, Drug>(
+    'api/drugs?sort=id,asc&size=30',
+    mapDrug
   )
+  return <MainPage title="Drugs" columns={columns} data={data} loading={loading} error={error} />
 }

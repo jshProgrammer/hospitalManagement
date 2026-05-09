@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react'
 import MainPage from '../layout/MainPage.tsx'
-import Table from '../components/Table.tsx'
-import type { Nurse, NursePage } from '../types/Nurse.tsx'
+import type { Nurse, NurseApi } from '../types/Nurse.tsx'
 import { mapNurse } from '../mapper/nurseMapper.tsx'
+import { usePageData } from '../hooks/usePageData.tsx'
 
 const columns = [
   { key: 'id', header: 'ID' },
@@ -28,48 +27,10 @@ const columns = [
 ] satisfies { key: keyof Nurse; header: string }[]
 
 export function Nurses() {
-  const [nurses, setNurses] = useState<Nurse[]>([])
-
-  useEffect(() => {
-    const controller = new AbortController()
-
-    async function fetchNurses() {
-      const batchSize = 5
-      const limit = 30
-      const loadedNurses: Nurse[] = []
-
-      let page = 0
-      let hasMore = true
-
-      while (loadedNurses.length < limit && hasMore) {
-        const response = await fetch(`/api/nurses?page=${page}&size=${batchSize}`, {
-          signal: controller.signal,
-        })
-
-        if (!response.ok) {
-          throw new Error('Fehler beim Laden der Nurses')
-        }
-        const data: NursePage = await response.json()
-        loadedNurses.push(...data.content.map(mapNurse))
-        setNurses([...loadedNurses])
-
-        hasMore = loadedNurses.length < data.totalElements
-        page++
-      }
-    }
-
-    fetchNurses().catch(error => {
-      if (error.name !== 'AbortError') {
-        console.error(error)
-      }
-    })
-
-    return () => controller.abort()
-  }, [])
-
-  return (
-    <MainPage title="Nurses">
-      <Table columns={columns} data={nurses.slice(0, 30)} />
-    </MainPage>
+  const { data, loading, error } = usePageData<NurseApi, Nurse>(
+    'api/nurses?sort=id,asc&size=30',
+    mapNurse
   )
+
+  return <MainPage title="Nurses" columns={columns} data={data} loading={loading} error={error} />
 }

@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react'
 import MainPage from '../layout/MainPage.tsx'
-import Table from '../components/Table.tsx'
-import type { Patient, PatientPage } from '../types/Patient.tsx'
+import type { Patient, PatientApi } from '../types/Patient.tsx'
 import { mapPatient } from '../mapper/patientMapper.tsx'
+import { usePageData } from '../hooks/usePageData.tsx'
 
 const columns = [
   { key: 'id', header: 'ID' },
@@ -21,21 +20,9 @@ const columns = [
 ] satisfies { key: keyof Patient; header: string }[]
 
 export function Patients() {
-  const [patients, setPatients] = useState<Patient[]>([])
-
-  useEffect(() => {
-    async function fetchPatients() {
-      const response = await fetch('api/patients?sort=id,asc&size=30')
-      const data: PatientPage = await response.json()
-
-      setPatients(data.content.map(mapPatient))
-    }
-    fetchPatients().catch(console.error)
-  }, [])
-
-  return (
-    <MainPage title="Patients">
-      <Table columns={columns} data={patients} />
-    </MainPage>
+  const { data, loading, error } = usePageData<PatientApi, Patient>(
+    'api/patients?sort=id,asc&size=30',
+    mapPatient
   )
+  return <MainPage title="Patients" columns={columns} data={data} loading={loading} error={error} />
 }

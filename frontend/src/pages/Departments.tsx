@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react'
 import MainPage from '../layout/MainPage.tsx'
-import Table from '../components/Table.tsx'
-import type { Department, DepartmentPage } from '../types/Department.tsx'
+import type { Department, DepartmentApi } from '../types/Department.tsx'
 import { mapDepartment } from '../mapper/departmentMapper.tsx'
+import { usePageData } from '../hooks/usePageData.tsx'
 
 const columns = [
   { key: 'id', header: 'ID' },
@@ -11,22 +10,12 @@ const columns = [
 ] satisfies { key: keyof Department; header: string }[]
 
 export function Departments() {
-  const [departments, setDepartments] = useState<Department[]>([])
-
-  useEffect(() => {
-    async function fetchDepartments() {
-      const response = await fetch('api/departments?sort=id,asc&size=30')
-      const data: DepartmentPage = await response.json()
-
-      setDepartments(data.content.map(mapDepartment))
-    }
-
-    fetchDepartments().catch(console.error)
-  }, [])
+  const { data, loading, error } = usePageData<DepartmentApi, Department>(
+    'api/departments?sort=id,asc&size=30',
+    mapDepartment
+  )
 
   return (
-    <MainPage title="Departments">
-      <Table columns={columns} data={departments} />
-    </MainPage>
+    <MainPage title="Departments" columns={columns} data={data} loading={loading} error={error} />
   )
 }
