@@ -13,7 +13,7 @@ const columns = [
 
 export function Stations() {
   const { data, loading, error } = usePageData<StationApi, Station>(
-    'api/stations?sort=id,asc&size=30',
+    '/api/stations?sort=id,asc&size=30',
     mapStation
   )
 

@@ -13,7 +13,7 @@ const columns = [
 
 export function Drugs() {
   const { data, loading, error } = usePageData<DrugApi, Drug>(
-    'api/drugs?sort=id,asc&size=30',
+    '/api/drugs?sort=id,asc&size=30',
     mapDrug
   )
   return <MainPage title="Drugs" columns={columns} data={data} loading={loading} error={error} />

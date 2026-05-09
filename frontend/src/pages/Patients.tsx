@@ -21,7 +21,7 @@ const columns = [
 
 export function Patients() {
   const { data, loading, error } = usePageData<PatientApi, Patient>(
-    'api/patients?sort=id,asc&size=30',
+    '/api/patients?sort=id,asc&size=30',
     mapPatient
   )
   return <MainPage title="Patients" columns={columns} data={data} loading={loading} error={error} />

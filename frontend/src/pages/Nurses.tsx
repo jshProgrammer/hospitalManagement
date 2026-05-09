@@ -28,7 +28,7 @@ const columns = [
 
 export function Nurses() {
   const { data, loading, error } = usePageData<NurseApi, Nurse>(
-    'api/nurses?sort=id,asc&size=30',
+    '/api/nurses?sort=id,asc&size=30',
     mapNurse
   )
 

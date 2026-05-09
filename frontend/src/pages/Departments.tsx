@@ -11,7 +11,7 @@ const columns = [
 
 export function Departments() {
   const { data, loading, error } = usePageData<DepartmentApi, Department>(
-    'api/departments?sort=id,asc&size=30',
+    '/api/departments?sort=id,asc&size=30',
     mapDepartment
   )
 
