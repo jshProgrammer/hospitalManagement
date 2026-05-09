@@ -17,10 +17,11 @@ export function mapNurse(nurse: NurseApi): Nurse {
     phone: nurse.employee.person.phone,
     email: nurse.employee.person.email,
     department: nurse.employee.department,
-    stationId: nurse.station.id,
-    stationName: nurse.station.name,
-    stationDepartmentId: nurse.station.department.id,
-    stationDepartmentName: nurse.station.department.name,
-    building: nurse.station.department.building,
+
+    stationId: nurse.station?.id ?? 0,
+    stationName: nurse.station?.name ?? '',
+    stationDepartmentId: nurse.station?.department.id ?? 0,
+    stationDepartmentName: nurse.station?.department.name ?? '',
+    building: nurse.station?.department.building ?? '',
   }
 }

@@ -18,7 +18,7 @@ export type NurseApi = {
     }
     department: number
   }
-  station: {
+  station?: {
     id: number
     name: string
     department: {
@@ -26,7 +26,7 @@ export type NurseApi = {
       name: string
       building: string
     }
-  }
+  } | null
 }
 
 export type NursePage = {
@@ -53,9 +53,10 @@ export type Nurse = {
   phone: string
   email: string
   department: number
-  stationId: number
-  stationName: string
-  stationDepartmentId: number
-  stationDepartmentName: string
-  building: string
+
+  stationId?: number
+  stationName?: string
+  stationDepartmentId?: number
+  stationDepartmentName?: string
+  building?: string
 }
