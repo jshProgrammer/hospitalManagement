@@ -31,19 +31,45 @@ export function Nurses() {
   const [nurses, setNurses] = useState<Nurse[]>([])
 
   useEffect(() => {
-    async function fetchNurses() {
-      const response = await fetch('api/nurses?size=20')
-      const data: NursePage = await response.json()
+    const controller = new AbortController()
 
-      setNurses(data.content.map(mapNurse))
+    async function fetchNurses() {
+      const batchSize = 5
+      const limit = 30
+      const loadedNurses: Nurse[] = []
+
+      let page = 0
+      let hasMore = true
+
+      while (loadedNurses.length < limit && hasMore) {
+        const response = await fetch(`/api/nurses?page=${page}&size=${batchSize}`, {
+          signal: controller.signal,
+        })
+
+        if (!response.ok) {
+          throw new Error('Fehler beim Laden der Nurses')
+        }
+        const data: NursePage = await response.json()
+        loadedNurses.push(...data.content.map(mapNurse))
+        setNurses([...loadedNurses])
+
+        hasMore = loadedNurses.length < data.totalElements
+        page++
+      }
     }
 
-    fetchNurses().catch(console.error)
+    fetchNurses().catch(error => {
+      if (error.name !== 'AbortError') {
+        console.error(error)
+      }
+    })
+
+    return () => controller.abort()
   }, [])
 
   return (
     <MainPage title="Nurses">
-      <Table columns={columns} data={nurses} />
+      <Table columns={columns} data={nurses.slice(0, 30)} />
     </MainPage>
   )
 }
