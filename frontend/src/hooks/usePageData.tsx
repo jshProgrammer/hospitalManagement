@@ -16,7 +16,8 @@ export function usePageData<TApi, TData>(url: string, mapper: (item: TApi) => TD
         const response = await fetch(url)
 
         if (!response.ok) {
-          throw new Error(`Error fetching data: ${response.statusText} (${response.status})`)
+          setError(`Error fetching data: ${response.statusText} (${response.status})`)
+          return
         }
         const page: PageResponse<TApi> = await response.json()
         setData(page.content.map(mapper))
@@ -27,7 +28,7 @@ export function usePageData<TApi, TData>(url: string, mapper: (item: TApi) => TD
         setLoading(false)
       }
     }
-    fetchData()
+    void fetchData()
   }, [url, mapper])
 
   return { data, loading, error }
