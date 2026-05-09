@@ -1,17 +1,29 @@
 import PageHeader from './PageHeader.tsx'
-import type { ReactNode } from 'react'
+import Table from '../components/Table.tsx'
+import LoadingIcon from '../components/LoadingIcon.tsx'
+import ErrorComponent from '../components/ErrorComponent.tsx'
 
-type MainPageProps = {
-  title: string
-  children: ReactNode
+type Column<T> = {
+  key: keyof T
+  header: string
 }
-
-export default function MainPage({ title, children }: MainPageProps) {
+type MainPageProps<T> = {
+  title: string
+  columns: Column<T>[]
+  data: T[]
+  loading: boolean
+  error: string | null
+}
+export default function MainPage<T>({ title, columns, data, loading, error }: MainPageProps<T>) {
   return (
     <div className="flex h-full flex-col">
       <PageHeader title={title} />
       <div className="min-h-0 flex-1">
-        <div className="border-border h-full w-full rounded-xl border shadow-sm">{children}</div>
+        <div className="border-border h-full w-full rounded-xl border shadow-sm">
+          {error && <ErrorComponent message={error} />}
+          {loading && <LoadingIcon />}
+          {!loading && !error && <Table columns={columns} data={data} />}
+        </div>
       </div>
     </div>
   )
