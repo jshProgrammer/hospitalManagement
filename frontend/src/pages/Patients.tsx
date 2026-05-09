@@ -25,7 +25,7 @@ export function Patients() {
 
   useEffect(() => {
     async function fetchPatients() {
-      const response = await fetch('api/patients')
+      const response = await fetch('api/patients?sort=id,asc&size=30')
       const data: PatientPage = await response.json()
 
       setPatients(data.content.map(mapPatient))
