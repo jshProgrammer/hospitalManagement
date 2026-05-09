@@ -11,9 +11,7 @@ export default function MainPage({ title, children }: MainPageProps) {
     <div className="flex h-full flex-col">
       <PageHeader title={title} />
       <div className="min-h-0 flex-1">
-        <div className="bg-surface border-border h-full rounded-xl border shadow-sm">
-          {children}
-        </div>
+        <div className="border-border h-full w-full rounded-xl border shadow-sm">{children}</div>
       </div>
     </div>
   )
