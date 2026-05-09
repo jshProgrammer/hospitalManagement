@@ -18,9 +18,9 @@ export function mapNurse(nurse: NurseApi): Nurse {
     email: nurse.employee.person.email,
     department: nurse.employee.department,
 
-    stationId: nurse.station?.id ?? 0,
+    stationId: nurse.station?.id ?? undefined,
     stationName: nurse.station?.name ?? '',
-    stationDepartmentId: nurse.station?.department.id ?? 0,
+    stationDepartmentId: nurse.station?.department.id ?? undefined,
     stationDepartmentName: nurse.station?.department.name ?? '',
     building: nurse.station?.department.building ?? '',
   }
