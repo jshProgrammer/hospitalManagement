@@ -7,44 +7,40 @@ export function usePageData<TApi, TData>(url: string, mapper: (item: TApi) => TD
   const [data, setData] = useState<TData[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const requestIdRef = useRef(0)
+  const controllerRef = useRef<AbortController | null>(null)
 
   const loadData = useCallback(
-    async (signal?: AbortSignal) => {
-      const requestId = requestIdRef.current + 1
-      requestIdRef.current = requestId
+    async () => {
+      controllerRef.current?.abort()
+
+      const controller = new AbortController()
+      controllerRef.current = controller
 
       try {
-        setLoading(true)
-        setError(null)
-        const response = await fetch(url, { signal })
-
-        if (requestId !== requestIdRef.current) {
+        await Promise.resolve()
+        if (controller.signal.aborted) {
           return
         }
+
+        setLoading(true)
+        setError(null)
+        const response = await fetch(url, { signal: controller.signal })
 
         if (!response.ok) {
           setError(`Error fetching data: ${response.statusText} (${response.status})`)
           return
         }
         const page: PageResponse<TApi> = await response.json()
-        if (requestId !== requestIdRef.current) {
-          return
-        }
         setData(page.content.map(mapper))
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') {
           return
         }
 
-        if (requestId !== requestIdRef.current) {
-          return
-        }
-
         console.error(err)
         setError(err instanceof Error ? err.message : 'Unknown Error')
       } finally {
-        if (requestId === requestIdRef.current && !signal?.aborted) {
+        if (controllerRef.current === controller) {
           setLoading(false)
         }
       }
@@ -53,12 +49,17 @@ export function usePageData<TApi, TData>(url: string, mapper: (item: TApi) => TD
   )
 
   useEffect(() => {
-    const controller = new AbortController()
+    let cancelled = false
 
-    void loadData(controller.signal)
+    queueMicrotask(() => {
+      if (!cancelled) {
+        void loadData()
+      }
+    })
 
     return () => {
-      controller.abort()
+      cancelled = true
+      controllerRef.current?.abort()
     }
   }, [loadData])
   return { data, loading, error, reload: loadData }
