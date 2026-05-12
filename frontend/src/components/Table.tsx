@@ -11,7 +11,7 @@ type TableProps<T> = {
 export default function Table<T>({ columns, data }: TableProps<T>) {
   return (
     <div className="max-h-full overflow-auto">
-      <table className="w-full min-w-max text-left text-sm">
+      <table className="w-full min-w-max text-center text-sm">
         <thead className="bg-accent text-light sticky top-0 z-10">
           <tr className="divide-x divide-white/15">
             {columns.map(column => (
@@ -25,7 +25,7 @@ export default function Table<T>({ columns, data }: TableProps<T>) {
           {data.map((row, rowIndex) => (
             <tr
               key={rowIndex}
-              className="divide-border hover:bg-highlight/70 divide-x bg-elevated even:bg-background transition-colors"
+              className="divide-border hover:bg-highlight bg-elevated even:bg-background divide-x transition-colors"
             >
               {columns.map(column => (
                 <td key={String(column.key)} className="text-dark px-4 py-3 whitespace-nowrap">
