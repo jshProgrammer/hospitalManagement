@@ -7,7 +7,7 @@ export default function Button({ label, onClick }: ButtonProps) {
   return (
     <button
       onClick={onClick}
-      className="text-light bg-accent hover:bg-highlight active:bg-highlight transform rounded-lg px-4 py-3 text-sm font-medium shadow-sm transition hover:scale-105 hover:shadow-md active:scale-95 active:shadow-inner"
+      className="bg-accent text-light hover:bg-dark focus:ring-accent/25 rounded-md px-4 py-2.5 text-sm font-semibold shadow-sm transition-colors focus:ring-4 focus:outline-none active:translate-y-px"
     >
       {label}
     </button>

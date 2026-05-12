@@ -27,7 +27,7 @@ export default function MainPage<T>({
     <div className="flex h-full flex-col">
       <PageHeader title={title} />
       <div className="min-h-0 flex-1">
-        <div className="border-border h-full w-full rounded-xl border shadow-sm">
+        <div className="border-border bg-surface h-full w-full overflow-hidden rounded-lg border shadow-sm">
           {error && <ErrorComponent message={error} onRetry={onRetry} />}
           {loading && <LoadingIcon />}
           {!loading && !error && <Table columns={columns} data={data} />}

@@ -5,9 +5,9 @@ export default function HomeIcon() {
   return (
     <NavLink
       to="/"
-      className="bg-background mb-3 flex items-center justify-center rounded-xl shadow-sm transition-transform duration-150 hover:scale-105 hover:shadow-md active:scale-95 active:shadow-inner"
+      className="border-border bg-background mb-2 flex items-center justify-center rounded-lg border p-3 transition-colors hover:bg-highlight"
     >
-      <img src={icon} alt="Hospital Management" className="h-28 w-28 object-contain" />
+      <img src={icon} alt="Hospital Management" className="h-24 w-24 object-contain" />
     </NavLink>
   )
 }

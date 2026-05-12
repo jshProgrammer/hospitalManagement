@@ -1,22 +1,36 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-accent: #3272b7;
+  --color-accent: #1e3560;
 
   /* Backgrounds */
-  --color-background: #ccdced;
-  --color-surface: #ffffff;
-  --color-border: #99b9db;
-  --color-highlight: #7fa7d2;
+  --color-background: #f3f6ff;
+  --color-surface: #fbfcff;
+  --color-elevated: #ffffff;
+  --color-border: #d6deef;
+  --color-highlight: #e4ebfb;
 
   /* Text */
-  --color-light: #e6ebf5;
-  --color-dark: #111111;
+  --color-light: #f3f6ff;
+  --color-muted: #60708d;
+  --color-dark: #172033;
 
   /* Status */
-  --color-success: #32b46e;
-  --color-warning: #ffb432;
-  --color-error: #ff5a5a;
+  --color-success: #267a4f;
+  --color-warning: #9a6400;
+  --color-error: #b42336;
+}
+
+html {
+  background: #f3f6ff;
+}
+
+body {
+  margin: 0;
+  background: #f3f6ff;
+  color: #172033;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 @keyframes custom-bounce {

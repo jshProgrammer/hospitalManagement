@@ -11,10 +11,10 @@ export default function NavItem({ to, label }: NavItemProps) {
       to={to}
       className={({ isActive }) =>
         [
-          'rounded-lg px-4 py-3 text-sm font-medium shadow-sm transition-transform hover:scale-105 hover:shadow-md active:scale-95 active:shadow-inner',
+          'rounded-md border px-4 py-3 text-sm font-medium transition-colors',
           isActive
-            ? 'bg-highlight text-dark'
-            : 'text-light bg-accent hover:bg-highlight hover:text-dark border-border transition',
+            ? 'border-accent bg-accent text-light shadow-sm'
+            : 'text-accent border-border/50 hover:bg-highlight',
         ].join(' ')
       }
     >
