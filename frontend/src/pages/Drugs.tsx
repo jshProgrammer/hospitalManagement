@@ -2,6 +2,9 @@ import MainPage from '../layout/MainPage.tsx'
 import type { Drug, DrugApi } from '../types/Drug.tsx'
 import { mapDrug } from '../mapper/drugMapper.tsx'
 import { usePageData } from '../hooks/usePageData.tsx'
+import { useTableFilters } from '../hooks/useTableFilters.tsx'
+import TableFilters from '../components/TableFilters.tsx'
+import { drugFilters } from '../components/tableFilterConfigs.tsx'
 
 const columns = [
   { key: 'id', header: 'ID' },
@@ -12,10 +15,9 @@ const columns = [
 ] satisfies { key: keyof Drug; header: string }[]
 
 export function Drugs() {
-  const { data, loading, error, reload } = usePageData<DrugApi, Drug>(
-    '/api/drugs?sort=id,asc&size=30',
-    mapDrug
-  )
+  const { filters, setFilters, url } = useTableFilters('/api/drugs?sort=id,asc&size=30')
+  const { data, loading, error, reload } = usePageData<DrugApi, Drug>(url, mapDrug)
+
   return (
     <MainPage
       title="Drugs"
@@ -24,6 +26,7 @@ export function Drugs() {
       loading={loading}
       error={error}
       onRetry={reload}
+      filters={<TableFilters fields={drugFilters} values={filters} onChange={setFilters} />}
     />
   )
 }

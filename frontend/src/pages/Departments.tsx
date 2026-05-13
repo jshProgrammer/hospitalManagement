@@ -2,6 +2,9 @@ import MainPage from '../layout/MainPage.tsx'
 import type { Department, DepartmentApi } from '../types/Department.tsx'
 import { mapDepartment } from '../mapper/departmentMapper.tsx'
 import { usePageData } from '../hooks/usePageData.tsx'
+import { useTableFilters } from '../hooks/useTableFilters.tsx'
+import TableFilters from '../components/TableFilters.tsx'
+import { departmentFilters } from '../components/tableFilterConfigs.tsx'
 
 const columns = [
   { key: 'id', header: 'ID' },
@@ -10,8 +13,9 @@ const columns = [
 ] satisfies { key: keyof Department; header: string }[]
 
 export function Departments() {
+  const { filters, setFilters, url } = useTableFilters('/api/departments?sort=id,asc&size=30')
   const { data, loading, error, reload } = usePageData<DepartmentApi, Department>(
-    '/api/departments?sort=id,asc&size=30',
+    url,
     mapDepartment
   )
 
@@ -23,6 +27,7 @@ export function Departments() {
       loading={loading}
       error={error}
       onRetry={reload}
+      filters={<TableFilters fields={departmentFilters} values={filters} onChange={setFilters} />}
     />
   )
 }
