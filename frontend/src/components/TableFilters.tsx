@@ -79,13 +79,13 @@ export default function TableFilters({ fields, values, onChange }: TableFiltersP
               <p className="text-muted text-xs">
                 {activeFilterCount > 0
                   ? `${activeFilterCount} active ${activeFilterCount === 1 ? 'filter' : 'filters'}`
-                  : 'Collapsed'}
+                  : ''}
               </p>
             </div>
             <svg
               aria-hidden="true"
               viewBox="0 0 24 24"
-              className={`text-muted h-4 w-4 shrink-0 transition-transform group-hover:text-dark ${
+              className={`text-muted group-hover:text-dark h-4 w-4 shrink-0 transition-transform ${
                 expanded ? 'rotate-180' : ''
               }`}
               fill="none"
@@ -106,13 +106,6 @@ export default function TableFilters({ fields, values, onChange }: TableFiltersP
             >
               Reset
             </button>
-            <button
-              type="button"
-              onClick={() => setExpanded(current => !current)}
-              className="bg-accent text-light hover:bg-accent/90 rounded-md px-4 py-2 text-sm font-semibold shadow-sm transition-colors"
-            >
-              {expanded ? 'Close' : 'Open'}
-            </button>
           </div>
         </div>
 
@@ -126,7 +119,7 @@ export default function TableFilters({ fields, values, onChange }: TableFiltersP
                     <select
                       value={draft[field.name] ?? ''}
                       onChange={event => updateDraft(field.name, event.target.value)}
-                      className="border-border bg-surface text-dark focus:border-accent focus:ring-accent/20 h-10 rounded-md border px-3 text-sm outline-none transition focus:ring-2"
+                      className="border-border bg-surface text-dark focus:border-accent focus:ring-accent/20 h-10 rounded-md border px-3 text-sm transition outline-none focus:ring-2"
                     >
                       <option value="">All</option>
                       {field.options.map(option => (
@@ -141,7 +134,7 @@ export default function TableFilters({ fields, values, onChange }: TableFiltersP
                       value={draft[field.name] ?? ''}
                       onChange={event => updateDraft(field.name, event.target.value)}
                       placeholder={field.placeholder}
-                      className="border-border bg-surface text-dark placeholder:text-muted/70 focus:border-accent focus:ring-accent/20 h-10 rounded-md border px-3 text-sm outline-none transition focus:ring-2"
+                      className="border-border bg-surface text-dark placeholder:text-muted/70 focus:border-accent focus:ring-accent/20 h-10 rounded-md border px-3 text-sm transition outline-none focus:ring-2"
                     />
                   )}
                 </label>
