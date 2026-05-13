@@ -2,6 +2,7 @@ import PageHeader from './PageHeader.tsx'
 import Table from '../components/Table.tsx'
 import LoadingIcon from '../components/LoadingIcon.tsx'
 import ErrorComponent from '../components/ErrorComponent.tsx'
+import type { ReactNode } from 'react'
 
 type Column<T> = {
   key: keyof T
@@ -14,6 +15,7 @@ type MainPageProps<T> = {
   loading: boolean
   error: string | null
   onRetry: () => void
+  filters?: ReactNode
 }
 export default function MainPage<T>({
   title,
@@ -22,10 +24,12 @@ export default function MainPage<T>({
   loading,
   error,
   onRetry,
+  filters,
 }: MainPageProps<T>) {
   return (
     <div className="flex h-full flex-col">
       <PageHeader title={title} />
+      {filters}
       <div className="min-h-0 flex-1">
         <div className="border-border bg-surface h-full w-full overflow-hidden rounded-lg border shadow-sm">
           {error && <ErrorComponent message={error} onRetry={onRetry} />}

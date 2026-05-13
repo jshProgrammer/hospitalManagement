@@ -8,15 +8,6 @@ import { Drugs } from './pages/Drugs.tsx'
 import AppLayout from './layout/AppLayout.tsx'
 import NotFound from './pages/NotFound.tsx'
 
-export const links = [
-  { to: '/patients', label: 'Patients' },
-  { to: '/doctors', label: 'Doctors' },
-  { to: '/nurses', label: 'Nurses' },
-  { to: '/departments', label: 'Departments' },
-  { to: '/stations', label: 'Stations' },
-  { to: '/drugs', label: 'Drugs' },
-]
-
 export function App() {
   return (
     <BrowserRouter>
