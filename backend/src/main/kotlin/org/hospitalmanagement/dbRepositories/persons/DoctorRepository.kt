@@ -9,13 +9,12 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.stereotype.Repository
 import java.util.Optional
-import java.util.UUID
 
 @Repository
-interface DoctorRepository : JpaRepository<Doctor, String>, JpaSpecificationExecutor<Doctor> {
+interface DoctorRepository : JpaRepository<Doctor, Long>, JpaSpecificationExecutor<Doctor> {
     override fun findAll(pageable: Pageable): Page<Doctor>
     fun findAllByEmployee_Department(department: Long): List<Doctor>
     fun findAllByEmployee_Department(department: Long, pageable: Pageable): Page<Doctor>
-    fun findById(id: UUID): Optional<Doctor>
+    override fun findById(id: Long): Optional<Doctor>
     fun findByType(type: DoctorsType): List<Doctor>
 }

@@ -4,7 +4,6 @@ import org.hospitalmanagement.models.classes.medication.Diagnosis
 import org.hospitalmanagement.models.enums.DrugsType
 import org.springframework.data.jpa.domain.Specification
 import java.util.Date
-import java.util.UUID
 
 object DiagnosisSpecification {
 
@@ -32,14 +31,14 @@ object DiagnosisSpecification {
             }
         }
 
-    fun hasDiagnosedByDoctorId(doctorId: UUID?): Specification<Diagnosis> =
+    fun hasDiagnosedByDoctorId(doctorId: Long?): Specification<Diagnosis> =
         Specification { root, _, cb ->
-            doctorId?.let { cb.equal(root.get<Any>("diagnosedBy").get<UUID>("id"), it) }
+            doctorId?.let { cb.equal(root.get<Any>("diagnosedBy").get<Long>("id"), it) }
         }
 
     fun hasDiagnosedPatientId(patientId: Long?): Specification<Diagnosis> =
         Specification { root, _, cb ->
-            patientId?.let { cb.equal(root.get<Any>("diagnosedPatient").get<UUID>("id"), it) }
+            patientId?.let { cb.equal(root.get<Any>("diagnosedPatient").get<Long>("id"), it) }
         }
 
     fun diagnosedAfter(date: Date?): Specification<Diagnosis> =
@@ -57,7 +56,7 @@ object DiagnosisSpecification {
         diseaseContains: String?,
         medicationId: Long?,
         drugType: DrugsType?,
-        diagnosedByDoctorId: UUID?,
+        diagnosedByDoctorId: Long?,
         diagnosedPatientId: Long?,
         diagnosedAfter: Date?,
         diagnosedBefore: Date?
@@ -71,4 +70,3 @@ object DiagnosisSpecification {
             .and(diagnosedAfter(diagnosedAfter))
             .and(diagnosedBefore(diagnosedBefore))
 }
-

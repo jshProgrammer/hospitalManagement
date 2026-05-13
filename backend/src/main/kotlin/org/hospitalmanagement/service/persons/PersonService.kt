@@ -6,7 +6,9 @@ import org.hospitalmanagement.dbRepositories.persons.EmployeeRepository
 import org.hospitalmanagement.dbRepositories.persons.PatientRepository
 import org.hospitalmanagement.dbRepositories.persons.PersonRepository
 import org.hospitalmanagement.models.classes.persons.Person
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ResponseStatusException
 import java.util.*
 
 @Service
@@ -52,7 +54,8 @@ class PersonService(
         return personRepository.save(person)
     }
 
-    fun findById(personId: UUID): Person =
+    fun findById(personId: Long): Person =
         personRepository.findById(personId)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Person with id $personId not found") }
 
 }

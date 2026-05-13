@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.data.util.Optionals.ifPresentOrElse
-import java.util.UUID
 import org.springframework.data.domain.Pageable;
 
 @SpringBootApplication
@@ -44,10 +43,10 @@ class HospitalApplication {
      */
 
     /*
-    // "SELECT * FROM EMPLOYEE WHERE id = ae390908-184f-4a76-9ea2-08cd79de9569"
+    // "SELECT * FROM EMPLOYEE WHERE id = 1"
     @Bean
     fun run(employeeRepository: EmployeeRepository) = CommandLineRunner {
-        val emp = employeeRepository.findById(UUID.fromString("ae390908-184f-4a76-9ea2-08cd79de9569"))
+        val emp = employeeRepository.findById(1L)
             .ifPresentOrElse(
                 { emp ->
                     println("Name: ${emp.person.firstName} ${emp.person.lastName}")
@@ -75,7 +74,7 @@ class HospitalApplication {
      */
 
     /*
-    // "SELECT * FROM PATIENT WHERE id = ae390908-184f-4a76-9ea2-08cd79de9569"
+    // "SELECT * FROM PATIENT WHERE id = 1"
     @Bean
     fun run(patientRepository: PatientRepository) = CommandLineRunner {
         val pat = patientRepository.findById(1)
@@ -176,7 +175,7 @@ class HospitalApplication {
     // "SELECT * FROM DOCTORS WHERE ID = ..."
     @Bean
     fun run(doctorRepository: DoctorRepository) = CommandLineRunner {
-        val doctor = doctorRepository.findById(UUID.fromString("a2ce7587-510f-4e2c-93c7-74f41ce6d9cb"))
+        val doctor = doctorRepository.findById(1L)
             .ifPresentOrElse(
                 { doc ->
                     println("ID: ${doc.id}, Name: ${doc.employee.person.firstName} ${doc.employee.person.lastName}, Work phone: ${doc.work_phone}, Type: ${doc.type}")
@@ -243,18 +242,18 @@ class HospitalApplication {
             }
         }
     }*/
-    // SELECT * FROM DIAGNOSIS WHERE diagnosed_patient = "36bc3701-225b-457a-b268-257c36dce065"
+    // SELECT * FROM DIAGNOSIS WHERE diagnosed_patient = 1
     /*@Bean
     fun run(diagnosisRepository: DiagnosisRepository) = CommandLineRunner {
-        val diagnosis = diagnosisRepository.findByDiagnosedPatient_Id(UUID.fromString("36bc3701-225b-457a-b268-257c36dce065"))
+        val diagnosis = diagnosisRepository.findByDiagnosedPatientId(1L, PageRequest.of(0, 100))
         diagnosis.forEach { dia ->
             println("${dia.id} ${dia.diagnosedPatient.firstName}")
         }
     }*/
-    //SELECT * FROM NURSES WHERE id = "b0c46b07-7891-4cc8-b917-4f186660cbce"
+    //SELECT * FROM NURSES WHERE id = 1
     /*@Bean
     fun run(nursesRepository: NursesRepository) = CommandLineRunner {
-        val diagnosis = nursesRepository.findById(UUID.fromString("b0c46b07-7891-4cc8-b917-4f186660cbce"))
+        val diagnosis = nursesRepository.findById(1L)
         println("${diagnosis.get().station.name}")
     }*/
     //SELECT * FROM STATION WHERE id = 1

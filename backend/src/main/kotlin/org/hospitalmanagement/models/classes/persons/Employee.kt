@@ -1,14 +1,13 @@
 package org.hospitalmanagement.models.classes.persons
 
 import jakarta.persistence.*
-import java.util.UUID
 
 @Entity
 @Table(name = "employee")
 class Employee(
     @Id
-    @GeneratedValue
-    val id: UUID? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
 
     @OneToOne
     @JoinColumn(name = "person", nullable = false)

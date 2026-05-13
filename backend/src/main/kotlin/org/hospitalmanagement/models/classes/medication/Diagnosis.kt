@@ -35,7 +35,6 @@ class Diagnosis(
     val diagnosedAt: Date,
 
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "diagnosed_end")
+    @Transient
     val diagnosedEnd: Date?
 )

@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface PatientRepository : JpaRepository<Patient, String>, JpaSpecificationExecutor<Patient> {
+interface PatientRepository : JpaRepository<Patient, Long>, JpaSpecificationExecutor<Patient> {
     override fun findAll(pageable: Pageable): Page<Patient>
-    fun findById(id: Long): Optional<Patient> // uses the patient id, NOT the person id
-    fun existsByPersonId(personId: UUID): Boolean
-    fun findByPersonId(personId: UUID?): Optional<Patient>
+    override fun findById(id: Long): Optional<Patient> // uses the patient id, NOT the person id
+    fun existsByPersonId(personId: Long): Boolean
+    fun findByPersonId(personId: Long?): Optional<Patient>
 }

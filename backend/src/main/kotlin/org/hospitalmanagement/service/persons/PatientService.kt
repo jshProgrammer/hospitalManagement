@@ -57,7 +57,7 @@ class PatientService(
         }
     }
 
-    fun createPatientWithExistingPerson(personId: UUID): PatientRequest {
+    fun createPatientWithExistingPerson(personId: Long): PatientRequest {
         val person = personService.findById(personId)
 
         if (patientRepository.existsByPersonId(person.id!!)) {

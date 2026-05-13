@@ -16,7 +16,6 @@ import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
-import java.util.UUID
 
 @Service
 class DiagnosisService(
@@ -32,7 +31,7 @@ class DiagnosisService(
         diseaseContains: String?,
         medicationId: Long?,
         drugType: DrugsType?,
-        diagnosedByDoctorId: UUID?,
+        diagnosedByDoctorId: Long?,
         diagnosedPatientId: Long?,
         diagnosedAfter: Date?,
         diagnosedBefore: Date?

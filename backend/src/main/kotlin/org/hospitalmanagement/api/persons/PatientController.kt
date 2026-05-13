@@ -34,7 +34,7 @@ class PatientController(
 
     // Step 2: POST existing personId → creates patient from existing person
     @PostMapping("/new/{personId}")
-    fun createPatientWithExisting(@PathVariable personId: UUID): PatientRequest =
+    fun createPatientWithExisting(@PathVariable personId: Long): PatientRequest =
         patientService.createPatientWithExistingPerson(personId)
 
     @GetMapping("/{id}")

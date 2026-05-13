@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface NursesRepository : JpaRepository<Nurse, String>, JpaSpecificationExecutor<Nurse> {
+interface NursesRepository : JpaRepository<Nurse, Long>, JpaSpecificationExecutor<Nurse> {
     override fun findAll(pageable: Pageable): Page<Nurse>
-    fun findById(id: UUID): Optional<Nurse>
+    override fun findById(id: Long): Optional<Nurse>
     fun findNurseByStationId(stationId: Long): List<Nurse>
 }

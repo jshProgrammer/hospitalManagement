@@ -45,13 +45,13 @@ class DoctorController(private val doctorService: DoctorService) {
     // Step 2: POST existing personId → creates employee + doctor from existing person
     @PostMapping("/new/{personId}")
     fun createDoctorWithExisting(
-        @PathVariable personId: UUID,
+        @PathVariable personId: Long,
         @RequestBody employeeData: EmployeeCreationRequest
     ): DoctorRequest =
         doctorService.createDoctorWithExistingPerson(personId, employeeData)
 
     @GetMapping("/{id}")
-    fun getById(@PathVariable id: UUID) =
+    fun getById(@PathVariable id: Long) =
         doctorService.getById(id)
             ?: throw ResponseStatusException(
                 HttpStatus.NOT_FOUND,

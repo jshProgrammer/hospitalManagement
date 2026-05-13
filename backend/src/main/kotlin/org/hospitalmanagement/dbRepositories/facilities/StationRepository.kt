@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface StationRepository: JpaRepository<Station, String>, JpaSpecificationExecutor<Station> {
-    fun findById(id: Long): Optional<Station>
+interface StationRepository: JpaRepository<Station, Long>, JpaSpecificationExecutor<Station> {
+    override fun findById(id: Long): Optional<Station>
 }

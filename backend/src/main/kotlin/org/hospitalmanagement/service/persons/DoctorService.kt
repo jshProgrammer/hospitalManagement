@@ -43,7 +43,7 @@ class DoctorService(
     }
 
     // Step 2a: Use existing person to create employee + doctor
-    fun createDoctorWithExistingPerson(personId: UUID, employeeData: EmployeeCreationRequest): DoctorRequest {
+    fun createDoctorWithExistingPerson(personId: Long, employeeData: EmployeeCreationRequest): DoctorRequest {
         val person = personService.findById(personId)
         val employee = employeeRepository.save(Employee(person = person, department = employeeData.department))
         val doctor = doctorRepository.save(
@@ -64,7 +64,7 @@ class DoctorService(
     fun getAll(pageable: Pageable): Page<Doctor> =
         doctorRepository.findAll(pageable)
 
-    fun getById(id: UUID): Doctor? =
+    fun getById(id: Long): Doctor? =
         doctorRepository.findById(id).orElse(null)
 
     fun getByType(type: String): List<Doctor> =

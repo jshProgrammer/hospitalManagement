@@ -3,13 +3,12 @@ import jakarta.persistence.*
 import org.hibernate.annotations.ColumnTransformer
 import org.hospitalmanagement.models.enums.DoctorsType
 import org.hospitalmanagement.models.enums.DoctorsTypeConverter
-import java.util.UUID
 
 @Entity
 @Table(name = "doctors")
 class Doctor(
         @Id
-        val id: UUID? = null, // = employee id
+        val id: Long? = null, // = employee id
 
         @OneToOne
         @MapsId

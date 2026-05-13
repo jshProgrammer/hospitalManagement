@@ -4,13 +4,12 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Table
 import org.hospitalmanagement.models.classes.facilities.Station
 import jakarta.persistence.*
-import java.util.*
 
 @Entity
 @Table(name = "nurses")
 class Nurse (
     @Id
-    val id: UUID,
+    val id: Long? = null,
 
     @OneToOne
     @MapsId

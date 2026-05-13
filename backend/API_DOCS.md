@@ -132,7 +132,7 @@ DATABASE_PASSWORD=password
 | Method | Endpoint | Description | Pageable |
 | --- | --- | --- |----------|
 | `POST` | `/api/patients/new` | Create a patient from new person data, or return potential duplicate person matches. | -        |
-| `POST` | `/api/patients/new/{personId}` | Create a patient from an existing person UUID. | -        |
+| `POST` | `/api/patients/new/{personId}` | Create a patient from an existing person id. | -        |
 | `GET` | `/api/patients` | List/search patients. | Yes      |
 | `GET` | `/api/patients/{id}` | Get one patient by patient id. | -        |
 | `GET` | `/api/patients/{id}/bookings` | List bookings for a patient. | Yes      |
@@ -187,9 +187,9 @@ DATABASE_PASSWORD=password
 | Method | Endpoint | Description |
 | --- | --- | --- |
 | `POST` | `/api/doctors/new` | Create a doctor from new person and employee data, or return potential duplicate person matches. |
-| `POST` | `/api/doctors/new/{personId}` | Create a doctor from an existing person UUID and employee data. |
+| `POST` | `/api/doctors/new/{personId}` | Create a doctor from an existing person id and employee data. |
 | `GET` | `/api/doctors` | List/search doctors. |
-| `GET` | `/api/doctors/{id}` | Get one doctor by UUID. |
+| `GET` | `/api/doctors/{id}` | Get one doctor by id. |
 
 `GET /api/doctors` query parameters:
 
@@ -247,9 +247,9 @@ DATABASE_PASSWORD=password
 | Method | Endpoint | Description |
 | --- | --- | --- |
 | `POST` | `/api/nurses/new` | Create a nurse from new person and employee data, or return potential duplicate person matches. |
-| `POST` | `/api/nurses/new/{personId}` | Create a nurse from an existing person UUID and employee data. |
+| `POST` | `/api/nurses/new/{personId}` | Create a nurse from an existing person id and employee data. |
 | `GET` | `/api/nurses` | List/search nurses. |
-| `GET` | `/api/nurses/{id}` | Get one nurse by UUID. |
+| `GET` | `/api/nurses/{id}` | Get one nurse by id. |
 | `GET` | `/api/nurses/station/{stationId}` | List nurses for one station. |
 
 `GET /api/nurses` query parameters:
@@ -385,8 +385,8 @@ DATABASE_PASSWORD=password
 | `diseaseContains` | string      | no | Case-insensitive disease search. |
 | `medicationId` | long        | no | Filter by medication id. |
 | `drugType` | `DrugsType` | no | Filter by drug type. |
-| `diagnosedByDoctorId` | UUID        | no | Filter by diagnosing doctor UUID. |
-| `diagnosedPatientId` | Long           | no | Filter by diagnosed patient UUID as currently declared by the controller. |
+| `diagnosedByDoctorId` | Long        | no | Filter by diagnosing doctor id. |
+| `diagnosedPatientId` | Long           | no | Filter by diagnosed patient id. |
 | `diagnosedAfter` | date        | no | Include diagnoses on or after this date. |
 | `diagnosedBefore` | date        | no | Include diagnoses on or before this date. |
 
@@ -396,7 +396,7 @@ DATABASE_PASSWORD=password
 {
   "disease": "Diabetes Mellitus Typ 2",
   "medication_id": 1,
-  "diagnosed_by": "a5cb8acc-9836-40c5-8db3-63ba5b09d773",
+  "diagnosed_by": 1,
   "diagnosed_patient": 1,
   "diagnosed_at": "2024-03-01"
 }

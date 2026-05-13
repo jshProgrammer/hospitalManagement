@@ -28,7 +28,7 @@ class NurseService(
     fun getAll(pageable: Pageable): Page<Nurse> =
         nursesRepository.findAll(pageable)
 
-    fun getById(id: UUID): Nurse? =
+    fun getById(id: Long): Nurse? =
         nursesRepository.findById(id).orElse(null)
 
     fun getByStationId(stationId: Long): List<Nurse> =
@@ -52,7 +52,7 @@ class NurseService(
     }
 
     // Step 2a: Use existing person to create employee + nurse
-    fun createNurseWithExistingPerson(personId: UUID, employeeData: EmployeeCreationRequest): NurseRequest {
+    fun createNurseWithExistingPerson(personId: Long, employeeData: EmployeeCreationRequest): NurseRequest {
         val person = personService.findById(personId)
         val nurse = createEmployeeAndNurse(person, employeeData)
         return toRequest(nurse)
@@ -65,11 +65,11 @@ class NurseService(
         val station = stationRepository.findById(employeeData.stationId!!)
             .orElseThrow { IllegalArgumentException("Station nicht gefunden: ${employeeData.stationId}") }
         val employee = employeeRepository.save(Employee(person = person, department = employeeData.department))
-        return nursesRepository.save(Nurse(employee = employee, id = employee.id!!, station = station))
+        return nursesRepository.save(Nurse(employee = employee, station = station))
     }
 
     private fun toRequest(nurse: Nurse) = NurseRequest(
-        id = nurse.id,
+        id = nurse.id!!,
         stationId = nurse.station.id
     )
     fun searchNurses(

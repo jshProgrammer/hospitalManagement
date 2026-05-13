@@ -1,8 +1,6 @@
 package org.hospitalmanagement.api.persons.requestModels
 
-import java.util.UUID
-
 data class NurseRequest(
-    val id: UUID,
+    val id: Long,
     val stationId: Long
 )

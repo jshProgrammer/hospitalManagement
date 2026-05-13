@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.util.Date
-import java.util.UUID
 
 @RestController
 @RequestMapping("/api/diagnoses")
@@ -24,7 +23,7 @@ class DiagnosisController(private val diagnosisService: DiagnosisService) {
         @RequestParam(required = false) diseaseContains: String?,
         @RequestParam(required = false) medicationId: Long?,
         @RequestParam(required = false) drugType: DrugsType?,
-        @RequestParam(required = false) diagnosedByDoctorId: UUID?,
+        @RequestParam(required = false) diagnosedByDoctorId: Long?,
         @RequestParam(required = false) diagnosedPatientId: Long?,
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) diagnosedAfter: Date?,
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) diagnosedBefore: Date?
