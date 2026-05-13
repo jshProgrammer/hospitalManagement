@@ -29,12 +29,11 @@ const drugTypeOptions = [
   { label: 'Suppository', value: 'suppository' },
 ]
 
-const personFilters: FilterField[] = [
+const patientPersonFilters: FilterField[] = [
   { name: 'firstName', label: 'First name', placeholder: 'Marie' },
   { name: 'lastName', label: 'Last name', placeholder: 'Meyer' },
   { name: 'email', label: 'E-Mail', placeholder: 'name@example.com' },
   { name: 'phone', label: 'Phone', placeholder: '+49...' },
-  { name: 'gender', label: 'Gender', type: 'select', options: genderOptions },
   { name: 'city', label: 'City', placeholder: 'Wuerzburg' },
   { name: 'country', label: 'Country', placeholder: 'Germany' },
   { name: 'birthday', label: 'Birthday', type: 'date' },
@@ -43,17 +42,23 @@ const personFilters: FilterField[] = [
   { name: 'streetNo', label: 'House no.', type: 'number', placeholder: '12' },
 ]
 
-export const patientFilters = personFilters
+const employeePersonFilters: FilterField[] = [
+  ...patientPersonFilters.slice(0, 4),
+  { name: 'gender', label: 'Gender', type: 'select', options: genderOptions },
+  ...patientPersonFilters.slice(4),
+]
+
+export const patientFilters = patientPersonFilters
 
 export const doctorFilters: FilterField[] = [
-  ...personFilters,
+  ...employeePersonFilters,
   { name: 'type', label: 'Doctor type', type: 'select', options: doctorTypeOptions },
   { name: 'departmentId', label: 'Department ID', type: 'number', placeholder: '1' },
   { name: 'workPhone', label: 'Work phone', placeholder: '+49...' },
 ]
 
 export const nurseFilters: FilterField[] = [
-  ...personFilters,
+  ...employeePersonFilters,
   { name: 'stationId', label: 'Station ID', type: 'number', placeholder: '1' },
   { name: 'departmentId', label: 'Department ID', type: 'number', placeholder: '1' },
 ]
