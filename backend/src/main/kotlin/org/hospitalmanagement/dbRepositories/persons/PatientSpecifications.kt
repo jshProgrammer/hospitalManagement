@@ -45,11 +45,19 @@ object PatientSpecifications {
             )
         }
 
-    // Felder die direkt in Patient liegen:
     fun hasGender(gender: Gender): Specification<Patient> =
         Specification { root, _, cb ->
-            cb.equal(root.get<Gender>("gender"), gender)
+            cb.equal(
+                root.get<Any>("person").get<Gender>("gender"),
+                gender
+            )
         }
+
+    // Felder die direkt in Patient liegen:
+    /*fun hasGender(gender: Gender): Specification<Patient> =
+        Specification { root, _, cb ->
+            cb.equal(root.get<Gender>("gender"), gender)
+        }*/
 
     fun hasPlz(plz: Int): Specification<Patient> =
         Specification { root, _, cb ->
