@@ -8,7 +8,6 @@ import { stationFilters } from '../constants/filters.tsx'
 import { DEFAULT_PAGE_SIZE } from '../constants/pagination.tsx'
 
 const columns = [
-  { key: 'id', header: 'ID' },
   { key: 'name', header: 'Name' },
   { key: 'departmentId', header: 'Abteilungs-ID' },
   { key: 'departmentName', header: 'Abteilung' },

@@ -8,12 +8,9 @@ import { nurseFilters } from '../constants/filters.tsx'
 import { DEFAULT_PAGE_SIZE } from '../constants/pagination.tsx'
 
 const columns = [
-  { key: 'id', header: 'ID' },
-  { key: 'employeeId', header: 'Employee ID' },
-  { key: 'personId', header: 'Person ID' },
-  { key: 'gender', header: 'Geschlecht' },
   { key: 'firstName', header: 'Vorname' },
   { key: 'lastName', header: 'Nachname' },
+  { key: 'gender', header: 'Geschlecht' },
   { key: 'plz', header: 'PLZ' },
   { key: 'city', header: 'Stadt' },
   { key: 'street', header: 'Straße' },
