@@ -82,7 +82,7 @@ ENDPOINTS = [
     Endpoint("doctors.by_id", "/api/doctors/{doctors.id}", sample_key="doctors", skip_without_sample=True),
     Endpoint("nurses.list", "/api/nurses"),
     Endpoint("nurses.by_id", "/api/nurses/{nurses.id}", sample_key="nurses", skip_without_sample=True),
-    Endpoint("nurses.by_station", "/api/nurses/station/{nurses.stationId}", sample_key="nurses", skip_without_sample=True),
+    Endpoint("nurses.by_station", "/api/nurses?stationId={nurses.stationId}", sample_key="nurses", skip_without_sample=True),
     Endpoint("drugs.list", "/api/drugs"),
     Endpoint("drugs.by_id", "/api/drugs/{drugs.id}", sample_key="drugs", skip_without_sample=True),
     Endpoint("doses.list", "/api/doses"),
