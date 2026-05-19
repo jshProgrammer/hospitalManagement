@@ -12,6 +12,7 @@ import org.hospitalmanagement.models.classes.persons.Doctor
 import org.hospitalmanagement.models.classes.persons.Employee
 import org.hospitalmanagement.models.classes.persons.Nurse
 import org.hospitalmanagement.models.enums.Gender
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.Specification
@@ -28,6 +29,7 @@ class NurseService(
     fun getAll(pageable: Pageable): Page<Nurse> =
         nursesRepository.findAll(pageable)
 
+    @Cacheable("nurses")
     fun getById(id: Long): Nurse? =
         nursesRepository.findById(id).orElse(null)
 

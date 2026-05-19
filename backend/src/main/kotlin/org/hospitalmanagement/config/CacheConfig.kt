@@ -20,6 +20,11 @@ class CacheConfig {
             build("stations-search", maxSize = 200, ttlMinutes = 15),
             build("drugs", maxSize = 1000, ttlMinutes = 5),
             build("drugs-search", maxSize = 200, ttlMinutes = 5),
+            build("rooms", maxSize = 2000, ttlMinutes = 15),
+            build("rooms-search", maxSize = 200, ttlMinutes = 15),
+            build("rooms-floor", maxSize = 200, ttlMinutes = 15),
+            build("doctors", maxSize = 1000, ttlMinutes = 10),
+            build("nurses", maxSize = 1000, ttlMinutes = 10),
         )
         return SimpleCacheManager().also { it.setCaches(caches) }
     }
