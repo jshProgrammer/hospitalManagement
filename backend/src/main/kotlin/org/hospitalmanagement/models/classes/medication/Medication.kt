@@ -6,7 +6,15 @@ import java.util.Date
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "medication")
+@Table(
+    name = "medication",
+    indexes = [
+        Index(name = "medication_pkey", columnList = "id", unique = true),
+        Index(name = "idx_medication_dosis", columnList = "dosis"),
+        Index(name = "idx_medication_drug_started", columnList = "drug, started"),
+        Index(name = "idx_medication_started_id", columnList = "started, id")
+    ]
+)
 class Medication(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

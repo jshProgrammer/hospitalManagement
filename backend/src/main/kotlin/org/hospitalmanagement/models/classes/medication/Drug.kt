@@ -7,7 +7,14 @@ import org.hospitalmanagement.models.enums.DrugsType
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "drugs")
+@Table(
+    name = "drugs",
+    indexes = [
+        Index(name = "drugs_pkey", columnList = "id", unique = true),
+        Index(name = "idx_drugs_name", columnList = "name"),
+        Index(name = "idx_drugs_type_id", columnList = "type, id")
+    ]
+)
 class Drug(
     @Id
     val id: Long,
