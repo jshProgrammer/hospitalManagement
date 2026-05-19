@@ -1,4 +1,5 @@
-import { type FormEvent, useState } from 'react'
+import { type SubmitEvent, useState } from 'react'
+import { ChevronDown, ListFilter } from 'lucide-react'
 
 type BaseFilterField = {
   name: string
@@ -34,7 +35,7 @@ export default function TableFilters({ fields, values, onChange }: TableFiltersP
     setDraft(current => ({ ...current, [name]: value }))
   }
 
-  function applyFilters(event: FormEvent<HTMLFormElement>) {
+  function applyFilters(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
     onChange(cleanValues(draft))
     setExpanded(false)
@@ -59,20 +60,7 @@ export default function TableFilters({ fields, values, onChange }: TableFiltersP
             className="group flex min-w-0 items-center gap-2 text-left"
           >
             <span className="bg-accent/10 text-accent inline-flex h-8 w-8 items-center justify-center rounded-md">
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                className="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-              >
-                <path d="M3 5h18" />
-                <path d="M7 12h10" />
-                <path d="M10 19h4" />
-              </svg>
+              <ListFilter className="size-4" />
             </span>
             <div className="min-w-0">
               <h2 className="text-dark text-sm font-semibold">Filter</h2>
@@ -82,20 +70,9 @@ export default function TableFilters({ fields, values, onChange }: TableFiltersP
                   : ''}
               </p>
             </div>
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              className={`text-muted group-hover:text-dark h-4 w-4 shrink-0 transition-transform ${
-                expanded ? 'rotate-180' : ''
-              }`}
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-            >
-              <path d="m6 9 6 6 6-6" />
-            </svg>
+            <ChevronDown
+              className={`text-muted group-hover:text-dark size-4 transition-transform ${expanded ? 'rotate-180' : ''}`}
+            />
           </button>
 
           <div className="flex items-center gap-2">
