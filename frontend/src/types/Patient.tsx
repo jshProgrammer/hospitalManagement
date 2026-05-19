@@ -1,6 +1,6 @@
 export type Patient = {
   id: number
-  personId: string
+  personId: number
   gender: string
   firstName: string
   lastName: string
@@ -25,7 +25,7 @@ export type PatientPage = {
 export type PatientApi = {
   id: number
   person: {
-    id: string
+    id: number
     gender: string
     firstName: string
     lastName: string

@@ -1,9 +1,9 @@
 export type DoctorApi = {
-  id: string
+  id: number
   employee: {
-    id: string
+    id: number
     person: {
-      id: string
+      id: number
       gender: string
       firstName: string
       lastName: string
@@ -31,9 +31,9 @@ export type DoctorPage = {
 }
 
 export type Doctor = {
-  id: string
-  employeeId: string
-  personId: string
+  id: number
+  employeeId: number
+  personId: number
   gender: string
   firstName: string
   lastName: string
