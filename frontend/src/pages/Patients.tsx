@@ -2,6 +2,9 @@ import MainPage from '../layout/MainPage.tsx'
 import type { Patient, PatientApi } from '../types/Patient.tsx'
 import { mapPatient } from '../mapper/patientMapper.tsx'
 import { usePageData } from '../hooks/usePageData.tsx'
+import { useTableFilters } from '../hooks/useTableFilters.tsx'
+import TableFilters from '../components/TableFilters.tsx'
+import { patientFilters } from '../constants'
 
 const columns = [
   { key: 'id', header: 'ID' },
@@ -20,10 +23,9 @@ const columns = [
 ] satisfies { key: keyof Patient; header: string }[]
 
 export function Patients() {
-  const { data, loading, error, reload } = usePageData<PatientApi, Patient>(
-    '/api/patients?sort=id,asc&size=30',
-    mapPatient
-  )
+  const { filters, setFilters, url } = useTableFilters('/api/patients?sort=id,asc&size=30')
+  const { data, loading, error, reload } = usePageData<PatientApi, Patient>(url, mapPatient)
+
   return (
     <MainPage
       title="Patients"
@@ -32,6 +34,7 @@ export function Patients() {
       loading={loading}
       error={error}
       onRetry={reload}
+      filters={<TableFilters fields={patientFilters} values={filters} onChange={setFilters} />}
     />
   )
 }

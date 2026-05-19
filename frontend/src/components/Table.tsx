@@ -10,7 +10,7 @@ type TableProps<T> = {
 
 export default function Table<T>({ columns, data }: TableProps<T>) {
   return (
-    <div className="max-h-full overflow-auto">
+    <div className="h-full overflow-auto">
       <table className="w-full min-w-max text-center text-sm">
         <thead className="bg-accent text-light sticky top-0 z-10">
           <tr className="divide-x divide-white/15">
