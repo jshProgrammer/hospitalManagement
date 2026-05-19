@@ -5,13 +5,12 @@ import { usePageData } from '../hooks/usePageData.tsx'
 import { useTableFilters } from '../hooks/useTableFilters.tsx'
 import TableFilters from '../components/TableFilters.tsx'
 import { patientFilters } from '../constants/filters.tsx'
+import { DEFAULT_PAGE_SIZE } from '../constants/pagination.tsx'
 
 const columns = [
-  { key: 'id', header: 'ID' },
-  { key: 'personId', header: 'Person ID' },
-  { key: 'gender', header: 'Geschlecht' },
   { key: 'firstName', header: 'Vorname' },
   { key: 'lastName', header: 'Nachname' },
+  { key: 'gender', header: 'Geschlecht' },
   { key: 'plz', header: 'PLZ' },
   { key: 'city', header: 'Stadt' },
   { key: 'street', header: 'Straße' },
@@ -23,7 +22,9 @@ const columns = [
 ] satisfies { key: keyof Patient; header: string }[]
 
 export function Patients() {
-  const { filters, setFilters, url } = useTableFilters('/api/patients?sort=id,asc&size=30')
+  const { filters, setFilters, url } = useTableFilters(
+    `/api/patients?sort=id,asc&size=${DEFAULT_PAGE_SIZE}`
+  )
   const { data, loading, error, reload } = usePageData<PatientApi, Patient>(url, mapPatient)
 
   return (
@@ -34,6 +35,7 @@ export function Patients() {
       loading={loading}
       error={error}
       onRetry={reload}
+      rowStart={0 * DEFAULT_PAGE_SIZE}
       filters={<TableFilters fields={patientFilters} values={filters} onChange={setFilters} />}
     />
   )

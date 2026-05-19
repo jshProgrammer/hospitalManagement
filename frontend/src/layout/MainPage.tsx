@@ -16,6 +16,7 @@ type MainPageProps<T> = {
   error: string | null
   onRetry: () => void
   filters?: ReactNode
+  rowStart: number
 }
 export default function MainPage<T>({
   title,
@@ -25,6 +26,7 @@ export default function MainPage<T>({
   error,
   onRetry,
   filters,
+  rowStart,
 }: MainPageProps<T>) {
   return (
     <div className="flex h-full flex-col">
@@ -34,7 +36,7 @@ export default function MainPage<T>({
         <div className="border-border bg-surface h-full w-full overflow-hidden rounded-lg border shadow-sm">
           {error && <ErrorComponent message={error} onRetry={onRetry} />}
           {loading && <LoadingIcon />}
-          {!loading && !error && <Table columns={columns} data={data} />}
+          {!loading && !error && <Table columns={columns} data={data} rowStart={rowStart} />}
         </div>
       </div>
     </div>

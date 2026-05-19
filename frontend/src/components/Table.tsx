@@ -6,14 +6,16 @@ type TableColumn<T> = {
 type TableProps<T> = {
   columns: TableColumn<T>[]
   data: T[]
+  rowStart: number
 }
 
-export default function Table<T>({ columns, data }: TableProps<T>) {
+export default function Table<T>({ columns, data, rowStart }: TableProps<T>) {
   return (
     <div className="h-full overflow-auto">
       <table className="w-full min-w-max text-center text-sm">
         <thead className="bg-accent text-light sticky top-0 z-10">
           <tr className="divide-x divide-white/15">
+            <th> </th> {/* Empty column for row number */}
             {columns.map(column => (
               <th key={String(column.key)} className="px-4 py-3 font-semibold">
                 {column.header}
@@ -27,6 +29,9 @@ export default function Table<T>({ columns, data }: TableProps<T>) {
               key={rowIndex}
               className="divide-border hover:bg-highlight bg-elevated even:bg-background divide-x transition-colors"
             >
+              <td className="text-muted px-4 py-3 font-medium whitespace-nowrap">
+                {rowStart + rowIndex + 1}
+              </td>
               {columns.map(column => (
                 <td key={String(column.key)} className="text-dark px-4 py-3 whitespace-nowrap">
                   {String(row[column.key] ?? '')}
