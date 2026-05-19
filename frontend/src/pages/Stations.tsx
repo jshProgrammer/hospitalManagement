@@ -4,7 +4,7 @@ import { mapStation } from '../mapper/stationMapper.tsx'
 import { usePageData } from '../hooks/usePageData.tsx'
 import { useTableFilters } from '../hooks/useTableFilters.tsx'
 import TableFilters from '../components/TableFilters.tsx'
-import { stationFilters } from '../constants'
+import { stationFilters } from '../constants/filters.tsx'
 
 const columns = [
   { key: 'id', header: 'ID' },
