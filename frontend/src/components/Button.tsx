@@ -1,13 +1,31 @@
-type ButtonProps = {
+import { type ButtonHTMLAttributes } from 'react'
+
+type ButtonVariant = 'default' | 'primary' | 'secondary'
+
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   label: string
-  onClick: () => void
+  variant?: ButtonVariant
 }
 
-export default function Button({ label, onClick }: ButtonProps) {
+const buttonVariants: Record<ButtonVariant, string> = {
+  default:
+    'text-dark hover:bg-highlight hover:border-accent active:bg-accent active:text-light border-border px-4 py-2.5 font-semibold shadow-sm active:translate-y-px',
+  primary: 'bg-accent text-light hover:bg-accent/90 px-4 py-2 font-semibold shadow-sm',
+  secondary: 'border-border text-muted hover:bg-highlight hover:text-dark border px-3 py-2 font-medium',
+}
+
+export default function Button({
+  label,
+  variant = 'default',
+  type = 'button',
+  className = '',
+  ...props
+}: ButtonProps) {
   return (
     <button
-      onClick={onClick}
-      className="text-dark hover:bg-highlight hover:border-accent active:bg-accent active:text-light border-border rounded-md px-4 py-2.5 text-sm font-semibold shadow-sm transition-colors active:translate-y-px"
+      type={type}
+      className={`rounded-md text-sm transition-colors ${buttonVariants[variant]} ${className}`}
+      {...props}
     >
       {label}
     </button>
