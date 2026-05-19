@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom'
-import HomeIcon from '../components/HomeIcon.tsx'
-import NavItem from '../components/NavItem.tsx'
-import { links } from '../navigation.ts'
+import HomeIcon from '../components/HomeIcon'
+import NavItem from '../components/NavItem'
+import { links } from '../constants'
 
 export default function AppLayout() {
   return (

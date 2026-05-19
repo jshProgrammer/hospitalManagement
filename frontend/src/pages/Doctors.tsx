@@ -4,7 +4,7 @@ import { mapDoctor } from '../mapper/doctorMapper.tsx'
 import { usePageData } from '../hooks/usePageData.tsx'
 import { useTableFilters } from '../hooks/useTableFilters.tsx'
 import TableFilters from '../components/TableFilters.tsx'
-import { doctorFilters } from '../components/tableFilterConfigs.tsx'
+import { doctorFilters } from '../constants'
 
 const columns = [
   { key: 'id', header: 'ID' },

@@ -1,4 +1,4 @@
-import type { FilterField } from './TableFilters.tsx'
+import type { FilterField } from '../components/TableFilters'
 
 const genderOptions = [
   { label: 'Male', value: 'm' },

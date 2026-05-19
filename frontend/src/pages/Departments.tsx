@@ -4,7 +4,7 @@ import { mapDepartment } from '../mapper/departmentMapper.tsx'
 import { usePageData } from '../hooks/usePageData.tsx'
 import { useTableFilters } from '../hooks/useTableFilters.tsx'
 import TableFilters from '../components/TableFilters.tsx'
-import { departmentFilters } from '../components/tableFilterConfigs.tsx'
+import { departmentFilters } from '../constants'
 
 const columns = [
   { key: 'id', header: 'ID' },
