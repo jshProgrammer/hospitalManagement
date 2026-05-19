@@ -1,5 +1,6 @@
 import { type SubmitEvent, useState } from 'react'
 import { ChevronDown, ListFilter } from 'lucide-react'
+import Button from './Button'
 
 type BaseFilterField = {
   name: string
@@ -76,13 +77,7 @@ export default function TableFilters({ fields, values, onChange }: TableFiltersP
           </button>
 
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={resetFilters}
-              className="border-border text-muted hover:bg-highlight hover:text-dark rounded-md border px-3 py-2 text-sm font-medium transition-colors"
-            >
-              Reset
-            </button>
+            <Button label="Reset" variant="secondary" onClick={resetFilters} />
           </div>
         </div>
 
@@ -119,19 +114,8 @@ export default function TableFilters({ fields, values, onChange }: TableFiltersP
             </div>
 
             <div className="border-border mt-4 flex justify-end gap-2 border-t pt-4">
-              <button
-                type="button"
-                onClick={resetFilters}
-                className="border-border text-muted hover:bg-highlight hover:text-dark rounded-md border px-3 py-2 text-sm font-medium transition-colors"
-              >
-                Reset
-              </button>
-              <button
-                type="submit"
-                className="bg-accent text-light hover:bg-accent/90 rounded-md px-4 py-2 text-sm font-semibold shadow-sm transition-colors"
-              >
-                Apply filters
-              </button>
+              <Button label="Reset" variant="secondary" onClick={resetFilters} />
+              <Button label="Apply filters" type="submit" variant="primary" />
             </div>
           </div>
         )}
