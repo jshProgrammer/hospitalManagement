@@ -66,9 +66,11 @@ BASE_COLLECTIONS = {
 }
 
 CURSOR_COLLECTION_KEYS = {
+    "bookings": "bookings",
     "patients": "patients",
     "doctors": "doctors",
     "nurses": "nurses",
+    "medications": "medications",
     "diagnoses": "diagnoses",
 }
 
@@ -82,11 +84,11 @@ ENDPOINTS = [
     Endpoint("rooms.by_id", "/api/rooms/{rooms.id}", sample_key="rooms", skip_without_sample=True, pagination=None),
     Endpoint("rooms.by_floor", "/api/rooms/floor/{rooms.floor}", sample_key="rooms", skip_without_sample=True, pagination=None),
     Endpoint("rooms.bookings", "/api/rooms/{rooms.id}/bookings", sample_key="rooms", skip_without_sample=True),
-    Endpoint("bookings.list", "/api/bookings"),
+    Endpoint("bookings.list", "/api/bookings", pagination=PAGINATION_CURSOR),
     Endpoint("bookings.by_id", "/api/bookings/{bookings.id}", sample_key="bookings", skip_without_sample=True, pagination=None),
     Endpoint("patients.list", "/api/patients", pagination=PAGINATION_CURSOR),
     Endpoint("patients.by_id", "/api/patients/{patients.id}", sample_key="patients", skip_without_sample=True, pagination=None),
-    Endpoint("patients.bookings", "/api/patients/{patients.id}/bookings", sample_key="patients", skip_without_sample=True),
+    Endpoint("patients.bookings", "/api/patients/{patients.id}/bookings", sample_key="patients", skip_without_sample=True, pagination=PAGINATION_CURSOR),
     Endpoint("patients.diagnoses", "/api/patients/{patients.id}/diagnoses", sample_key="patients", skip_without_sample=True, pagination=PAGINATION_CURSOR),
     Endpoint("doctors.list", "/api/doctors", pagination=PAGINATION_CURSOR),
     Endpoint("doctors.by_id", "/api/doctors/{doctors.id}", sample_key="doctors", skip_without_sample=True, pagination=None),
@@ -97,7 +99,7 @@ ENDPOINTS = [
     Endpoint("drugs.by_id", "/api/drugs/{drugs.id}", sample_key="drugs", skip_without_sample=True, pagination=None),
     Endpoint("doses.list", "/api/doses"),
     Endpoint("doses.by_id", "/api/doses/{doses.id}", sample_key="doses", skip_without_sample=True, pagination=None),
-    Endpoint("medications.list", "/api/medications"),
+    Endpoint("medications.list", "/api/medications", pagination=PAGINATION_CURSOR),
     Endpoint("medications.by_id", "/api/medications/{medications.id}", sample_key="medications", skip_without_sample=True, pagination=None),
     Endpoint("diagnoses.list", "/api/diagnoses", pagination=PAGINATION_CURSOR),
     Endpoint("diagnoses.by_id", "/api/diagnoses/{diagnoses.id}", sample_key="diagnoses", skip_without_sample=True, pagination=None),
