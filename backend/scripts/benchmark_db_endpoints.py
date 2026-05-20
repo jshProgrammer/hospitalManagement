@@ -32,8 +32,11 @@ DEFAULT_BASE_URL = "http://localhost:8080"
 DEFAULT_OUTPUT_DIR = "benchmarks/results"
 DEFAULT_PAGE_SIZE = 20
 DEFAULT_PAGE_NUMBER = 0
+<<<<<<< HEAD
 PAGINATION_PAGE = "page"
 PAGINATION_CURSOR = "cursor"
+=======
+>>>>>>> e075cf6 (feat(backend, script): added page number parser arg to benchmark script)
 
 @dataclass(frozen=True)
 class Endpoint:
@@ -117,12 +120,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--startup-timeout", type=float, default=90.0)
     parser.add_argument("--page-size", type=int, default=DEFAULT_PAGE_SIZE)
     parser.add_argument("--page-number", type=int, default=DEFAULT_PAGE_NUMBER)
+<<<<<<< HEAD
     parser.add_argument(
         "--cursor-after",
         type=int,
         default=None,
         help="Cursor value for cursor-paginated endpoints. Omit to benchmark the first cursor page.",
     )
+=======
+>>>>>>> e075cf6 (feat(backend, script): added page number parser arg to benchmark script)
     parser.add_argument("--output-dir", default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--no-start", action="store_true", help="Use an already running backend.")
     parser.add_argument(
@@ -395,7 +401,13 @@ def summarize(name: str, method: str, path: str, query: dict[str, Any], samples:
 
 
 def benchmark_endpoint(args: argparse.Namespace, endpoint: Endpoint, path: str) -> dict[str, Any]:
+<<<<<<< HEAD
     query = endpoint_query(args, endpoint)
+=======
+    query = {"page": args.page_number, "size": args.page_size, **endpoint.query}
+    if "/{" not in endpoint.path_template and endpoint.name.endswith(".by_id"):
+        query = endpoint.query
+>>>>>>> e075cf6 (feat(backend, script): added page number parser arg to benchmark script)
 
     if args.warmup:
         log(f"  warmup {endpoint.name} ({args.warmup} request(s))")
