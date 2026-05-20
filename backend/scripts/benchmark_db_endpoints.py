@@ -32,6 +32,8 @@ DEFAULT_BASE_URL = "http://localhost:8080"
 DEFAULT_OUTPUT_DIR = "benchmarks/results"
 DEFAULT_PAGE_SIZE = 20
 DEFAULT_PAGE_NUMBER = 0
+PAGINATION_PAGE = "page"
+PAGINATION_CURSOR = "cursor"
 
 @dataclass(frozen=True)
 class Endpoint:
@@ -40,6 +42,7 @@ class Endpoint:
     query: dict[str, Any] = field(default_factory=dict)
     sample_key: str | None = None
     skip_without_sample: bool = False
+    pagination: str | None = PAGINATION_PAGE
 
 
 class EndpointTimedOut(RuntimeError):
@@ -62,35 +65,42 @@ BASE_COLLECTIONS = {
     "diagnoses": "/api/diagnoses",
 }
 
+CURSOR_COLLECTION_KEYS = {
+    "patients": "patients",
+    "doctors": "doctors",
+    "nurses": "nurses",
+    "diagnoses": "diagnoses",
+}
+
 
 ENDPOINTS = [
     Endpoint("departments.list", "/api/departments"),
-    Endpoint("departments.by_id", "/api/departments/{departments.id}", sample_key="departments", skip_without_sample=True),
+    Endpoint("departments.by_id", "/api/departments/{departments.id}", sample_key="departments", skip_without_sample=True, pagination=None),
     Endpoint("stations.list", "/api/stations"),
-    Endpoint("stations.by_id", "/api/stations/{stations.id}", sample_key="stations", skip_without_sample=True),
+    Endpoint("stations.by_id", "/api/stations/{stations.id}", sample_key="stations", skip_without_sample=True, pagination=None),
     Endpoint("rooms.list", "/api/rooms"),
-    Endpoint("rooms.by_id", "/api/rooms/{rooms.id}", sample_key="rooms", skip_without_sample=True),
-    Endpoint("rooms.by_floor", "/api/rooms/floor/{rooms.floor}", sample_key="rooms", skip_without_sample=True),
+    Endpoint("rooms.by_id", "/api/rooms/{rooms.id}", sample_key="rooms", skip_without_sample=True, pagination=None),
+    Endpoint("rooms.by_floor", "/api/rooms/floor/{rooms.floor}", sample_key="rooms", skip_without_sample=True, pagination=None),
     Endpoint("rooms.bookings", "/api/rooms/{rooms.id}/bookings", sample_key="rooms", skip_without_sample=True),
     Endpoint("bookings.list", "/api/bookings"),
-    Endpoint("bookings.by_id", "/api/bookings/{bookings.id}", sample_key="bookings", skip_without_sample=True),
-    Endpoint("patients.list", "/api/patients"),
-    Endpoint("patients.by_id", "/api/patients/{patients.id}", sample_key="patients", skip_without_sample=True),
+    Endpoint("bookings.by_id", "/api/bookings/{bookings.id}", sample_key="bookings", skip_without_sample=True, pagination=None),
+    Endpoint("patients.list", "/api/patients", pagination=PAGINATION_CURSOR),
+    Endpoint("patients.by_id", "/api/patients/{patients.id}", sample_key="patients", skip_without_sample=True, pagination=None),
     Endpoint("patients.bookings", "/api/patients/{patients.id}/bookings", sample_key="patients", skip_without_sample=True),
-    Endpoint("patients.diagnoses", "/api/patients/{patients.id}/diagnoses", sample_key="patients", skip_without_sample=True),
-    Endpoint("doctors.list", "/api/doctors"),
-    Endpoint("doctors.by_id", "/api/doctors/{doctors.id}", sample_key="doctors", skip_without_sample=True),
-    Endpoint("nurses.list", "/api/nurses"),
-    Endpoint("nurses.by_id", "/api/nurses/{nurses.id}", sample_key="nurses", skip_without_sample=True),
-    Endpoint("nurses.by_station", "/api/nurses/station/{nurses.stationId}", sample_key="nurses", skip_without_sample=True),
+    Endpoint("patients.diagnoses", "/api/patients/{patients.id}/diagnoses", sample_key="patients", skip_without_sample=True, pagination=PAGINATION_CURSOR),
+    Endpoint("doctors.list", "/api/doctors", pagination=PAGINATION_CURSOR),
+    Endpoint("doctors.by_id", "/api/doctors/{doctors.id}", sample_key="doctors", skip_without_sample=True, pagination=None),
+    Endpoint("nurses.list", "/api/nurses", pagination=PAGINATION_CURSOR),
+    Endpoint("nurses.by_id", "/api/nurses/{nurses.id}", sample_key="nurses", skip_without_sample=True, pagination=None),
+    Endpoint("nurses.by_station", "/api/nurses/station/{nurses.stationId}", sample_key="nurses", skip_without_sample=True, pagination=None),
     Endpoint("drugs.list", "/api/drugs"),
-    Endpoint("drugs.by_id", "/api/drugs/{drugs.id}", sample_key="drugs", skip_without_sample=True),
+    Endpoint("drugs.by_id", "/api/drugs/{drugs.id}", sample_key="drugs", skip_without_sample=True, pagination=None),
     Endpoint("doses.list", "/api/doses"),
-    Endpoint("doses.by_id", "/api/doses/{doses.id}", sample_key="doses", skip_without_sample=True),
+    Endpoint("doses.by_id", "/api/doses/{doses.id}", sample_key="doses", skip_without_sample=True, pagination=None),
     Endpoint("medications.list", "/api/medications"),
-    Endpoint("medications.by_id", "/api/medications/{medications.id}", sample_key="medications", skip_without_sample=True),
-    Endpoint("diagnoses.list", "/api/diagnoses"),
-    Endpoint("diagnoses.by_id", "/api/diagnoses/{diagnoses.id}", sample_key="diagnoses", skip_without_sample=True),
+    Endpoint("medications.by_id", "/api/medications/{medications.id}", sample_key="medications", skip_without_sample=True, pagination=None),
+    Endpoint("diagnoses.list", "/api/diagnoses", pagination=PAGINATION_CURSOR),
+    Endpoint("diagnoses.by_id", "/api/diagnoses/{diagnoses.id}", sample_key="diagnoses", skip_without_sample=True, pagination=None),
 ]
 
 
@@ -105,6 +115,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--startup-timeout", type=float, default=90.0)
     parser.add_argument("--page-size", type=int, default=DEFAULT_PAGE_SIZE)
     parser.add_argument("--page-number", type=int, default=DEFAULT_PAGE_NUMBER)
+    parser.add_argument(
+        "--cursor-after",
+        type=int,
+        default=None,
+        help="Cursor value for cursor-paginated endpoints. Omit to benchmark the first cursor page.",
+    )
     parser.add_argument("--output-dir", default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--no-start", action="store_true", help="Use an already running backend.")
     parser.add_argument(
@@ -210,12 +226,31 @@ def stop_backend(process: subprocess.Popen[str] | None) -> None:
             process._benchmark_log_file.close()  # type: ignore[attr-defined]
 
 
-def page_content(payload: Any) -> list[Any]:
+def page_content(payload: Any, collection_key: str | None = None) -> list[Any]:
+    if collection_key and isinstance(payload, dict) and isinstance(payload.get(collection_key), list):
+        return payload[collection_key]
     if isinstance(payload, dict) and isinstance(payload.get("content"), list):
         return payload["content"]
     if isinstance(payload, list):
         return payload
     return []
+
+
+def collection_query(collection: str, page_size: int) -> dict[str, Any]:
+    if collection in CURSOR_COLLECTION_KEYS:
+        return {"limit": max(1, page_size)}
+    return {"page": 0, "size": max(1, page_size)}
+
+
+def endpoint_query(args: argparse.Namespace, endpoint: Endpoint) -> dict[str, Any]:
+    if endpoint.pagination == PAGINATION_CURSOR:
+        query = {"limit": args.page_size, **endpoint.query}
+        if args.cursor_after is not None:
+            query["after"] = args.cursor_after
+        return query
+    if endpoint.pagination == PAGINATION_PAGE:
+        return {"page": args.page_number, "size": args.page_size, **endpoint.query}
+    return dict(endpoint.query)
 
 
 def first_present(data: dict[str, Any], names: list[str]) -> Any:
@@ -235,7 +270,11 @@ def nested_value(data: dict[str, Any], path: list[str]) -> Any:
 
 
 def extract_sample(collection: str, payload: Any) -> dict[str, Any]:
-    rows = [row for row in page_content(payload) if isinstance(row, dict)]
+    rows = [
+        row
+        for row in page_content(payload, CURSOR_COLLECTION_KEYS.get(collection))
+        if isinstance(row, dict)
+    ]
     if not rows:
         return {}
 
@@ -262,7 +301,7 @@ def discover_samples(args: argparse.Namespace) -> dict[str, dict[str, Any]]:
             status, payload, _ = get_json(
                 args.base_url,
                 path,
-                {"page": 0, "size": max(1, args.page_size)},
+                collection_query(name, args.page_size),
                 args.timeout,
             )
         except Exception:
@@ -354,9 +393,7 @@ def summarize(name: str, method: str, path: str, query: dict[str, Any], samples:
 
 
 def benchmark_endpoint(args: argparse.Namespace, endpoint: Endpoint, path: str) -> dict[str, Any]:
-    query = {"page": args.page_number, "size": args.page_size, **endpoint.query}
-    if "/{" not in endpoint.path_template and endpoint.name.endswith(".by_id"):
-        query = endpoint.query
+    query = endpoint_query(args, endpoint)
 
     if args.warmup:
         log(f"  warmup {endpoint.name} ({args.warmup} request(s))")
@@ -418,6 +455,12 @@ def main() -> int:
         raise ValueError("--iterations must be at least 1")
     if args.warmup < 0:
         raise ValueError("--warmup must be 0 or greater")
+    if args.page_size < 1:
+        raise ValueError("--page-size must be at least 1")
+    if args.page_number < 0:
+        raise ValueError("--page-number must be 0 or greater")
+    if args.cursor_after is not None and args.cursor_after < 0:
+        raise ValueError("--cursor-after must be 0 or greater")
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -452,6 +495,8 @@ def main() -> int:
                 "iterations": args.iterations,
                 "warmup": args.warmup,
                 "page_size": args.page_size,
+                "page_number": args.page_number,
+                "cursor_after": args.cursor_after,
                 "read_only": True,
                 "started_backend": started_by_script,
                 "continue_on_timeout": args.continue_on_timeout,
