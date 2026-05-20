@@ -5,7 +5,7 @@ import { usePageData } from '../hooks/usePageData.tsx'
 import { useTableFilters } from '../hooks/useTableFilters.tsx'
 import TableFilters from '../components/TableFilters.tsx'
 import { patientFilters } from '../constants/filters.tsx'
-import { DEFAULT_PAGE_SIZE } from '../constants/pagination.tsx'
+import { useState } from 'react'
 
 const columns = [
   { key: 'firstName', header: 'Vorname' },
@@ -22,10 +22,13 @@ const columns = [
 ] satisfies { key: keyof Patient; header: string }[]
 
 export function Patients() {
-  const { filters, setFilters, url } = useTableFilters(
-    `/api/patients?sort=id,asc&size=${DEFAULT_PAGE_SIZE}`
+  const [page, setPage] = useState(0)
+  const { filters, setFilters, url } = useTableFilters(`/api/patients`)
+  const { data, loading, error, reload, totalPages } = usePageData<PatientApi, Patient>(
+    url,
+    page,
+    mapPatient
   )
-  const { data, loading, error, reload } = usePageData<PatientApi, Patient>(url, mapPatient)
 
   return (
     <MainPage
@@ -35,7 +38,9 @@ export function Patients() {
       loading={loading}
       error={error}
       onRetry={reload}
-      rowStart={0 * DEFAULT_PAGE_SIZE}
+      page={page}
+      totalPages={totalPages}
+      onPageChange={setPage}
       filters={<TableFilters fields={patientFilters} values={filters} onChange={setFilters} />}
     />
   )

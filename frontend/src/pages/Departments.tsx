@@ -5,7 +5,7 @@ import { usePageData } from '../hooks/usePageData.tsx'
 import { useTableFilters } from '../hooks/useTableFilters.tsx'
 import TableFilters from '../components/TableFilters.tsx'
 import { departmentFilters } from '../constants/filters.tsx'
-import { DEFAULT_PAGE_SIZE } from '../constants/pagination.tsx'
+import { useState } from 'react'
 
 const columns = [
   { key: 'name', header: 'Name' },
@@ -13,11 +13,11 @@ const columns = [
 ] satisfies { key: keyof Department; header: string }[]
 
 export function Departments() {
-  const { filters, setFilters, url } = useTableFilters(
-    `/api/departments?sort=id,asc&size=${DEFAULT_PAGE_SIZE}`
-  )
-  const { data, loading, error, reload } = usePageData<DepartmentApi, Department>(
+  const [page, setPage] = useState(0)
+  const { filters, setFilters, url } = useTableFilters(`/api/departments`)
+  const { data, loading, error, reload, totalPages } = usePageData<DepartmentApi, Department>(
     url,
+    page,
     mapDepartment
   )
 
@@ -29,7 +29,9 @@ export function Departments() {
       loading={loading}
       error={error}
       onRetry={reload}
-      rowStart={0 * DEFAULT_PAGE_SIZE}
+      page={page}
+      totalPages={totalPages}
+      onPageChange={setPage}
       filters={<TableFilters fields={departmentFilters} values={filters} onChange={setFilters} />}
     />
   )
