@@ -69,4 +69,7 @@ object DiagnosisSpecification {
             .and(hasDiagnosedPatientId(diagnosedPatientId))
             .and(diagnosedAfter(diagnosedAfter))
             .and(diagnosedBefore(diagnosedBefore))
+
+    fun afterId(id: Long): Specification<Diagnosis> =
+        Specification { root, _, cb -> cb.greaterThan(root.get("id"), id) }
 }

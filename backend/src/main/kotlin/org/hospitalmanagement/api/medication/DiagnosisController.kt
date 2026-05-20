@@ -1,13 +1,11 @@
 package org.hospitalmanagement.api.medication
 
 import org.hospitalmanagement.api.medication.requestModels.DiagnosisRequest
-import org.hospitalmanagement.models.classes.medication.Diagnosis
 import org.hospitalmanagement.models.enums.DrugsType
 import org.hospitalmanagement.services.medication.DiagnosisService
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.util.Date
@@ -18,7 +16,8 @@ class DiagnosisController(private val diagnosisService: DiagnosisService) {
 
     @GetMapping
     fun getAll(
-        pageable: Pageable,
+        @RequestParam(required = false) after: Long?,
+        @RequestParam(defaultValue = "10") limit: Int,
         @RequestParam(required = false) disease: String?,
         @RequestParam(required = false) diseaseContains: String?,
         @RequestParam(required = false) medicationId: Long?,
@@ -27,11 +26,19 @@ class DiagnosisController(private val diagnosisService: DiagnosisService) {
         @RequestParam(required = false) diagnosedPatientId: Long?,
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) diagnosedAfter: Date?,
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) diagnosedBefore: Date?
-    ): Page<Diagnosis> =
-        diagnosisService.search(
-            pageable, disease, diseaseContains, medicationId, drugType,
+    ): ResponseEntity<Map<String, Any>> {
+        val raw = diagnosisService.searchPaginated(
+            after, limit + 1, disease, diseaseContains, medicationId, drugType,
             diagnosedByDoctorId, diagnosedPatientId, diagnosedAfter, diagnosedBefore
         )
+        val hasMore = raw.size > limit
+        val diagnoses = if (hasMore) raw.dropLast(1) else raw
+        return ResponseEntity.ok(mapOf(
+            "diagnoses" to diagnoses,
+            "nextCursor" to (diagnoses.lastOrNull()?.id ?: 0),
+            "hasMore" to hasMore
+        ))
+    }
 
     @GetMapping("/{id}")
     fun getById(@PathVariable id: Long): Diagnosis =

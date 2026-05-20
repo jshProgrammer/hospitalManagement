@@ -163,4 +163,7 @@ object DoctorSpecifications {
                 workphone.lowercase()
             )
         }
+
+    fun afterId(id: Long): Specification<Doctor> =
+        Specification { root, _, cb -> cb.greaterThan(root.get("id"), id) }
 }

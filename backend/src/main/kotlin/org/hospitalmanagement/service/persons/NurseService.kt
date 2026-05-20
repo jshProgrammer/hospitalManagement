@@ -14,7 +14,9 @@ import org.hospitalmanagement.models.classes.persons.Nurse
 import org.hospitalmanagement.models.enums.Gender
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import java.util.*
@@ -162,5 +164,43 @@ class NurseService(
         } else {
             nursesRepository.findAll(pageable)
         }
+    }
+
+    fun searchNursesPaginated(
+        after: Long?,
+        limit: Int,
+        firstName: String?,
+        lastName: String?,
+        email: String?,
+        phone: String?,
+        gender: Gender?,
+        city: String?,
+        country: String?,
+        birthday: Date?,
+        plz: Int?,
+        street: String?,
+        streetNo: Int?,
+        stationId: Long?,
+        departmentId: Long?
+    ): List<Nurse> {
+        var spec = Specification.where<Nurse>(null)
+
+        if (after != null) spec = spec.and(NurseSpecifications.afterId(after))
+        if (!firstName.isNullOrBlank()) spec = spec.and(NurseSpecifications.hasFirstName(firstName))
+        if (!lastName.isNullOrBlank()) spec = spec.and(NurseSpecifications.hasLastName(lastName))
+        if (!email.isNullOrBlank()) spec = spec.and(NurseSpecifications.hasEmail(email))
+        if (!phone.isNullOrBlank()) spec = spec.and(NurseSpecifications.hasPhone(phone))
+        if (gender != null) spec = spec.and(NurseSpecifications.hasGender(gender))
+        if (!city.isNullOrBlank()) spec = spec.and(NurseSpecifications.hasCity(city))
+        if (!country.isNullOrBlank()) spec = spec.and(NurseSpecifications.hasCountry(country))
+        if (birthday != null) spec = spec.and(NurseSpecifications.hasBirthday(birthday))
+        if (plz != null) spec = spec.and(NurseSpecifications.hasPlz(plz))
+        if (!street.isNullOrBlank()) spec = spec.and(NurseSpecifications.hasStreet(street))
+        if (streetNo != null) spec = spec.and(NurseSpecifications.hasStreetNo(streetNo))
+        if (stationId != null) spec = spec.and(NurseSpecifications.hasStationId(stationId.toInt()))
+        if (departmentId != null) spec = spec.and(NurseSpecifications.hasDepartmentId(departmentId))
+
+        val pageable = PageRequest.of(0, limit, Sort.by(Sort.Order.asc("id")))
+        return nursesRepository.findAll(spec, pageable).content
     }
 }

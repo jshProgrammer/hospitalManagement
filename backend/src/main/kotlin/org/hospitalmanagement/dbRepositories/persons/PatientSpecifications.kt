@@ -98,4 +98,7 @@ object PatientSpecifications {
                 country.lowercase()
             )
         }
+
+    fun afterId(id: Long): Specification<Patient> =
+        Specification { root, _, cb -> cb.greaterThan(root.get("id"), id) }
 }

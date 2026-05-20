@@ -6,16 +6,14 @@ import org.hospitalmanagement.api.persons.requestModels.PatientRequest
 import org.hospitalmanagement.api.persons.requestModels.PersonCreateRequest
 import org.hospitalmanagement.models.classes.facilities.Booking
 import org.hospitalmanagement.models.classes.medication.Diagnosis
-import org.hospitalmanagement.models.classes.medication.Drug
-import org.hospitalmanagement.models.classes.medication.Medication
 import org.hospitalmanagement.models.classes.persons.Patient
 import org.hospitalmanagement.models.enums.Gender
 import org.hospitalmanagement.service.facilities.BookingService
 import org.hospitalmanagement.service.persons.PatientService
-import org.hospitalmanagement.service.persons.PersonService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.util.*
@@ -47,7 +45,8 @@ class PatientController(
 
     @GetMapping()
     fun getPatients(
-        pageable: Pageable,
+        @RequestParam(required = false) after: Long?,
+        @RequestParam(defaultValue = "10") limit: Int,
         @RequestParam(required = false) firstName: String?,
         @RequestParam(required = false) lastName: String?,
         @RequestParam(required = false) email: String?,
@@ -59,21 +58,19 @@ class PatientController(
         @RequestParam(required = false) plz: Int?,
         @RequestParam(required = false) street: String?,
         @RequestParam(required = false) streetNo: Int?
-        ): Page<Patient> {
-        return patientService.searchPatients(
-            pageable,
-            firstName,
-            lastName,
-            email,
-            phone,
-            gender,
-            city,
-            country,
-            birthday,
-            plz,
-            street,
-            streetNo
+    ): ResponseEntity<Map<String, Any>> {
+        val raw = patientService.searchPatientsPaginated(
+            after, limit + 1,
+            firstName, lastName, email, phone, gender,
+            city, country, birthday, plz, street, streetNo
         )
+        val hasMore = raw.size > limit
+        val patients = if (hasMore) raw.dropLast(1) else raw
+        return ResponseEntity.ok(mapOf(
+            "patients" to patients,
+            "nextCursor" to (patients.lastOrNull()?.id ?: 0),
+            "hasMore" to hasMore
+        ))
     }
 
     @GetMapping("/{id}/bookings")
@@ -92,6 +89,18 @@ class PatientController(
         bookingService.relocate(id, request.roomId)
 
     @GetMapping("/{id}/diagnoses")
-    fun getDiagnosesByID(@PathVariable id: Long, pageable: Pageable): Page<Diagnosis> =
-        patientService.getDiagnoses(id, pageable)
+    fun getDiagnosesByID(
+        @PathVariable id: Long,
+        @RequestParam(required = false) after: Long?,
+        @RequestParam(defaultValue = "10") limit: Int
+    ): ResponseEntity<Map<String, Any>> {
+        val raw = patientService.getDiagnosesPaginated(id, after, limit + 1)
+        val hasMore = raw.size > limit
+        val diagnoses = if (hasMore) raw.dropLast(1) else raw
+        return ResponseEntity.ok(mapOf(
+            "diagnoses" to diagnoses,
+            "nextCursor" to (diagnoses.lastOrNull()?.id ?: 0),
+            "hasMore" to hasMore
+        ))
+    }
 }

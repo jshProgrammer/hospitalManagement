@@ -13,7 +13,9 @@ import org.hospitalmanagement.models.enums.DoctorsType
 import org.hospitalmanagement.models.enums.Gender
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import java.util.*
@@ -166,5 +168,45 @@ class DoctorService(
         } else {
             doctorRepository.findAll(pageable)
         }
+    }
+
+    fun searchDoctorsPaginated(
+        after: Long?,
+        limit: Int,
+        firstName: String?,
+        lastName: String?,
+        email: String?,
+        phone: String?,
+        gender: Gender?,
+        city: String?,
+        country: String?,
+        birthday: Date?,
+        plz: Int?,
+        street: String?,
+        streetNo: Int?,
+        type: DoctorsType?,
+        departmentId: Long?,
+        workPhone: String?
+    ): List<Doctor> {
+        var spec = Specification.where<Doctor>(null)
+
+        if (after != null) spec = spec.and(DoctorSpecifications.afterId(after))
+        if (!firstName.isNullOrBlank()) spec = spec.and(DoctorSpecifications.hasFirstName(firstName))
+        if (!lastName.isNullOrBlank()) spec = spec.and(DoctorSpecifications.hasLastName(lastName))
+        if (!email.isNullOrBlank()) spec = spec.and(DoctorSpecifications.hasEmail(email))
+        if (!phone.isNullOrBlank()) spec = spec.and(DoctorSpecifications.hasPhone(phone))
+        if (gender != null) spec = spec.and(DoctorSpecifications.hasGender(gender))
+        if (!city.isNullOrBlank()) spec = spec.and(DoctorSpecifications.hasCity(city))
+        if (!country.isNullOrBlank()) spec = spec.and(DoctorSpecifications.hasCountry(country))
+        if (birthday != null) spec = spec.and(DoctorSpecifications.hasBirthday(birthday))
+        if (plz != null) spec = spec.and(DoctorSpecifications.hasPlz(plz))
+        if (!street.isNullOrBlank()) spec = spec.and(DoctorSpecifications.hasStreet(street))
+        if (streetNo != null) spec = spec.and(DoctorSpecifications.hasStreetNo(streetNo))
+        if (type != null) spec = spec.and(DoctorSpecifications.hasType(type))
+        if (departmentId != null) spec = spec.and(DoctorSpecifications.hasDepartmentId(departmentId))
+        if (!workPhone.isNullOrBlank()) spec = spec.and(DoctorSpecifications.hasWorkphone(workPhone))
+
+        val pageable = PageRequest.of(0, limit, Sort.by(Sort.Order.asc("id")))
+        return doctorRepository.findAll(spec, pageable).content
     }
 }
