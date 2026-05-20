@@ -5,10 +5,9 @@ import org.hospitalmanagement.models.classes.medication.Medication
 import org.hospitalmanagement.models.enums.DoseUnit
 import org.hospitalmanagement.models.enums.DrugsType
 import org.hospitalmanagement.services.medication.MedicationService
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.util.Date
@@ -19,15 +18,26 @@ class MedicationController(private val medicationService: MedicationService) {
 
     @GetMapping
     fun getAll(
-        pageable: Pageable,
+        @RequestParam(required = false) after: Long?,
+        @RequestParam(defaultValue = "10") limit: Int,
         @RequestParam(required = false) drugId: Long?,
         @RequestParam(required = false) drugType: DrugsType?,
         @RequestParam(required = false) doseUnit: DoseUnit?,
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) startedAfter: Date?,
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) startedBefore: Date?,
         @RequestParam(required = false) active: Boolean?
-    ): Page<Medication> =
-        medicationService.search(pageable, drugId, drugType, doseUnit, startedAfter, startedBefore, active)
+    ): ResponseEntity<Map<String, Any>> {
+        val raw = medicationService.searchPaginated(
+            after, limit + 1, drugId, drugType, doseUnit, startedAfter, startedBefore, active
+        )
+        val hasMore = raw.size > limit
+        val medications = if (hasMore) raw.dropLast(1) else raw
+        return ResponseEntity.ok(mapOf(
+            "medications" to medications,
+            "nextCursor" to (medications.lastOrNull()?.id ?: 0),
+            "hasMore" to hasMore
+        ))
+    }
 
     @GetMapping("/{id}")
     fun getById(@PathVariable id: Long): Medication =

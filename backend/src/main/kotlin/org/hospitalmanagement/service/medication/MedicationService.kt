@@ -6,7 +6,9 @@ import org.hospitalmanagement.models.enums.DoseUnit
 import org.hospitalmanagement.models.enums.DrugsType
 import org.hospitalmanagement.specifications.medication.MedicationSpecification
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.util.Date
 import org.hospitalmanagement.dbRepositories.medication.DoseRepository
@@ -35,6 +37,24 @@ class MedicationService(
             drugId, drugType, doseUnit, startedAfter, startedBefore, active
         )
         return medicationRepository.findAll(spec, pageable)
+    }
+
+    fun searchPaginated(
+        after: Long?,
+        limit: Int,
+        drugId: Long?,
+        drugType: DrugsType?,
+        doseUnit: DoseUnit?,
+        startedAfter: Date?,
+        startedBefore: Date?,
+        active: Boolean?
+    ): List<Medication> {
+        var spec = MedicationSpecification.build(
+            drugId, drugType, doseUnit, startedAfter, startedBefore, active
+        )
+        if (after != null) spec = spec.and(MedicationSpecification.afterId(after))
+        val pageable = PageRequest.of(0, limit, Sort.by(Sort.Order.asc("id")))
+        return medicationRepository.findAll(spec, pageable).content
     }
 
     fun findById(id: Long): Medication? =

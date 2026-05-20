@@ -74,8 +74,20 @@ class PatientController(
     }
 
     @GetMapping("/{id}/bookings")
-    fun getBookingsById(@PathVariable id: Long, pageable: Pageable): Page<Booking> =
-        patientService.getBookingsByPersonID(id, pageable)
+    fun getBookingsById(
+        @PathVariable id: Long,
+        @RequestParam(required = false) after: Long?,
+        @RequestParam(defaultValue = "10") limit: Int
+    ): ResponseEntity<Map<String, Any>> {
+        val raw = bookingService.getPatientBookingsPaginated(id, after, limit + 1)
+        val hasMore = raw.size > limit
+        val bookings = if (hasMore) raw.dropLast(1) else raw
+        return ResponseEntity.ok(mapOf(
+            "bookings" to bookings,
+            "nextCursor" to (bookings.lastOrNull()?.id ?: 0),
+            "hasMore" to hasMore
+        ))
+    }
 
     @PostMapping("/{id}/discharge")
     fun discharge(@PathVariable id: Long): Booking =

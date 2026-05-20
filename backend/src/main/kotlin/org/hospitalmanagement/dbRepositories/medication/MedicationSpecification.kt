@@ -57,4 +57,7 @@ object MedicationSpecification {
             .and(startedBefore(startedBefore))
             .and(isActive(active))
 
+    fun afterId(id: Long): Specification<Medication> =
+        Specification { root, _, cb -> cb.greaterThan(root.get("id"), id) }
+
 }
