@@ -2,11 +2,12 @@
 
 Base URL when running locally: `http://localhost:8080`
 
-All collection endpoints that accept `Pageable` also accept Spring pagination parameters such as `page`, `size`, and `sort`.
+Collection endpoints use cursor-based (keyset) pagination. See [Pagination](#pagination) for the common parameters and response shape.
 
-Date values are accepted as ISO date strings unless noted otherwise(Datetime used in Medication, Diagnosis and Booking), for example `2024-03-01`.
+Date values are accepted as ISO date strings unless noted otherwise (datetime used in Medication, Diagnosis and Booking), for example `2024-03-01`.
 
 ## Sections
+- [Pagination](#pagination)
 - [Enviroment](#environment)
 - [Enums](#enum-values)
 - [Facilities](#facilities)
@@ -25,6 +26,31 @@ Date values are accepted as ISO date strings unless noted otherwise(Datetime use
   - [Diagnoses](#diagnoses)
 - [Common-Responses](#common-responses)
 
+
+## Pagination
+
+All collection list endpoints use cursor-based (keyset) pagination instead of offset/page-number pagination. This avoids the COUNT query and remains efficient on large, append-only tables.
+
+**Common query parameters** (all paginated endpoints):
+
+| Name | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `after` | long | no | — | Return only records whose `id` is greater than this value. Omit (or pass `0`) to start from the beginning. |
+| `limit` | int | no | `10` | Maximum number of records to return per page. |
+
+**Common response envelope** (all paginated endpoints):
+
+```json
+{
+  "data": [],
+  "nextCursor": 42,
+  "hasMore": true
+}
+```
+
+The `data` key name matches the resource type (e.g. `patients`, `doctors`, `medications`).  
+`nextCursor` is the `id` of the last returned record (or `0` when the result is empty). Pass it as `after` in the next request to fetch the following page.  
+`hasMore` is `true` when more records exist beyond the current page.
 
 ## Environment
 
@@ -110,7 +136,11 @@ DATABASE_PASSWORD=password
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
+| `after` | long | no | Cursor — return records with `id > after`. |
+| `limit` | int | no | Page size (default `10`). |
 | `state` | `BookingState` | no | Filter by booking state. |
+
+Response: `{ "bookings": [...], "nextCursor": <long>, "hasMore": <bool> }`
 
 `POST /api/bookings` request body (`BookingRequest` Object):
 (until is optional)
@@ -129,21 +159,23 @@ DATABASE_PASSWORD=password
 
 ### Patients
 
-| Method | Endpoint | Description | Pageable |
-| --- | --- | --- |----------|
-| `POST` | `/api/patients/new` | Create a patient from new person data, or return potential duplicate person matches. | -        |
-| `POST` | `/api/patients/new/{personId}` | Create a patient from an existing person id. | -        |
-| `GET` | `/api/patients` | List/search patients. | Yes      |
-| `GET` | `/api/patients/{id}` | Get one patient by patient id. | -        |
-| `GET` | `/api/patients/{id}/bookings` | List bookings for a patient. | Yes      |
-| `POST` | `/api/patients/{id}/discharge` | Discharge a patient from the current booking. | -        |
-| `POST` | `/api/patients/{id}/relocate` | Relocate a patient to another room. | -        |
-| `GET` | `/api/patients/{id}/diagnoses` | List diagnoses for a patient. | Yes      |
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/api/patients/new` | Create a patient from new person data, or return potential duplicate person matches. |
+| `POST` | `/api/patients/new/{personId}` | Create a patient from an existing person id. |
+| `GET` | `/api/patients` | List/search patients (cursor-paginated). |
+| `GET` | `/api/patients/{id}` | Get one patient by patient id. |
+| `GET` | `/api/patients/{id}/bookings` | List bookings for a patient (cursor-paginated). |
+| `POST` | `/api/patients/{id}/discharge` | Discharge a patient from the current booking. |
+| `POST` | `/api/patients/{id}/relocate` | Relocate a patient to another room. |
+| `GET` | `/api/patients/{id}/diagnoses` | List diagnoses for a patient (cursor-paginated). |
 
 `GET /api/patients` query parameters:
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
+| `after` | long | no | Cursor — return records with `id > after`. |
+| `limit` | int | no | Page size (default `10`). |
 | `firstName` | string | no | Exact first name. |
 | `lastName` | string | no | Exact last name. |
 | `email` | string | no | Exact email. |
@@ -155,6 +187,10 @@ DATABASE_PASSWORD=password
 | `plz` | int | no | Postal code. |
 | `street` | string | no | Exact street. |
 | `streetNo` | int | no | House number. |
+
+Response: `{ "patients": [...], "nextCursor": <long>, "hasMore": <bool> }`
+
+`GET /api/patients/{id}/bookings` and `GET /api/patients/{id}/diagnoses` accept `after` (long) and `limit` (int, default `10`) and return the same cursor envelope with keys `bookings`/`diagnoses`.
 
 `POST /api/patients/new` request body (`PersonCreateRequest` Object):
 
@@ -195,6 +231,8 @@ DATABASE_PASSWORD=password
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
+| `after` | long | no | Cursor — return records with `id > after`. |
+| `limit` | int | no | Page size (default `10`). |
 | `firstName` | string | no | Exact first name. |
 | `lastName` | string | no | Exact last name. |
 | `email` | string | no | Exact email. |
@@ -209,6 +247,8 @@ DATABASE_PASSWORD=password
 | `type` | `DoctorsType` | no | Filter by doctor type. |
 | `departmentId` | long | no | Filter by department id. |
 | `workPhone` | string | no | Exact work phone. |
+
+Response: `{ "doctors": [...], "nextCursor": <long>, "hasMore": <bool> }`
 
 `POST /api/doctors/new` request body (`DoctorCreationRequest` Object):
 
@@ -256,6 +296,8 @@ DATABASE_PASSWORD=password
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
+| `after` | long | no | Cursor — return records with `id > after`. |
+| `limit` | int | no | Page size (default `10`). |
 | `firstName` | string | no | Exact first name. |
 | `lastName` | string | no | Exact last name. |
 | `email` | string | no | Exact email. |
@@ -267,8 +309,10 @@ DATABASE_PASSWORD=password
 | `plz` | int | no | Postal code. |
 | `street` | string | no | Exact street. |
 | `streetNo` | int | no | House number. |
-| `stationId` | int | no | Filter by station id. |
+| `stationId` | long | no | Filter by station id. |
 | `departmentId` | long | no | Filter by department id. |
+
+Response: `{ "nurses": [...], "nextCursor": <long>, "hasMore": <bool> }`
 
 `POST /api/nurses/new` request body (`NurseCreationRequest` Object):
 
@@ -349,12 +393,16 @@ DATABASE_PASSWORD=password
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
+| `after` | long | no | Cursor — return records with `id > after`. |
+| `limit` | int | no | Page size (default `10`). |
 | `drugId` | long | no | Filter by drug id. |
 | `drugType` | `DrugsType` | no | Filter by drug type. |
 | `doseUnit` | `DoseUnit` | no | Filter by dose unit. |
 | `startedAfter` | date | no | Include medications started on or after this date. |
 | `startedBefore` | date | no | Include medications started on or before this date. |
 | `active` | boolean | no | `true` for no end date, `false` for ended medications. |
+
+Response: `{ "medications": [...], "nextCursor": <long>, "hasMore": <bool> }`
 
 `POST /api/medications` and `POST /api/medications/{id}` request body (`MedicationRequest` Object):
 
@@ -381,6 +429,8 @@ DATABASE_PASSWORD=password
 
 | Name | Type        | Required | Description |
 | --- |-------------| --- | --- |
+| `after` | long        | no | Cursor — return records with `id > after`. |
+| `limit` | int         | no | Page size (default `10`). |
 | `disease` | string      | no | Exact disease. |
 | `diseaseContains` | string      | no | Case-insensitive disease search. |
 | `medicationId` | long        | no | Filter by medication id. |
@@ -389,6 +439,8 @@ DATABASE_PASSWORD=password
 | `diagnosedPatientId` | Long           | no | Filter by diagnosed patient id. |
 | `diagnosedAfter` | date        | no | Include diagnoses on or after this date. |
 | `diagnosedBefore` | date        | no | Include diagnoses on or before this date. |
+
+Response: `{ "diagnoses": [...], "nextCursor": <long>, "hasMore": <bool> }`
 
 `POST /api/diagnoses` and `POST /api/diagnoses/{id}` request body (`DiagnosisRequest` Object):
 
@@ -404,20 +456,18 @@ DATABASE_PASSWORD=password
 
 ## Common Responses
 
-Successful `GET` collection endpoints usually return Spring `Page` JSON:
+Successful `GET` collection endpoints return a cursor envelope. The key name matches the resource type:
 
 ```json
 {
-  "content": [],
-  "pageable": {},
-  "totalElements": 0,
-  "totalPages": 0,
-  "last": true,
-  "size": 20,
-  "number": 0
+  "patients": [],
+  "nextCursor": 0,
+  "hasMore": false
 }
 ```
 
+Pass `nextCursor` as `after` in the next request to fetch the following page. When `hasMore` is `false`, you have reached the end of the result set.
+
 Most `GET /{id}` endpoints return `404 NOT_FOUND` when the resource does not exist.
 
-When combining `nameContains` and `name` filtering, a `400 BAD_REQUEST` error is being returned
+When combining `nameContains` and `name` filtering, a `400 BAD_REQUEST` error is returned.
