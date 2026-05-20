@@ -1,6 +1,7 @@
 package org.hospitalmanagement.api.medication
 
 import org.hospitalmanagement.api.medication.requestModels.DiagnosisRequest
+import org.hospitalmanagement.models.classes.medication.Diagnosis
 import org.hospitalmanagement.models.enums.DrugsType
 import org.hospitalmanagement.services.medication.DiagnosisService
 import org.springframework.format.annotation.DateTimeFormat
