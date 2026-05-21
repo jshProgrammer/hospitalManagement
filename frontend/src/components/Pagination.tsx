@@ -39,7 +39,7 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
     <div className="border-border bg-surface flex items-center justify-between gap-4 border-t px-4 py-3">
       <div className="flex gap-2">
         <Button
-          label="Zurück"
+          label="<"
           variant="secondary"
           disabled={page === 0}
           onClick={() => onPageChange(page - 1)}
@@ -55,7 +55,7 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
         ))}
 
         <Button
-          label="Weiter"
+          label=">"
           variant="secondary"
           disabled={page >= totalPages - 1}
           onClick={() => onPageChange(page + 1)}
@@ -63,7 +63,7 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
       </div>
 
       <form onSubmit={handleSubmit} className="flex items-center gap-2">
-        <span className="text-muted text-sm">Seite</span>
+        <span className="text-muted text-sm">Page</span>
         <input
           value={inputValue}
           onChange={event => setInputValue(event.target.value)}
@@ -75,7 +75,7 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
           }}
           className="border-border bg-background text-dark focus:border-accent w-20 rounded-md border px-3 py-2 text-sm outline-none"
         />
-        <span className="text-muted text-sm">von {totalPages}</span>
+        <span className="text-muted text-sm">of {totalPages}</span>
       </form>
     </div>
   )

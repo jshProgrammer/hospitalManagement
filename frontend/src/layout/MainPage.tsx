@@ -6,13 +6,9 @@ import type { ReactNode } from 'react'
 import Pagination from '../components/Pagination.tsx'
 import { DEFAULT_PAGE_SIZE } from '../constants/pagination.tsx'
 
-type Column<T> = {
-  key: keyof T
-  header: string
-}
 type MainPageProps<T> = {
   title: string
-  columns: Column<T>[]
+  columns: (keyof T)[]
   data: T[]
   loading: boolean
   error: string | null

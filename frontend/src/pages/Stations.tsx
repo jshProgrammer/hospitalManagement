@@ -7,12 +7,7 @@ import TableFilters from '../components/TableFilters.tsx'
 import { stationFilters } from '../constants/filters.tsx'
 import { useState } from 'react'
 
-const columns = [
-  { key: 'name', header: 'Name' },
-  { key: 'departmentId', header: 'Abteilungs-ID' },
-  { key: 'departmentName', header: 'Abteilung' },
-  { key: 'building', header: 'Gebäude' },
-] satisfies { key: keyof Station; header: string }[]
+const columns = ['name', 'departmentId', 'departmentName', 'building'] satisfies (keyof Station)[]
 
 export function Stations() {
   const [page, setPage] = useState(0)
