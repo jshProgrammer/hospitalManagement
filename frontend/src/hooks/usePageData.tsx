@@ -1,5 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { DEFAULT_PAGE_SIZE } from '../constants/pagination.tsx'
+import { useCallback, useEffect, useRef, useState } from 'react'
+
+const BATCH_SIZE = 5
+export const DEFAULT_PAGE_SIZE = 50
 
 type PageResponse<TApi> = {
   content: TApi[]
@@ -22,16 +24,19 @@ export function usePageData<TApi, TData>(
   const [error, setError] = useState<string | null>(null)
   const controllerRef = useRef<AbortController | null>(null)
 
-  const url = useMemo(() => {
-    const [path, query = ''] = endpoint.split('?')
-    const params = new URLSearchParams(query)
+  const buildUrl = useCallback(
+    (batchPage: number) => {
+      const [path, query = ''] = endpoint.split('?')
+      const params = new URLSearchParams(query)
 
-    params.set('sort', 'id,asc')
-    params.set('page', String(page))
-    params.set('size', String(DEFAULT_PAGE_SIZE))
+      params.set('sort', 'id,asc')
+      params.set('page', String(batchPage))
+      params.set('size', String(BATCH_SIZE))
 
-    return `${path}?${params.toString()}`
-  }, [endpoint, page])
+      return `${path}?${params.toString()}`
+    },
+    [endpoint]
+  )
 
   const loadData = useCallback(async () => {
     controllerRef.current?.abort()
@@ -39,26 +44,41 @@ export function usePageData<TApi, TData>(
     const controller = new AbortController()
     controllerRef.current = controller
 
-    try {
-      await Promise.resolve()
-      if (controller.signal.aborted) {
-        return
-      }
+    const firstBatchPage = page * (DEFAULT_PAGE_SIZE / BATCH_SIZE)
+    const batchCount = DEFAULT_PAGE_SIZE / BATCH_SIZE
 
+    try {
       setLoading(true)
       setError(null)
-      const response = await fetch(url, { signal: controller.signal })
+      setData([])
+      setNumberOfElements(0)
 
-      if (!response.ok) {
-        setError(`Error fetching data: ${response.statusText} (${response.status})`)
-        return
+      for (let index = 0; index < batchCount; index++) {
+        if (controller.signal.aborted) {
+          return
+        }
+
+        const response = await fetch(buildUrl(firstBatchPage + index), {
+          signal: controller.signal,
+        })
+
+        if (!response.ok) {
+          setError(`Error fetching data: ${response.statusText} (${response.status})`)
+          return
+        }
+
+        const pageResponse: PageResponse<TApi> = await response.json()
+        const mappedData = pageResponse.content.map(mapper)
+
+        setData(previous => [...previous, ...mappedData])
+        setTotalElements(pageResponse.totalElements)
+        setTotalPages(Math.ceil(pageResponse.totalElements / DEFAULT_PAGE_SIZE))
+        setNumberOfElements(previous => previous + pageResponse.numberOfElements)
+
+        if (pageResponse.content.length < BATCH_SIZE) {
+          break
+        }
       }
-      const page: PageResponse<TApi> = await response.json()
-
-      setData(page.content.map(mapper))
-      setTotalPages(page.totalPages)
-      setTotalElements(page.totalElements)
-      setNumberOfElements(page.numberOfElements)
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') {
         return
@@ -71,19 +91,12 @@ export function usePageData<TApi, TData>(
         setLoading(false)
       }
     }
-  }, [url, mapper])
+  }, [buildUrl, mapper, page])
 
   useEffect(() => {
-    let cancelled = false
-
-    queueMicrotask(() => {
-      if (!cancelled) {
-        void loadData()
-      }
-    })
+    void loadData()
 
     return () => {
-      cancelled = true
       controllerRef.current?.abort()
     }
   }, [loadData])
