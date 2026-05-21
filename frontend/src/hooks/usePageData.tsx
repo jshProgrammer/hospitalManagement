@@ -23,8 +23,15 @@ export function usePageData<TApi, TData>(
   const controllerRef = useRef<AbortController | null>(null)
 
   const url = useMemo(() => {
-    return `${endpoint}?sort=id,asc&page=${page}&size=${DEFAULT_PAGE_SIZE}`
-  }, [endpoint, page, DEFAULT_PAGE_SIZE])
+    const [path, query = ''] = endpoint.split('?')
+    const params = new URLSearchParams(query)
+
+    params.set('sort', 'id,asc')
+    params.set('page', String(page))
+    params.set('size', String(DEFAULT_PAGE_SIZE))
+
+    return `${path}?${params.toString()}`
+  }, [endpoint, page])
 
   const loadData = useCallback(async () => {
     controllerRef.current?.abort()
