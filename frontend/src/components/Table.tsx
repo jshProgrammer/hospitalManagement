@@ -1,12 +1,13 @@
-type TableColumn<T> = {
-  key: keyof T
-  header: string
-}
-
 type TableProps<T> = {
-  columns: TableColumn<T>[]
+  columns: (keyof T)[]
   data: T[]
   rowStart: number
+}
+
+function formatHeader(key: PropertyKey) {
+  return String(key)
+    .replace(/([A-Z])/g, ' $1')
+    .replace(/^./, char => char.toUpperCase())
 }
 
 export default function Table<T>({ columns, data, rowStart }: TableProps<T>) {
@@ -17,8 +18,8 @@ export default function Table<T>({ columns, data, rowStart }: TableProps<T>) {
           <tr className="divide-x divide-white/15">
             <th> </th> {/* Empty column for row number */}
             {columns.map(column => (
-              <th key={String(column.key)} className="px-4 py-3 font-semibold">
-                {column.header}
+              <th key={String(column)} className="px-4 py-3 font-semibold">
+                {formatHeader(column)}
               </th>
             ))}
           </tr>
@@ -33,8 +34,8 @@ export default function Table<T>({ columns, data, rowStart }: TableProps<T>) {
                 {rowStart + rowIndex + 1}
               </td>
               {columns.map(column => (
-                <td key={String(column.key)} className="text-dark px-4 py-3 whitespace-nowrap">
-                  {String(row[column.key] ?? '')}
+                <td key={String(column)} className="text-dark px-4 py-3 whitespace-nowrap">
+                  {String(row[column] ?? '')}
                 </td>
               ))}
             </tr>

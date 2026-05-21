@@ -6,20 +6,9 @@ import { useTableFilters } from '../hooks/useTableFilters.tsx'
 import TableFilters from '../components/TableFilters.tsx'
 import { patientFilters } from '../constants/filters.tsx'
 import { useState } from 'react'
+import { personColumns } from '../constants/colums.tsx'
 
-const columns = [
-  { key: 'firstName', header: 'Vorname' },
-  { key: 'lastName', header: 'Nachname' },
-  { key: 'gender', header: 'Geschlecht' },
-  { key: 'plz', header: 'PLZ' },
-  { key: 'city', header: 'Stadt' },
-  { key: 'street', header: 'Straße' },
-  { key: 'streetNo', header: 'Hausnummer' },
-  { key: 'country', header: 'Land' },
-  { key: 'birthday', header: 'Geburtsdatum' },
-  { key: 'phone', header: 'Telefon' },
-  { key: 'email', header: 'E-Mail' },
-] satisfies { key: keyof Patient; header: string }[]
+const columns = [...personColumns] satisfies (keyof Patient)[]
 
 export function Patients() {
   const [page, setPage] = useState(0)

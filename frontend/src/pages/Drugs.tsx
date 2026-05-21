@@ -7,12 +7,7 @@ import TableFilters from '../components/TableFilters.tsx'
 import { drugFilters } from '../constants/filters.tsx'
 import { useState } from 'react'
 
-const columns = [
-  { key: 'name', header: 'Name' },
-  { key: 'activeIngredient', header: 'Wirkstoff' },
-  { key: 'type', header: 'Typ' },
-  { key: 'stock', header: 'Bestand' },
-] satisfies { key: keyof Drug; header: string }[]
+const columns = ['name', 'activeIngredient', 'type', 'stock'] satisfies (keyof Drug)[]
 
 export function Drugs() {
   const [page, setPage] = useState(0)
