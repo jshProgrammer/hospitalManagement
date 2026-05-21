@@ -1,4 +1,4 @@
-import { type ChangeEvent, useEffect, useState } from 'react'
+import { type FormEvent, useEffect, useState } from 'react'
 import Button from './Button.tsx'
 
 type PaginationProps = {
@@ -23,15 +23,13 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
           ? [totalPages - 3, totalPages - 2, totalPages - 1]
           : [page - 1, page, page + 1]
 
-  function handleSubmit(event: ChangeEvent) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-
     const nextPage = Number(inputValue) - 1
 
     if (Number.isNaN(nextPage) || nextPage < 0 || nextPage >= totalPages) {
       return
     }
-
     onPageChange(nextPage)
   }
 
