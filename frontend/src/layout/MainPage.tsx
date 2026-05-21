@@ -50,10 +50,9 @@ export default function MainPage<T>({
                   <LoadingIcon />
                 </div>
               )}
+              {error && !loading && <ErrorComponent message={error} onRetry={onRetry} />}
               {totalPages > 1 && !loading && (
-                <div>
-                  <Pagination page={page} totalPages={totalPages} onPageChange={onPageChange} />
-                </div>
+                <Pagination page={page} totalPages={totalPages} onPageChange={onPageChange} />
               )}
             </>
           )}

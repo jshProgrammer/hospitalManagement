@@ -6,7 +6,7 @@ export default function NotFound() {
     <div className="flex h-full flex-col items-center justify-center gap-6">
       <PageHeader title={'404'} />
       <p className="text-dark text-xl">Page not found</p>
-      <NavItem to="/patients" label={'Back to the Startpage'}></NavItem>
+      <NavItem to="/patients" label={'Back to start page'}></NavItem>
     </div>
   )
 }

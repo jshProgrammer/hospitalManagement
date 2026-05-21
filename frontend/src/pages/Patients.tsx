@@ -6,7 +6,7 @@ import { useTableFilters } from '../hooks/useTableFilters.tsx'
 import TableFilters from '../components/TableFilters.tsx'
 import { patientFilters } from '../constants/filters.tsx'
 import { useState } from 'react'
-import { personColumns } from '../constants/colums.tsx'
+import { personColumns } from '../constants/columns.tsx'
 
 const columns = [...personColumns] satisfies (keyof Patient)[]
 

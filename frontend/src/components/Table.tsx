@@ -16,7 +16,7 @@ export default function Table<T>({ columns, data, rowStart }: TableProps<T>) {
       <table className="w-full min-w-max text-center text-sm">
         <thead className="bg-accent text-light sticky top-0 z-10">
           <tr className="divide-x divide-white/15">
-            <th> </th> {/* Empty column for row number */}
+            <th aria-label="Row count"></th> {/* Empty column for row number */}
             {columns.map(column => (
               <th key={String(column)} className="px-4 py-3 font-semibold">
                 {formatHeader(column)}
