@@ -4,9 +4,9 @@ import { mapDoctor } from '../mapper/doctorMapper.tsx'
 import { usePageData } from '../hooks/usePageData.tsx'
 import { useTableFilters } from '../hooks/useTableFilters.tsx'
 import TableFilters from '../components/TableFilters.tsx'
-import { doctorFilters } from '../constants/filters.tsx'
+import { doctorFilters } from '../constants/filters.ts'
 import { useState } from 'react'
-import { personColumns } from '../constants/columns.tsx'
+import { personColumns } from '../constants/columns.ts'
 
 const columns = [...personColumns, 'department', 'workPhone', 'type'] satisfies (keyof Doctor)[]
 

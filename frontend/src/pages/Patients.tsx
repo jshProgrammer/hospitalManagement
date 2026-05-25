@@ -4,9 +4,9 @@ import { mapPatient } from '../mapper/patientMapper.tsx'
 import { usePageData } from '../hooks/usePageData.tsx'
 import { useTableFilters } from '../hooks/useTableFilters.tsx'
 import TableFilters from '../components/TableFilters.tsx'
-import { patientFilters } from '../constants/filters.tsx'
+import { patientFilters } from '../constants/filters.ts'
 import { useState } from 'react'
-import { personColumns } from '../constants/columns.tsx'
+import { personColumns } from '../constants/columns.ts'
 
 const columns = [...personColumns] satisfies (keyof Patient)[]
 
