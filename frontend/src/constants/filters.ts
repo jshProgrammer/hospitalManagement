@@ -1,12 +1,12 @@
 import type { FilterField } from '../components/TableFilters'
 
-const genderOptions = [
+export const genderOptions = [
   { label: 'Male', value: 'm' },
   { label: 'Female', value: 'f' },
   { label: 'Diverse', value: 'd' },
 ]
 
-const doctorTypeOptions = [
+export const doctorTypeOptions = [
   { label: 'Assistant Physician', value: 'ASSISTANT_PHYSICIAN' },
   { label: 'Senior Physician', value: 'SENIOR_PHYSICIAN' },
   { label: 'Chief Physician', value: 'CHIEF_PHYSICIAN' },
@@ -16,7 +16,7 @@ const doctorTypeOptions = [
   { label: 'Head of Department', value: 'HEAD_OF_DEPARTMENT' },
 ]
 
-const drugTypeOptions = [
+export const drugTypeOptions = [
   { label: 'Tablet', value: 'tablet' },
   { label: 'Capsule', value: 'capsule' },
   { label: 'Syrup', value: 'syrup' },
@@ -29,7 +29,7 @@ const drugTypeOptions = [
   { label: 'Suppository', value: 'suppository' },
 ]
 
-const patientPersonFilters: FilterField[] = [
+export const patientPersonFilters: FilterField[] = [
   { name: 'firstName', label: 'First name', placeholder: 'Marie' },
   { name: 'lastName', label: 'Last name', placeholder: 'Meyer' },
   { name: 'email', label: 'E-Mail', placeholder: 'name@example.com' },
@@ -42,7 +42,7 @@ const patientPersonFilters: FilterField[] = [
   { name: 'streetNo', label: 'House no.', type: 'number', placeholder: '12' },
 ]
 
-const employeePersonFilters: FilterField[] = [
+export const employeePersonFilters: FilterField[] = [
   ...patientPersonFilters.slice(0, 4),
   { name: 'gender', label: 'Gender', type: 'select', options: genderOptions },
   ...patientPersonFilters.slice(4),

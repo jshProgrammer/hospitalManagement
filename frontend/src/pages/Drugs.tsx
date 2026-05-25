@@ -4,7 +4,7 @@ import { mapDrug } from '../mapper/drugMapper.tsx'
 import { usePageData } from '../hooks/usePageData.tsx'
 import { useTableFilters } from '../hooks/useTableFilters.tsx'
 import TableFilters from '../components/TableFilters.tsx'
-import { drugFilters } from '../constants/filters.tsx'
+import { drugFilters } from '../constants/filters.ts'
 import { useState } from 'react'
 
 const columns = ['name', 'activeIngredient', 'type', 'stock'] satisfies (keyof Drug)[]

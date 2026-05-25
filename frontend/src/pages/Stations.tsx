@@ -4,7 +4,7 @@ import { mapStation } from '../mapper/stationMapper.tsx'
 import { usePageData } from '../hooks/usePageData.tsx'
 import { useTableFilters } from '../hooks/useTableFilters.tsx'
 import TableFilters from '../components/TableFilters.tsx'
-import { stationFilters } from '../constants/filters.tsx'
+import { stationFilters } from '../constants/filters.ts'
 import { useState } from 'react'
 
 const columns = ['name', 'departmentId', 'departmentName', 'building'] satisfies (keyof Station)[]
