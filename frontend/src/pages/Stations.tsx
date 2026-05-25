@@ -4,19 +4,19 @@ import { mapStation } from '../mapper/stationMapper.tsx'
 import { usePageData } from '../hooks/usePageData.tsx'
 import { useTableFilters } from '../hooks/useTableFilters.tsx'
 import TableFilters from '../components/TableFilters.tsx'
-import { stationFilters } from '../constants'
+import { stationFilters } from '../constants/filters.ts'
+import { useState } from 'react'
 
-const columns = [
-  { key: 'id', header: 'ID' },
-  { key: 'name', header: 'Name' },
-  { key: 'departmentId', header: 'Abteilungs-ID' },
-  { key: 'departmentName', header: 'Abteilung' },
-  { key: 'building', header: 'Gebäude' },
-] satisfies { key: keyof Station; header: string }[]
+const columns = ['name', 'departmentId', 'departmentName', 'building'] satisfies (keyof Station)[]
 
 export function Stations() {
-  const { filters, setFilters, url } = useTableFilters('/api/stations?sort=id,asc&size=30')
-  const { data, loading, error, reload } = usePageData<StationApi, Station>(url, mapStation)
+  const [page, setPage] = useState(0)
+  const { filters, setFilters, url } = useTableFilters(`/api/stations`)
+  const { data, loading, error, reload, totalPages } = usePageData<StationApi, Station>(
+    url,
+    page,
+    mapStation
+  )
 
   return (
     <MainPage
@@ -26,6 +26,9 @@ export function Stations() {
       loading={loading}
       error={error}
       onRetry={reload}
+      page={page}
+      totalPages={totalPages}
+      onPageChange={setPage}
       filters={<TableFilters fields={stationFilters} values={filters} onChange={setFilters} />}
     />
   )

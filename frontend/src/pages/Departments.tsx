@@ -4,18 +4,17 @@ import { mapDepartment } from '../mapper/departmentMapper.tsx'
 import { usePageData } from '../hooks/usePageData.tsx'
 import { useTableFilters } from '../hooks/useTableFilters.tsx'
 import TableFilters from '../components/TableFilters.tsx'
-import { departmentFilters } from '../constants'
+import { departmentFilters } from '../constants/filters.ts'
+import { useState } from 'react'
 
-const columns = [
-  { key: 'id', header: 'ID' },
-  { key: 'name', header: 'Name' },
-  { key: 'building', header: 'Gebäude' },
-] satisfies { key: keyof Department; header: string }[]
+const columns = ['name', 'building'] satisfies (keyof Department)[]
 
 export function Departments() {
-  const { filters, setFilters, url } = useTableFilters('/api/departments?sort=id,asc&size=30')
-  const { data, loading, error, reload } = usePageData<DepartmentApi, Department>(
+  const [page, setPage] = useState(0)
+  const { filters, setFilters, url } = useTableFilters(`/api/departments`)
+  const { data, loading, error, reload, totalPages } = usePageData<DepartmentApi, Department>(
     url,
+    page,
     mapDepartment
   )
 
@@ -27,6 +26,9 @@ export function Departments() {
       loading={loading}
       error={error}
       onRetry={reload}
+      page={page}
+      totalPages={totalPages}
+      onPageChange={setPage}
       filters={<TableFilters fields={departmentFilters} values={filters} onChange={setFilters} />}
     />
   )

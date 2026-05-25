@@ -4,19 +4,19 @@ import { mapDrug } from '../mapper/drugMapper.tsx'
 import { usePageData } from '../hooks/usePageData.tsx'
 import { useTableFilters } from '../hooks/useTableFilters.tsx'
 import TableFilters from '../components/TableFilters.tsx'
-import { drugFilters } from '../constants'
+import { drugFilters } from '../constants/filters.ts'
+import { useState } from 'react'
 
-const columns = [
-  { key: 'id', header: 'ID' },
-  { key: 'name', header: 'Name' },
-  { key: 'activeIngredient', header: 'Wirkstoff' },
-  { key: 'type', header: 'Typ' },
-  { key: 'stock', header: 'Bestand' },
-] satisfies { key: keyof Drug; header: string }[]
+const columns = ['name', 'activeIngredient', 'type', 'stock'] satisfies (keyof Drug)[]
 
 export function Drugs() {
-  const { filters, setFilters, url } = useTableFilters('/api/drugs?sort=id,asc&size=30')
-  const { data, loading, error, reload } = usePageData<DrugApi, Drug>(url, mapDrug)
+  const [page, setPage] = useState(0)
+  const { filters, setFilters, url } = useTableFilters(`/api/drugs`)
+  const { data, loading, error, reload, totalPages } = usePageData<DrugApi, Drug>(
+    url,
+    page,
+    mapDrug
+  )
 
   return (
     <MainPage
@@ -26,6 +26,9 @@ export function Drugs() {
       loading={loading}
       error={error}
       onRetry={reload}
+      page={page}
+      totalPages={totalPages}
+      onPageChange={setPage}
       filters={<TableFilters fields={drugFilters} values={filters} onChange={setFilters} />}
     />
   )

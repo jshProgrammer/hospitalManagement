@@ -1,66 +1,116 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+const BATCH_SIZE = 5
+export const DEFAULT_PAGE_SIZE = 50
+
 type PageResponse<TApi> = {
   content: TApi[]
+  totalPages: number
+  totalElements: number
+  numberOfElements: number
+  size: number
 }
-export function usePageData<TApi, TData>(url: string, mapper: (item: TApi) => TData) {
+export function usePageData<TApi, TData>(
+  endpoint: string,
+  page: number,
+  mapper: (item: TApi) => TData
+) {
   const [data, setData] = useState<TData[]>([])
+  const [totalPages, setTotalPages] = useState(0)
+  const [totalElements, setTotalElements] = useState(0)
+  const [numberOfElements, setNumberOfElements] = useState(0)
+
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const controllerRef = useRef<AbortController | null>(null)
 
-  const loadData = useCallback(
-    async () => {
-      controllerRef.current?.abort()
+  const buildUrl = useCallback(
+    (batchPage: number) => {
+      const [path, query = ''] = endpoint.split('?')
+      const params = new URLSearchParams(query)
 
-      const controller = new AbortController()
-      controllerRef.current = controller
+      params.set('sort', 'id,asc')
+      params.set('page', String(batchPage))
+      params.set('size', String(BATCH_SIZE))
 
-      try {
-        await Promise.resolve()
+      return `${path}?${params.toString()}`
+    },
+    [endpoint]
+  )
+
+  const loadData = useCallback(async () => {
+    controllerRef.current?.abort()
+
+    const controller = new AbortController()
+    controllerRef.current = controller
+
+    const firstBatchPage = page * Math.floor(DEFAULT_PAGE_SIZE / BATCH_SIZE)
+    const batchCount = Math.floor(DEFAULT_PAGE_SIZE / BATCH_SIZE)
+
+    try {
+      setLoading(true)
+      setError(null)
+      setData([])
+      setNumberOfElements(0)
+
+      for (let index = 0; index < batchCount; index++) {
         if (controller.signal.aborted) {
           return
         }
 
-        setLoading(true)
-        setError(null)
-        const response = await fetch(url, { signal: controller.signal })
+        const response = await fetch(buildUrl(firstBatchPage + index), {
+          signal: controller.signal,
+        })
 
         if (!response.ok) {
           setError(`Error fetching data: ${response.statusText} (${response.status})`)
           return
         }
-        const page: PageResponse<TApi> = await response.json()
-        setData(page.content.map(mapper))
-      } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') {
-          return
-        }
 
-        console.error(err)
-        setError(err instanceof Error ? err.message : 'Unknown Error')
-      } finally {
-        if (controllerRef.current === controller) {
-          setLoading(false)
+        const pageResponse: PageResponse<TApi> = await response.json()
+        const mappedData = pageResponse.content.map(mapper)
+
+        setData(previous => [...previous, ...mappedData])
+        setTotalElements(pageResponse.totalElements)
+        setTotalPages(Math.ceil(pageResponse.totalElements / DEFAULT_PAGE_SIZE))
+        setNumberOfElements(previous => previous + pageResponse.numberOfElements)
+
+        if (pageResponse.content.length < BATCH_SIZE) {
+          break
         }
       }
-    },
-    [url, mapper]
-  )
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        return
+      }
+
+      console.error(err)
+      setError(err instanceof Error ? err.message : 'Unknown Error')
+    } finally {
+      if (controllerRef.current === controller) {
+        setLoading(false)
+      }
+    }
+  }, [buildUrl, mapper, page])
 
   useEffect(() => {
-    let cancelled = false
-
-    queueMicrotask(() => {
-      if (!cancelled) {
-        void loadData()
-      }
-    })
+    const timeoutId = window.setTimeout(() => {
+      void loadData()
+    }, 0)
 
     return () => {
-      cancelled = true
+      window.clearTimeout(timeoutId)
       controllerRef.current?.abort()
     }
   }, [loadData])
-  return { data, loading, error, reload: loadData }
+
+  return {
+    data,
+    loading,
+    error,
+    reload: loadData,
+    totalPages,
+    totalElements,
+    numberOfElements,
+  }
 }
