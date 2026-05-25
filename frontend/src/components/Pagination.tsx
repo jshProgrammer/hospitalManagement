@@ -1,4 +1,3 @@
-import { type FormEvent, useEffect, useState } from 'react'
 import Button from './Button.tsx'
 
 type PaginationProps = {
@@ -8,12 +7,6 @@ type PaginationProps = {
 }
 
 export default function Pagination({ page, totalPages, onPageChange }: PaginationProps) {
-  const [inputValue, setInputValue] = useState(String(page + 1))
-
-  useEffect(() => {
-    setInputValue(String(page + 1))
-  }, [page])
-
   const visiblePages =
     totalPages <= 3
       ? Array.from({ length: totalPages }, (_, index) => index)
@@ -23,9 +16,10 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
           ? [totalPages - 3, totalPages - 2, totalPages - 1]
           : [page - 1, page, page + 1]
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const nextPage = Number(inputValue) - 1
+  function handleSubmit(form: HTMLFormElement) {
+    const formData = new FormData(form)
+    const pageInput = String(formData.get('page') ?? '')
+    const nextPage = Number(pageInput) - 1
 
     if (Number.isNaN(nextPage) || nextPage < 0 || nextPage >= totalPages) {
       return
@@ -60,15 +54,24 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
         />
       </div>
 
-      <form onSubmit={handleSubmit} className="flex items-center gap-2">
+      <form
+        onSubmit={event => {
+          event.preventDefault()
+          handleSubmit(event.currentTarget)
+        }}
+        className="flex items-center gap-2"
+      >
         <span className="text-muted text-sm">Page</span>
         <input
-          value={inputValue}
-          onChange={event => setInputValue(event.target.value)}
-          onFocus={() => setInputValue('')}
-          onBlur={() => {
-            if (inputValue.trim() === '') {
-              setInputValue(String(page + 1))
+          key={page}
+          name="page"
+          defaultValue={String(page + 1)}
+          onFocus={event => {
+            event.currentTarget.value = ''
+          }}
+          onBlur={event => {
+            if (event.currentTarget.value.trim() === '') {
+              event.currentTarget.value = String(page + 1)
             }
           }}
           className="border-border bg-background text-dark focus:border-accent w-20 rounded-md border px-3 py-2 text-sm outline-none"

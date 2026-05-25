@@ -44,8 +44,8 @@ export function usePageData<TApi, TData>(
     const controller = new AbortController()
     controllerRef.current = controller
 
-    const firstBatchPage = page * (DEFAULT_PAGE_SIZE / BATCH_SIZE)
-    const batchCount = DEFAULT_PAGE_SIZE / BATCH_SIZE
+    const firstBatchPage = page * Math.floor(DEFAULT_PAGE_SIZE / BATCH_SIZE)
+    const batchCount = Math.floor(DEFAULT_PAGE_SIZE / BATCH_SIZE)
 
     try {
       setLoading(true)
@@ -94,12 +94,16 @@ export function usePageData<TApi, TData>(
   }, [buildUrl, mapper, page])
 
   useEffect(() => {
-    void loadData()
+    const timeoutId = window.setTimeout(() => {
+      void loadData()
+    }, 0)
 
     return () => {
+      window.clearTimeout(timeoutId)
       controllerRef.current?.abort()
     }
   }, [loadData])
+
   return {
     data,
     loading,
