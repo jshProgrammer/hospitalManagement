@@ -5,9 +5,8 @@ import org.hospitalmanagement.api.facilities.requestModels.RelocateRequest
 import org.hospitalmanagement.models.classes.facilities.Booking
 import org.hospitalmanagement.models.enums.BookingState
 import org.hospitalmanagement.service.facilities.BookingService
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 
@@ -19,14 +18,18 @@ class BookingController(
 
     @GetMapping
     fun getAll(
-        pageable: Pageable,
+        @RequestParam(required = false) after: Long?,
+        @RequestParam(defaultValue = "10") limit: Int,
         @RequestParam(required = false) state: BookingState?
-    ): Any {
-        return if (state != null) {
-            bookingService.getByState(state)
-        } else {
-            bookingService.getAll(pageable)
-        }
+    ): ResponseEntity<Map<String, Any>> {
+        val raw = bookingService.searchPaginated(after, limit + 1, state)
+        val hasMore = raw.size > limit
+        val bookings = if (hasMore) raw.dropLast(1) else raw
+        return ResponseEntity.ok(mapOf(
+            "bookings" to bookings,
+            "nextCursor" to (bookings.lastOrNull()?.id ?: 0),
+            "hasMore" to hasMore
+        ))
     }
 
     @GetMapping("/{id}")

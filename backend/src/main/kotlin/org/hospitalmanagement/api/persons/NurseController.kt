@@ -1,13 +1,10 @@
 package org.hospitalmanagement.api.persons
 
 import org.hospitalmanagement.api.persons.requestModels.*
-import org.hospitalmanagement.models.classes.persons.Nurse
-import org.hospitalmanagement.models.classes.persons.Patient
 import org.hospitalmanagement.models.enums.Gender
 import org.hospitalmanagement.service.persons.NurseService
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.util.*
@@ -68,7 +65,8 @@ class NurseController(private val nurseService: NurseService) {
 
     @GetMapping()
     fun getNurses(
-        pageable: Pageable,
+        @RequestParam(required = false) after: Long?,
+        @RequestParam(defaultValue = "10") limit: Int,
         @RequestParam(required = false) firstName: String?,
         @RequestParam(required = false) lastName: String?,
         @RequestParam(required = false) email: String?,
@@ -80,24 +78,21 @@ class NurseController(private val nurseService: NurseService) {
         @RequestParam(required = false) plz: Int?,
         @RequestParam(required = false) street: String?,
         @RequestParam(required = false) streetNo: Int?,
-        @RequestParam(required = false) stationId: Int?,
-        @RequestParam(required = false) departmentId: Long?,
-    ): Page<Nurse> {
-        return nurseService.searchNurses(
-            pageable,
-            firstName,
-            lastName,
-            email,
-            phone,
-            gender,
-            city,
-            country,
-            birthday,
-            plz,
-            street,
-            streetNo,
-            stationId,
-            departmentId
+        @RequestParam(required = false) stationId: Long?,
+        @RequestParam(required = false) departmentId: Long?
+    ): ResponseEntity<Map<String, Any>> {
+        val raw = nurseService.searchNursesPaginated(
+            after, limit + 1,
+            firstName, lastName, email, phone, gender,
+            city, country, birthday, plz, street, streetNo,
+            stationId, departmentId
         )
+        val hasMore = raw.size > limit
+        val nurses = if (hasMore) raw.dropLast(1) else raw
+        return ResponseEntity.ok(mapOf(
+            "nurses" to nurses,
+            "nextCursor" to (nurses.lastOrNull()?.id ?: 0),
+            "hasMore" to hasMore
+        ))
     }
 }

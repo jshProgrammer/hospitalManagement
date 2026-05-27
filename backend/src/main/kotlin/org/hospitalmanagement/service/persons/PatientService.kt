@@ -5,6 +5,7 @@ import org.hospitalmanagement.api.persons.requestModels.PatientRequest
 import org.hospitalmanagement.api.persons.requestModels.PersonCreateRequest
 import org.hospitalmanagement.dbRepositories.facilities.BookingsRepository
 import org.hospitalmanagement.dbRepositories.medication.DiagnosisRepository
+import org.hospitalmanagement.specifications.medication.DiagnosisSpecification
 import org.hospitalmanagement.dbRepositories.persons.PatientRepository
 import org.hospitalmanagement.dbRepositories.persons.PersonRepository
 import org.hospitalmanagement.models.classes.facilities.Booking
@@ -14,7 +15,9 @@ import org.hospitalmanagement.models.classes.persons.Patient
 import org.hospitalmanagement.models.classes.persons.Person
 import org.hospitalmanagement.models.enums.Gender
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -153,9 +156,49 @@ class PatientService(
         }
     }
 
+    fun searchPatientsPaginated(
+        after: Long?,
+        limit: Int,
+        firstName: String?,
+        lastName: String?,
+        email: String?,
+        phone: String?,
+        gender: Gender?,
+        city: String?,
+        country: String?,
+        birthday: Date?,
+        plz: Int?,
+        street: String?,
+        streetNo: Int?
+    ): List<Patient> {
+        var spec = Specification.where<Patient>(null)
+
+        if (after != null) spec = spec.and(PatientSpecifications.afterId(after))
+        if (!firstName.isNullOrBlank()) spec = spec.and(PatientSpecifications.hasFirstName(firstName))
+        if (!lastName.isNullOrBlank()) spec = spec.and(PatientSpecifications.hasLastName(lastName))
+        if (!email.isNullOrBlank()) spec = spec.and(PatientSpecifications.hasEmail(email))
+        if (!phone.isNullOrBlank()) spec = spec.and(PatientSpecifications.hasPhone(phone))
+        if (gender != null) spec = spec.and(PatientSpecifications.hasGender(gender))
+        if (!city.isNullOrBlank()) spec = spec.and(PatientSpecifications.hasCity(city))
+        if (!country.isNullOrBlank()) spec = spec.and(PatientSpecifications.hasCountry(country))
+        if (birthday != null) spec = spec.and(PatientSpecifications.hasBirthday(birthday))
+        if (plz != null) spec = spec.and(PatientSpecifications.hasPlz(plz))
+        if (!street.isNullOrBlank()) spec = spec.and(PatientSpecifications.hasStreet(street))
+        if (streetNo != null) spec = spec.and(PatientSpecifications.hasStreetNo(streetNo))
+
+        val pageable = PageRequest.of(0, limit, Sort.by(Sort.Order.asc("id")))
+        return patientRepository.findAll(spec, pageable).content
+    }
+
     fun getBookingsByPersonID(personID: Long, pageable: Pageable): Page<Booking> =
         bookingsRepository.findByPatientId(personID, pageable)
 
+    fun getDiagnosesPaginated(patientID: Long, after: Long?, limit: Int): List<Diagnosis> {
+        var spec = DiagnosisSpecification.hasDiagnosedPatientId(patientID)
+        if (after != null) spec = spec.and(DiagnosisSpecification.afterId(after))
+        val pageable = PageRequest.of(0, limit, Sort.by(Sort.Order.asc("id")))
+        return diagnosisRepository.findAll(spec, pageable).content
+    }
 
     fun getDiagnoses(patientID: Long, pageable: Pageable): Page<Diagnosis> =
         diagnosisRepository.findByDiagnosedPatientId(patientID, pageable)

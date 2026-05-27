@@ -7,6 +7,7 @@ import org.hospitalmanagement.models.enums.DoseUnit
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Bean
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -14,6 +15,7 @@ import org.springframework.data.util.Optionals.ifPresentOrElse
 import org.springframework.data.domain.Pageable;
 
 @SpringBootApplication
+@EnableCaching
 class HospitalApplication {
 
     // MARK: Employee Operations

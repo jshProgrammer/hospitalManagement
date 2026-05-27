@@ -9,7 +9,9 @@ import org.hospitalmanagement.models.classes.medication.Diagnosis
 import org.hospitalmanagement.models.enums.DrugsType
 import org.hospitalmanagement.specifications.medication.DiagnosisSpecification
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
@@ -41,6 +43,27 @@ class DiagnosisService(
             diagnosedByDoctorId, diagnosedPatientId, diagnosedAfter, diagnosedBefore
         )
         return diagnosisRepository.findAll(spec, pageable)
+    }
+
+    fun searchPaginated(
+        after: Long?,
+        limit: Int,
+        disease: String?,
+        diseaseContains: String?,
+        medicationId: Long?,
+        drugType: DrugsType?,
+        diagnosedByDoctorId: Long?,
+        diagnosedPatientId: Long?,
+        diagnosedAfter: Date?,
+        diagnosedBefore: Date?
+    ): List<Diagnosis> {
+        var spec = DiagnosisSpecification.build(
+            disease, diseaseContains, medicationId, drugType,
+            diagnosedByDoctorId, diagnosedPatientId, diagnosedAfter, diagnosedBefore
+        )
+        if (after != null) spec = spec.and(DiagnosisSpecification.afterId(after))
+        val pageable = PageRequest.of(0, limit, Sort.by(Sort.Order.asc("id")))
+        return diagnosisRepository.findAll(spec, pageable).content
     }
 
     fun findById(id: Long): Diagnosis? =

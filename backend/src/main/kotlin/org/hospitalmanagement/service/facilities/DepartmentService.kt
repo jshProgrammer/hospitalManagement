@@ -3,6 +3,7 @@ package org.hospitalmanagement.service.facilities
 import org.hospitalmanagement.dbRepositories.facilities.DepartmentRepository
 import org.hospitalmanagement.dbRepositories.facilities.DepartmentSpecifications
 import org.hospitalmanagement.models.classes.facilities.Department
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.Specification
@@ -13,9 +14,11 @@ import org.springframework.stereotype.Service
 class DepartmentService(
     private val departmentRepository: DepartmentRepository
 ) {
+    @Cacheable("departments")
     fun getById(id: Long): Department? =
         departmentRepository.findById(id).orElse(null)
 
+    @Cacheable("departments-search")
     fun search(
         pageable: Pageable,
         name: String?,

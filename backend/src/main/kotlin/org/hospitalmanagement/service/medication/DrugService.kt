@@ -4,6 +4,7 @@ import org.hospitalmanagement.dbRepositories.medication.DrugsRepository
 import org.hospitalmanagement.dbRepositories.medication.DrugsSpecifications
 import org.hospitalmanagement.models.classes.medication.Drug
 import org.hospitalmanagement.models.enums.DrugsType
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.Specification
@@ -11,10 +12,12 @@ import org.springframework.stereotype.Service
 
 @Service
 class DrugService(private val drugsRepository: DrugsRepository) {
+    @Cacheable("drugs")
     fun findById(id: Long): Drug? =
         drugsRepository.findById(id).orElse(null)
 
 
+    @Cacheable("drugs-search")
     fun search(
         pageable: Pageable,
         name: String?,

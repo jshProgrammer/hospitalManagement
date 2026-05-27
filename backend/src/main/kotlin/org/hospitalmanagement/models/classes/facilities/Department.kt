@@ -3,7 +3,12 @@ package org.hospitalmanagement.models.classes.facilities
 import jakarta.persistence.*
 
 @Entity
-@Table(name="department")
+@Table(
+    name = "department",
+    indexes = [
+        Index(name = "department_pkey", columnList = "id", unique = true),
+    ]
+)
 class Department(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

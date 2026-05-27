@@ -1,13 +1,11 @@
 package org.hospitalmanagement.api.persons
 
 import org.hospitalmanagement.api.persons.requestModels.*
-import org.hospitalmanagement.models.classes.persons.Doctor
 import org.hospitalmanagement.models.enums.DoctorsType
 import org.hospitalmanagement.models.enums.Gender
 import org.hospitalmanagement.service.persons.DoctorService
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.util.*
@@ -60,7 +58,8 @@ class DoctorController(private val doctorService: DoctorService) {
 
     @GetMapping()
     fun getDoctors(
-        pageable: Pageable,
+        @RequestParam(required = false) after: Long?,
+        @RequestParam(defaultValue = "10") limit: Int,
         @RequestParam(required = false) firstName: String?,
         @RequestParam(required = false) lastName: String?,
         @RequestParam(required = false) email: String?,
@@ -74,24 +73,20 @@ class DoctorController(private val doctorService: DoctorService) {
         @RequestParam(required = false) streetNo: Int?,
         @RequestParam(required = false) type: DoctorsType?,
         @RequestParam(required = false) departmentId: Long?,
-        @RequestParam(required = false) workPhone: String?,
-    ): Page<Doctor> {
-        return doctorService.searchDoctors(
-            pageable,
-            firstName,
-            lastName,
-            email,
-            phone,
-            gender,
-            city,
-            country,
-            birthday,
-            plz,
-            street,
-            streetNo,
-            type,
-            departmentId,
-            workPhone
+        @RequestParam(required = false) workPhone: String?
+    ): ResponseEntity<Map<String, Any>> {
+        val raw = doctorService.searchDoctorsPaginated(
+            after, limit + 1,
+            firstName, lastName, email, phone, gender,
+            city, country, birthday, plz, street, streetNo,
+            type, departmentId, workPhone
         )
+        val hasMore = raw.size > limit
+        val doctors = if (hasMore) raw.dropLast(1) else raw
+        return ResponseEntity.ok(mapOf(
+            "doctors" to doctors,
+            "nextCursor" to (doctors.lastOrNull()?.id ?: 0),
+            "hasMore" to hasMore
+        ))
     }
 }

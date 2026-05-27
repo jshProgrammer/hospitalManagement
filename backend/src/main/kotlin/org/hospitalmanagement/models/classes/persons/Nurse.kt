@@ -6,7 +6,13 @@ import org.hospitalmanagement.models.classes.facilities.Station
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "nurses")
+@Table(
+    name = "nurses",
+    indexes = [
+        Index(name = "nurses_pkey", columnList = "id", unique = true),
+        Index(name = "idx_nurses_station_id", columnList = "station")
+    ]
+)
 class Nurse (
     @Id
     val id: Long? = null,

@@ -5,7 +5,14 @@ import jakarta.persistence.*
 import org.hospitalmanagement.models.enums.Gender
 
 @Entity
-@Table(name = "person")
+@Table(
+    name = "person",
+    indexes = [
+        Index(name = "person_pkey", columnList = "id", unique = true),
+        Index(name = "idx_person_city_id", columnList = "city, id"),
+        Index(name = "idx_person_last_first_id", columnList = "lastName, firstName, id")
+    ]
+)
 class Person(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -5,7 +5,14 @@ import org.hospitalmanagement.models.enums.DoctorsType
 import org.hospitalmanagement.models.enums.DoctorsTypeConverter
 
 @Entity
-@Table(name = "doctors")
+@Table(
+        name = "doctors",
+        indexes = [
+                Index(name = "doctors_pkey", columnList = "id", unique = true),
+                Index(name = "idx_doctors_work_phone", columnList = "workPhone"),
+                Index(name = "idx_doctors_type_id", columnList = "type, id")
+        ]
+)
 class Doctor(
         @Id
         val id: Long? = null, // = employee id

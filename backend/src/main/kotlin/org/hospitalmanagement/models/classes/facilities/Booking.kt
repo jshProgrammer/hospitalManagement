@@ -7,7 +7,16 @@ import java.util.Date
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "bookings")
+@Table(
+    name = "bookings",
+    indexes = [
+        Index(name = "bookings_pkey", columnList = "id", unique = true),
+        Index(name = "idx_bookings_from_id", columnList = "\"from\", id"),
+        Index(name = "idx_bookings_patient_from_id", columnList = "patient, \"from\", id"),
+        Index(name = "idx_bookings_room_from_until", columnList = "room, \"from\", until"),
+        Index(name = "idx_bookings_state_from_id", columnList = "state, \"from\", id")
+    ]
+)
 data class Booking(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -8,7 +8,13 @@ import jakarta.persistence.*
 
 
 @Entity
-@Table(name = "dose")
+@Table(
+    name = "dose",
+    indexes = [
+        Index(name = "dose_pkey", columnList = "id", unique = true),
+        Index(name = "idx_dose_unit_frequency", columnList = "unit, frequency")
+    ]
+)
 class Dose(
     @Id
     val id: Long,

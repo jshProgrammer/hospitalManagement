@@ -158,4 +158,7 @@ object NurseSpecifications {
                 stationId
             )
         }
+
+    fun afterId(id: Long): Specification<Nurse> =
+        Specification { root, _, cb -> cb.greaterThan(root.get("id"), id) }
 }

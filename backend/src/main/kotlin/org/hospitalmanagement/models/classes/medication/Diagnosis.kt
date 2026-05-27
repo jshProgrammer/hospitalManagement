@@ -9,7 +9,17 @@ import java.util.Date
 import java.util.Optional
 
 @Entity
-@Table(name = "diagnosis")
+@Table(
+    name = "diagnosis",
+    indexes = [
+        Index(name = "diagnosis_pkey", columnList = "id", unique = true),
+        Index(name = "idx_diagnosis_date_id", columnList = "diagnosed_at, id"),
+        Index(name = "idx_diagnosis_disease_date", columnList = "disease, diagnosed_at"),
+        Index(name = "idx_diagnosis_doctor_date_id", columnList = "diagnosed_by, diagnosed_at, id"),
+        Index(name = "idx_diagnosis_medication", columnList = "medication"),
+        Index(name = "idx_diagnosis_patient_date_id", columnList = "diagnosed_patient, diagnosed_at, id")
+    ]
+)
 class Diagnosis(
 
     @Id
