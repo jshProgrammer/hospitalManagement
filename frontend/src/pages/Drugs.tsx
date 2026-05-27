@@ -26,9 +26,12 @@ export function Drugs() {
       loading={loading}
       error={error}
       onRetry={reload}
-      page={page}
-      totalPages={totalPages}
-      onPageChange={setPage}
+      pagination={{
+        type: 'page',
+        page,
+        totalPages,
+        onPageChange: setPage,
+      }}
       filters={<TableFilters fields={drugFilters} values={filters} onChange={setFilters} />}
     />
   )
