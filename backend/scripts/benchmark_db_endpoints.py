@@ -396,9 +396,6 @@ def summarize(name: str, method: str, path: str, query: dict[str, Any], samples:
 
 def benchmark_endpoint(args: argparse.Namespace, endpoint: Endpoint, path: str) -> dict[str, Any]:
     query = endpoint_query(args, endpoint)
-    query = {"page": args.page_number, "size": args.page_size, **endpoint.query}
-    if "/{" not in endpoint.path_template and endpoint.name.endswith(".by_id"):
-        query = endpoint.query
 
     if args.warmup:
         log(f"  warmup {endpoint.name} ({args.warmup} request(s))")
