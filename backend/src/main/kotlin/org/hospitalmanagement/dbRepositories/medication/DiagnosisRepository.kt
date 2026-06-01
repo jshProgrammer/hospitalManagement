@@ -14,6 +14,11 @@ interface DiagnosisRepository : JpaRepository<Diagnosis, Long>, JpaSpecification
 
     fun findByDiagnosedPatientId(diagnosedPatientID: Long, pageable: Pageable): Page<Diagnosis>
 
+    // Hash-based search for encrypted disease field
+    fun findByDiseaseHash(diseaseHash: String): List<Diagnosis>
+
+    fun findByDiseaseHash(diseaseHash: String, pageable: Pageable): Page<Diagnosis>
+
     @EntityGraph(attributePaths = [
         "medication", "medication.dose", "medication.drug",
         "diagnosedBy", "diagnosedBy.employee", "diagnosedBy.employee.person",
@@ -21,3 +26,4 @@ interface DiagnosisRepository : JpaRepository<Diagnosis, Long>, JpaSpecification
     ])
     override fun findAll(spec: Specification<Diagnosis>?, pageable: Pageable): Page<Diagnosis>
 }
+
