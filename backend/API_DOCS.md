@@ -148,7 +148,7 @@ Response: `{ "bookings": [...], "nextCursor": <long>, "hasMore": <bool> }`
 ```json
 {
   "from": "2024-03-01",
-  "until": "2024-03-05", 
+  "until": "2024-03-05",
   "state": "CONFIRMED",
   "room_id": 1,
   "patient_id": 1
@@ -183,10 +183,14 @@ Response: `{ "bookings": [...], "nextCursor": <long>, "hasMore": <bool> }`
 | `gender` | `Gender` | no | Filter by gender. |
 | `city` | string | no | Exact city. |
 | `country` | string | no | Exact country. |
-| `birthday` | date | no | Exact birthday. |
-| `plz` | int | no | Postal code. |
-| `street` | string | no | Exact street. |
+| `birthday` | string | no | Exact birthday (ISO date string, e.g. `2005-07-16`). Matched via blind index — only exact matches, no range queries. |
+| `plz` | string | no | Postal code (e.g. `"97070"`). Matched via blind index — only exact matches. |
+| `street` | string | no | Exact street. Matched via blind index — only exact matches. |
 | `streetNo` | int | no | House number. |
+
+> **Note on encrypted fields:** `firstName`, `lastName`, `plz`, `city`, `street`, `birthday`, `phone`, and `email` are stored encrypted. Each field is accompanied by a corresponding `*Hash` field (e.g. `firstNameHash`, `plzHash`) used for blind-index filtering. 
+> All these fields are returned in plaintext in the response alongside their hash. 
+> Filtering is supported via exact match only — `LIKE` / partial and range queries (`<=`, `>=`) are **not** supported for these fields.
 
 Response: `{ "patients": [...], "nextCursor": <long>, "hasMore": <bool> }`
 
@@ -201,7 +205,7 @@ Response: `{ "patients": [...], "nextCursor": <long>, "hasMore": <bool> }`
   "lastName": "Pellum",
   "email": "lacey.pellum@example.invalid",
   "phoneNumber": "015784699114",
-  "plz": 97070,
+  "plz": "97070",
   "city": "Wuerzburg",
   "street": "Example Street",
   "houseNumber": "12",
@@ -240,9 +244,9 @@ Response: `{ "patients": [...], "nextCursor": <long>, "hasMore": <bool> }`
 | `gender` | `Gender` | no | Filter by gender. |
 | `city` | string | no | Exact city. |
 | `country` | string | no | Exact country. |
-| `birthday` | date | no | Exact birthday. |
-| `plz` | int | no | Postal code. |
-| `street` | string | no | Exact street. |
+| `birthday` | string | no | Exact birthday (ISO date string, e.g. `2005-07-16`). Matched via blind index — only exact matches. |
+| `plz` | string | no | Postal code (e.g. `"97070"`). Matched via blind index — only exact matches. |
+| `street` | string | no | Exact street. Matched via blind index — only exact matches. |
 | `streetNo` | int | no | House number. |
 | `type` | `DoctorsType` | no | Filter by doctor type. |
 | `departmentId` | long | no | Filter by department id. |
@@ -259,7 +263,7 @@ Response: `{ "doctors": [...], "nextCursor": <long>, "hasMore": <bool> }`
   "lastName": "Morgan",
   "email": "alex.morgan@example.invalid",
   "phoneNumber": "015123456789",
-  "plz": 97070,
+  "plz": "97070",
   "city": "Wuerzburg",
   "street": "Clinic Road",
   "houseNumber": "8",
@@ -305,9 +309,9 @@ Response: `{ "doctors": [...], "nextCursor": <long>, "hasMore": <bool> }`
 | `gender` | `Gender` | no | Filter by gender. |
 | `city` | string | no | Exact city. |
 | `country` | string | no | Exact country. |
-| `birthday` | date | no | Exact birthday. |
-| `plz` | int | no | Postal code. |
-| `street` | string | no | Exact street. |
+| `birthday` | string | no | Exact birthday (ISO date string, e.g. `2005-07-16`). Matched via blind index — only exact matches. |
+| `plz` | string | no | Postal code (e.g. `"97070"`). Matched via blind index — only exact matches. |
+| `street` | string | no | Exact street. Matched via blind index — only exact matches. |
 | `streetNo` | int | no | House number. |
 | `stationId` | long | no | Filter by station id. |
 | `departmentId` | long | no | Filter by department id. |
@@ -323,7 +327,7 @@ Response: `{ "nurses": [...], "nextCursor": <long>, "hasMore": <bool> }`
   "lastName": "Reed",
   "email": "jamie.reed@example.invalid",
   "phoneNumber": "015987654321",
-  "plz": 97070,
+  "plz": "97070",
   "city": "Wuerzburg",
   "street": "Clinic Road",
   "houseNumber": "9",
@@ -471,3 +475,47 @@ Pass `nextCursor` as `after` in the next request to fetch the following page. Wh
 Most `GET /{id}` endpoints return `404 NOT_FOUND` when the resource does not exist.
 
 When combining `nameContains` and `name` filtering, a `400 BAD_REQUEST` error is returned.
+
+### Encrypted Fields & Blind Indexing
+
+Several fields on the `person` object are stored encrypted at rest. Each encrypted field is returned in plaintext alongside a corresponding `*Hash` field containing the blind index used for exact-match filtering. The following fields are encrypted:
+
+`firstName`, `lastName`, `plz`, `city`, `street`, `birthday`, `phone`, `email`
+
+**Filtering restrictions:** These fields support **exact match only**. `LIKE`/contains queries and range comparisons (`<=`, `>=`) are **not** supported.
+
+Example `patients` response with encrypted fields:
+
+```json
+{
+  "patients": [
+    {
+      "id": 7,
+      "person": {
+        "id": 8,
+        "gender": "f",
+        "firstName": "Rollie",
+        "lastName": "Odin",
+        "firstNameHash": "pnyvBXxaJsja6ASh2wI0e8TeryTVC/jQtuOSEJ5rFnI=",
+        "lastNameHash": "5+gXECqroUfYZgi94PxjhMzWyl+BM9+Yaw9IWiXJE9Y=",
+        "plz": "97070",
+        "plzHash": "aE28sYo8FHX/Gsprb/inLzYXvpMRsr2ctqB2prUwqV8=",
+        "city": "Wuerzburg",
+        "cityHash": "keDbD7B6sMZoIWm0dhka7q9zJg39Kj+6dB1EbJxS2ak=",
+        "street": "Tolle strasse",
+        "streetHash": "OF1GLqsZh+vu9QvVHRjY5EHvPwJJ4sZr7t9DQyuYEA0=",
+        "streetNo": 12,
+        "country": "Germany",
+        "birthday": "2005-07-16",
+        "birthdayHash": "ljHlYU2sdGnhVNMttLvJkpteds+rO81fNaDNQDRLZUk=",
+        "phone": "015784699114",
+        "phoneHash": "Ov9CKBCBfjdPXdkkFvk/tgQ9pLV6JcvKz1WHgX25aZI=",
+        "email": "knirbs@gmail.com",
+        "emailHash": "+kJtIuKm9TEaxIvwdxJHNcbDW6NatFlR4WUk2UIlj4k="
+      }
+    }
+  ],
+  "nextCursor": 7,
+  "hasMore": false
+}
+```
