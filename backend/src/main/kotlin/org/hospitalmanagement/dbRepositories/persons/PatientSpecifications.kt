@@ -1,40 +1,37 @@
+package org.hospitalmanagement.dbRepositories.persons
+
 import org.hospitalmanagement.models.classes.persons.Patient
 import org.hospitalmanagement.models.enums.Gender
+import org.hospitalmanagement.services.CryptoUtility
 import org.springframework.data.jpa.domain.Specification
+import org.springframework.stereotype.Component
 import java.util.*
 
-object PatientSpecifications {
+@Component
+class PatientSpecifications(private val cryptoUtility: CryptoUtility) {
 
     fun hasFirstName(firstName: String): Specification<Patient> =
         Specification { root, _, cb ->
-            cb.equal(
-                cb.lower(root.get<Any>("person").get("firstName")),
-                firstName.lowercase()
-            )
+            val blindIndex = cryptoUtility.generateBlindIndex(firstName)
+            cb.equal(root.get<Any>("person").get<String>("firstNameHash"), blindIndex)
         }
 
     fun hasLastName(lastName: String): Specification<Patient> =
         Specification { root, _, cb ->
-            cb.equal(
-                cb.lower(root.get<Any>("person").get("lastName")),
-                lastName.lowercase()
-            )
+            val blindIndex = cryptoUtility.generateBlindIndex(lastName)
+            cb.equal(root.get<Any>("person").get<String>("lastNameHash"), blindIndex)
         }
 
     fun hasEmail(email: String): Specification<Patient> =
         Specification { root, _, cb ->
-            cb.equal(
-                cb.lower(root.get<Any>("person").get("email")),
-                email.lowercase()
-            )
+            val blindIndex = cryptoUtility.generateBlindIndex(email)
+            cb.equal(root.get<Any>("person").get<String>("emailHash"), blindIndex)
         }
 
     fun hasCity(city: String): Specification<Patient> =
         Specification { root, _, cb ->
-            cb.equal(
-                cb.lower(root.get<Any>("person").get("city")),
-                city.lowercase()
-            )
+            val blindIndex = cryptoUtility.generateBlindIndex(city)
+            cb.equal(root.get<Any>("person").get<String>("cityHash"), blindIndex)
         }
 
     fun hasBirthday(birthday: Date): Specification<Patient> =
@@ -53,12 +50,6 @@ object PatientSpecifications {
             )
         }
 
-    // Felder die direkt in Patient liegen:
-    /*fun hasGender(gender: Gender): Specification<Patient> =
-        Specification { root, _, cb ->
-            cb.equal(root.get<Gender>("gender"), gender)
-        }*/
-
     fun hasPlz(plz: Int): Specification<Patient> =
         Specification { root, _, cb ->
             cb.equal(
@@ -69,10 +60,8 @@ object PatientSpecifications {
 
     fun hasStreet(street: String): Specification<Patient> =
         Specification { root, _, cb ->
-            cb.equal(
-                cb.lower(root.get<Any>("person").get("street")),
-                street.lowercase()
-            )
+            val blindIndex = cryptoUtility.generateBlindIndex(street)
+            cb.equal(root.get<Any>("person").get<String>("streetHash"), blindIndex)
         }
 
     fun hasStreetNo(streetNo: Int): Specification<Patient> =
@@ -85,18 +74,14 @@ object PatientSpecifications {
 
     fun hasPhone(phone: String): Specification<Patient> =
         Specification { root, _, cb ->
-            cb.equal(
-                root.get<Any>("person").get<String>("phone"),
-                phone
-            )
+            val blindIndex = cryptoUtility.generateBlindIndex(phone)
+            cb.equal(root.get<Any>("person").get<String>("phoneHash"), blindIndex)
         }
 
     fun hasCountry(country: String): Specification<Patient> =
         Specification { root, _, cb ->
-            cb.equal(
-                cb.lower(root.get<Any>("person").get("country")),
-                country.lowercase()
-            )
+            val blindIndex = cryptoUtility.generateBlindIndex(country)
+            cb.equal(root.get<Any>("person").get<String>("countryHash"), blindIndex)
         }
 
     fun afterId(id: Long): Specification<Patient> =

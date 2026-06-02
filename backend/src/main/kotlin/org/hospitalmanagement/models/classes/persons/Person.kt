@@ -17,6 +17,7 @@ import org.hospitalmanagement.config.converters.EncryptedStringConverter
         Index(name = "idx_person_lastName_firstName_hash", columnList = "lastName_hash, firstName_hash")
     ]
 )
+//TODO: Birthday and PLZ encrypted not working yet!
 class Person(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -5,9 +5,10 @@ import org.hospitalmanagement.api.persons.requestModels.PatientRequest
 import org.hospitalmanagement.api.persons.requestModels.PersonCreateRequest
 import org.hospitalmanagement.dbRepositories.facilities.BookingsRepository
 import org.hospitalmanagement.dbRepositories.medication.DiagnosisRepository
-import org.hospitalmanagement.specifications.medication.DiagnosisSpecification
 import org.hospitalmanagement.dbRepositories.persons.PatientRepository
+import org.hospitalmanagement.dbRepositories.persons.PatientSpecifications
 import org.hospitalmanagement.dbRepositories.persons.PersonRepository
+import org.hospitalmanagement.specifications.medication.DiagnosisSpecification
 import org.hospitalmanagement.models.classes.facilities.Booking
 import org.hospitalmanagement.models.classes.medication.Diagnosis
 import org.hospitalmanagement.models.classes.medication.Medication
@@ -30,7 +31,8 @@ class PatientService(
     private val personService: PersonService,
     private val personRepository: PersonRepository,
     private val bookingsRepository: BookingsRepository,
-    private val diagnosisRepository: DiagnosisRepository
+    private val diagnosisRepository: DiagnosisRepository,
+    private val patientSpecifications: PatientSpecifications
 ) {
     fun getAll(pageable: Pageable): Page<Patient> =
         patientRepository.findAll(pageable)
@@ -96,57 +98,57 @@ class PatientService(
 
         if (firstName != null) {
             spec = (spec ?: Specification.where(null))
-                .and(PatientSpecifications.hasFirstName(firstName))
+                .and(patientSpecifications.hasFirstName(firstName))
         }
 
         if (lastName != null) {
             spec = (spec ?: Specification.where(null))
-                .and(PatientSpecifications.hasLastName(lastName))
+                .and(patientSpecifications.hasLastName(lastName))
         }
 
         if (email != null) {
             spec = (spec ?: Specification.where(null))
-                .and(PatientSpecifications.hasEmail(email))
+                .and(patientSpecifications.hasEmail(email))
         }
 
         if (phone != null) {
             spec = (spec ?: Specification.where(null))
-                .and(PatientSpecifications.hasPhone(phone))
+                .and(patientSpecifications.hasPhone(phone))
         }
 
         if (gender != null) {
             spec = (spec ?: Specification.where(null))
-                .and(PatientSpecifications.hasGender(gender))
+                .and(patientSpecifications.hasGender(gender))
         }
 
         if (city != null) {
             spec = (spec ?: Specification.where(null))
-                .and(PatientSpecifications.hasCity(city))
+                .and(patientSpecifications.hasCity(city))
         }
 
         if (country != null) {
             spec = (spec ?: Specification.where(null))
-                .and(PatientSpecifications.hasCountry(country))
+                .and(patientSpecifications.hasCountry(country))
         }
 
         if (birthday != null) {
             spec = (spec ?: Specification.where(null))
-                .and(PatientSpecifications.hasBirthday(birthday))
+                .and(patientSpecifications.hasBirthday(birthday))
         }
 
         if (plz != null) {
             spec = (spec ?: Specification.where(null))
-                .and(PatientSpecifications.hasPlz(plz))
+                .and(patientSpecifications.hasPlz(plz))
         }
 
         if (street != null) {
             spec = (spec ?: Specification.where(null))
-                .and(PatientSpecifications.hasStreet(street))
+                .and(patientSpecifications.hasStreet(street))
         }
 
         if (streetNo != null) {
             spec = (spec ?: Specification.where(null))
-                .and(PatientSpecifications.hasStreetNo(streetNo))
+                .and(patientSpecifications.hasStreetNo(streetNo))
         }
 
         return if (spec != null) {
@@ -173,18 +175,18 @@ class PatientService(
     ): List<Patient> {
         var spec = Specification.where<Patient>(null)
 
-        if (after != null) spec = spec.and(PatientSpecifications.afterId(after))
-        if (!firstName.isNullOrBlank()) spec = spec.and(PatientSpecifications.hasFirstName(firstName))
-        if (!lastName.isNullOrBlank()) spec = spec.and(PatientSpecifications.hasLastName(lastName))
-        if (!email.isNullOrBlank()) spec = spec.and(PatientSpecifications.hasEmail(email))
-        if (!phone.isNullOrBlank()) spec = spec.and(PatientSpecifications.hasPhone(phone))
-        if (gender != null) spec = spec.and(PatientSpecifications.hasGender(gender))
-        if (!city.isNullOrBlank()) spec = spec.and(PatientSpecifications.hasCity(city))
-        if (!country.isNullOrBlank()) spec = spec.and(PatientSpecifications.hasCountry(country))
-        if (birthday != null) spec = spec.and(PatientSpecifications.hasBirthday(birthday))
-        if (plz != null) spec = spec.and(PatientSpecifications.hasPlz(plz))
-        if (!street.isNullOrBlank()) spec = spec.and(PatientSpecifications.hasStreet(street))
-        if (streetNo != null) spec = spec.and(PatientSpecifications.hasStreetNo(streetNo))
+        if (after != null) spec = spec.and(patientSpecifications.afterId(after))
+        if (!firstName.isNullOrBlank()) spec = spec.and(patientSpecifications.hasFirstName(firstName))
+        if (!lastName.isNullOrBlank()) spec = spec.and(patientSpecifications.hasLastName(lastName))
+        if (!email.isNullOrBlank()) spec = spec.and(patientSpecifications.hasEmail(email))
+        if (!phone.isNullOrBlank()) spec = spec.and(patientSpecifications.hasPhone(phone))
+        if (gender != null) spec = spec.and(patientSpecifications.hasGender(gender))
+        if (!city.isNullOrBlank()) spec = spec.and(patientSpecifications.hasCity(city))
+        if (!country.isNullOrBlank()) spec = spec.and(patientSpecifications.hasCountry(country))
+        if (birthday != null) spec = spec.and(patientSpecifications.hasBirthday(birthday))
+        if (plz != null) spec = spec.and(patientSpecifications.hasPlz(plz))
+        if (!street.isNullOrBlank()) spec = spec.and(patientSpecifications.hasStreet(street))
+        if (streetNo != null) spec = spec.and(patientSpecifications.hasStreetNo(streetNo))
 
         val pageable = PageRequest.of(0, limit, Sort.by(Sort.Order.asc("id")))
         return patientRepository.findAll(spec, pageable).content

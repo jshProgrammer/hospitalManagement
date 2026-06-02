@@ -14,7 +14,7 @@ import java.util.*
 class CryptoUtility(
     @Value("\${encryption.key:}")
     private val encryptionKeyHex: String,
-    @Value("\${encryption.salt:5c0744940b5c369b}")
+    @Value("\${encryption.salt:}")
     private val salt: String
 ) {
     companion object {
