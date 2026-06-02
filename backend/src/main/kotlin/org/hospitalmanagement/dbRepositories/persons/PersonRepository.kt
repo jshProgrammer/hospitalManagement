@@ -12,10 +12,6 @@ import java.util.*
 interface PersonRepository: JpaRepository<Person, Long>, JpaSpecificationExecutor<Person> {
     override fun findAll(pageable: Pageable): Page<Person>
 
-    // Legacy methods (deprecated - use hash-based methods instead)
-    fun findByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndBirthday(
-        firstName: String, lastName: String, birthday: Date
-    ): List<Person>
     fun findPersonByFirstNameIgnoreCaseAndLastNameIgnoreCase(firstName: String, lastName: String): Optional<Person>
 
     // Hash-based search methods for encrypted fields

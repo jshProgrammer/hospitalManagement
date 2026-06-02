@@ -17,7 +17,6 @@ import org.hospitalmanagement.config.converters.EncryptedStringConverter
         Index(name = "idx_person_lastName_firstName_hash", columnList = "lastName_hash, firstName_hash")
     ]
 )
-//TODO: Birthday and PLZ encrypted not working yet!
 class Person(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +40,11 @@ class Person(
     var lastNameHash: String = "",
 
     @Column(name = "plz_encrypted")
-    var plz: Int,
+    @Convert(converter = EncryptedStringConverter::class)
+    var plz: String,
+
+    @Column(name = "plz_hash")
+    var plzHash: String = "",
 
     @Column(name = "city_encrypted")
     @Convert(converter = EncryptedStringConverter::class)
@@ -61,10 +64,9 @@ class Person(
 
     var country: String,
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "birthday_encrypted")
     @Convert(converter = EncryptedStringConverter::class)
-    var birthday: Date,
+    var birthday: String,
 
     @Column(name = "birthday_hash")
     var birthdayHash: String? = null,

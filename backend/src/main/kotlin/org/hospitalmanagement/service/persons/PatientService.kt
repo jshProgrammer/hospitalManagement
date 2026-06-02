@@ -91,7 +91,7 @@ class PatientService(
         city: String?,
         country: String?,
         birthday: Date?,
-        plz: Int?,
+        plz: String?,
         street: String?,
         streetNo: Int?): Page<Patient>{
         var spec: Specification<Patient>? = null
@@ -169,7 +169,7 @@ class PatientService(
         city: String?,
         country: String?,
         birthday: Date?,
-        plz: Int?,
+        plz: String?,
         street: String?,
         streetNo: Int?
     ): List<Patient> {

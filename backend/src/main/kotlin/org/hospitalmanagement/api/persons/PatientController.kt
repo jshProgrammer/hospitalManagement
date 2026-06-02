@@ -55,7 +55,7 @@ class PatientController(
         @RequestParam(required = false) city: String?,
         @RequestParam(required = false) country: String?,
         @RequestParam(required = false) birthday: Date?,
-        @RequestParam(required = false) plz: Int?,
+        @RequestParam(required = false) plz: String?,
         @RequestParam(required = false) street: String?,
         @RequestParam(required = false) streetNo: Int?
     ): ResponseEntity<Map<String, Any>> {

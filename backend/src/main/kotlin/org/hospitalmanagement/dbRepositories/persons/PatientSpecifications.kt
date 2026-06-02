@@ -50,12 +50,10 @@ class PatientSpecifications(private val cryptoUtility: CryptoUtility) {
             )
         }
 
-    fun hasPlz(plz: Int): Specification<Patient> =
+    fun hasPlz(plz: String): Specification<Patient> =
         Specification { root, _, cb ->
-            cb.equal(
-                root.get<Any>("person").get<Int>("plz"),
-                plz
-            )
+            val blindIndex = cryptoUtility.generateBlindIndex(plz)
+            cb.equal(root.get<Any>("person").get<String>("plzHash"), blindIndex)
         }
 
     fun hasStreet(street: String): Specification<Patient> =

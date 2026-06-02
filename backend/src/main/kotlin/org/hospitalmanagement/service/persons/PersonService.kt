@@ -10,8 +10,6 @@ import org.hospitalmanagement.services.CryptoUtility
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
-import java.text.SimpleDateFormat
-import java.util.*
 
 @Service
 class PersonService(
@@ -23,7 +21,7 @@ class PersonService(
     fun findSimilarPersons(personData: PersonCreateRequest): List<PersonSearchResultRequest> {
         val firstNameHash = cryptoUtility.generateBlindIndex(personData.firstName)
         val lastNameHash = cryptoUtility.generateBlindIndex(personData.lastName)
-        val birthdayHash = cryptoUtility.generateBlindIndex(formatDate(personData.birthday))
+        val birthdayHash = cryptoUtility.generateBlindIndex(personData.birthday)
 
         val matches = personRepository.findByFirstNameHashAndLastNameHashAndBirthdayHash(
             firstNameHash,
@@ -51,6 +49,7 @@ class PersonService(
             firstNameHash = cryptoUtility.generateBlindIndex(personData.firstName),
             lastNameHash = cryptoUtility.generateBlindIndex(personData.lastName),
             plz = personData.plz,
+            plzHash = cryptoUtility.generateBlindIndex(personData.plz),
             city = personData.city,
             cityHash = cryptoUtility.generateBlindIndex(personData.city),
             street = personData.street,
@@ -58,7 +57,7 @@ class PersonService(
             streetNo = personData.houseNumber.toIntOrNull() ?: 0,
             country = personData.country,
             birthday = personData.birthday,
-            birthdayHash = cryptoUtility.generateBlindIndex(formatDate(personData.birthday)),
+            birthdayHash = cryptoUtility.generateBlindIndex(personData.birthday),
             phone = personData.phoneNumber,
             phoneHash = cryptoUtility.generateBlindIndex(personData.phoneNumber),
             email = personData.email,
@@ -70,9 +69,5 @@ class PersonService(
     fun findById(personId: Long): Person =
         personRepository.findById(personId)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Person with id $personId not found") }
-
-    private fun formatDate(date: Date): String {
-        return SimpleDateFormat("yyyy-MM-dd").format(date)
-    }
 }
 
