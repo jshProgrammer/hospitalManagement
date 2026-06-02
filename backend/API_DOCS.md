@@ -9,6 +9,7 @@ Date values are accepted as ISO date strings unless noted otherwise (datetime us
 ## Sections
 - [Pagination](#pagination)
 - [Enviroment](#environment)
+- [Security](#security)
 - [Enums](#enum-values)
 - [Facilities](#facilities)
   - [Departments](#departments)
@@ -61,6 +62,29 @@ DATABASE_URL=jdbc:postgresql://host:5432/database
 DATABASE_USER=username
 DATABASE_PASSWORD=password
 ```
+
+## Security
+
+### Rate Limiting
+
+The patient search endpoint is protected against dictionary attacks on blind indices (see [Encrypted Fields & Blind Indexing](#encrypted-fields--blind-indexing)). Because blind indices are deterministic, an attacker with read access to the database could attempt to brute-force names or postal codes by issuing repeated search queries and comparing hashes. Rate limiting prevents this.
+
+| Endpoint | Limit | Scope |
+| --- | --- | --- |
+| `GET /api/patients` | 10 requests / minute | per IP address |
+
+Requests exceeding the limit receive `429 Too Many Requests`. The bucket refills fully after 60 seconds.
+
+### Input Validation
+
+`plz` and `birthday` are validated on all person-creation endpoints (`POST /api/patients/new`, `POST /api/doctors/new`, `POST /api/nurses/new`) before the values are hashed and encrypted. This ensures the blind index always receives input in a consistent format — differing formats (e.g. `"12.03.1990"` vs `"1990-03-12"`) would produce different hashes for the same person and break exact-match search.
+
+| Field | Rule | Example |
+| --- | --- | --- |
+| `plz` | Exactly 5 digits (`^[0-9]{5}$`) | `"97070"` |
+| `birthday` | ISO date `YYYY-MM-DD`, must be in the past | `"1990-03-12"` |
+
+Invalid values return `400 Bad Request` with a structured error body — see [Common Responses](#common-responses).
 
 ## Enum Values
 
@@ -475,6 +499,27 @@ Pass `nextCursor` as `after` in the next request to fetch the following page. Wh
 Most `GET /{id}` endpoints return `404 NOT_FOUND` when the resource does not exist.
 
 When combining `nameContains` and `name` filtering, a `400 BAD_REQUEST` error is returned.
+
+Input validation failures on person-creation endpoints return `400 Bad Request` with this body:
+
+```json
+{
+  "status": 400,
+  "error": "Validierungsfehler",
+  "fields": {
+    "plz": "PLZ muss genau 5 Ziffern enthalten (z.B. 80331)",
+    "birthday": "Geburtsdatum muss im Format YYYY-MM-DD vorliegen und in der Vergangenheit liegen"
+  }
+}
+```
+
+Rate limit exceeded on `GET /api/patients` returns `429 Too Many Requests`:
+
+```json
+{
+  "error": "Zu viele Suchanfragen. Maximal 10 Anfragen pro Minute pro IP erlaubt."
+}
+```
 
 ### Encrypted Fields & Blind Indexing
 
