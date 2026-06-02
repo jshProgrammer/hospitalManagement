@@ -54,7 +54,7 @@ class PatientController(
         @RequestParam(required = false) gender: Gender?,
         @RequestParam(required = false) city: String?,
         @RequestParam(required = false) country: String?,
-        @RequestParam(required = false) birthday: Date?,
+        @RequestParam(required = false) birthday: String?,
         @RequestParam(required = false) plz: String?,
         @RequestParam(required = false) street: String?,
         @RequestParam(required = false) streetNo: Int?

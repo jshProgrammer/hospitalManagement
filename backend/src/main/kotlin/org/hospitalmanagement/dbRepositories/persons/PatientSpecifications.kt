@@ -34,12 +34,10 @@ class PatientSpecifications(private val cryptoUtility: CryptoUtility) {
             cb.equal(root.get<Any>("person").get<String>("cityHash"), blindIndex)
         }
 
-    fun hasBirthday(birthday: Date): Specification<Patient> =
+    fun hasBirthday(birthday: String): Specification<Patient> =
         Specification { root, _, cb ->
-            cb.equal(
-                root.get<Any>("person").get<Date>("birthday"),
-                birthday
-            )
+            val blindIndex = cryptoUtility.generateBlindIndex(birthday)
+            cb.equal(root.get<Any>("person").get<String>("birthdayHash"), blindIndex)
         }
 
     fun hasGender(gender: Gender): Specification<Patient> =

@@ -90,7 +90,7 @@ class PatientService(
         gender: Gender?,
         city: String?,
         country: String?,
-        birthday: Date?,
+        birthday: String?,
         plz: String?,
         street: String?,
         streetNo: Int?): Page<Patient>{
@@ -168,7 +168,7 @@ class PatientService(
         gender: Gender?,
         city: String?,
         country: String?,
-        birthday: Date?,
+        birthday: String?,
         plz: String?,
         street: String?,
         streetNo: Int?
