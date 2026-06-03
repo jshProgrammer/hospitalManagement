@@ -16,8 +16,8 @@ class RateLimitingInterceptor : HandlerInterceptor {
     private val buckets = ConcurrentHashMap<String, Bucket>()
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        val clientIp = request.remoteAddr
-        val bucket = buckets.computeIfAbsent(clientIp) { createBucket() }
+        val bucketKey = "${request.remoteAddr}:${request.servletPath}"
+        val bucket = buckets.computeIfAbsent(bucketKey) { createBucket() }
 
         if (bucket.tryConsume(1)) return true
 

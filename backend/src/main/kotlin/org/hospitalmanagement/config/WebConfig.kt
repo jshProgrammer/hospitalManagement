@@ -12,6 +12,6 @@ class WebConfig(
     override fun addInterceptors(registry: InterceptorRegistry) {
         // Schutz gegen Wörterbuch-Attacken auf Blind-Indizes (Namen, PLZ, Geburtsdatum)
         registry.addInterceptor(rateLimitingInterceptor)
-            .addPathPatterns("/api/patients")
+            .addPathPatterns("/api/patients", "/api/diagnoses", "/api/doctors", "/api/nurses")
     }
 }
