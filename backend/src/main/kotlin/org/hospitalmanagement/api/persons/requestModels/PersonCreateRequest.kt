@@ -1,7 +1,8 @@
 package org.hospitalmanagement.api.persons.requestModels
 
+import org.hospitalmanagement.config.validation.ValidBirthday
+import org.hospitalmanagement.config.validation.ValidPlz
 import org.hospitalmanagement.models.enums.Gender
-import java.util.Date
 
 data class PersonCreateRequest(
     val gender: Gender,
@@ -9,10 +10,12 @@ data class PersonCreateRequest(
     val lastName: String,
     val email: String,
     val phoneNumber: String,
-    val plz: Int,
+    @ValidPlz
+    val plz: String,
     val city: String,
     val street: String,
     val houseNumber: String,
     val country: String,
-    val birthday: Date
+    @ValidBirthday
+    val birthday: String
 )

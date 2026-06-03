@@ -1,12 +1,10 @@
 package org.hospitalmanagement.api.persons.requestModels
 
-import java.util.Date
-
 data class PersonSearchResultRequest(
     val id: Long,
     val firstName: String,
     val lastName: String,
-    val birthday: Date,
+    val birthday: String,
     val isEmployee: Boolean,
     val isPatient: Boolean
 )

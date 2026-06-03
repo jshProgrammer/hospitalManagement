@@ -7,6 +7,7 @@ import org.hospitalmanagement.dbRepositories.persons.DoctorRepository
 import org.hospitalmanagement.dbRepositories.persons.PatientRepository
 import org.hospitalmanagement.models.classes.medication.Diagnosis
 import org.hospitalmanagement.models.enums.DrugsType
+import org.hospitalmanagement.services.CryptoUtility
 import org.hospitalmanagement.specifications.medication.DiagnosisSpecification
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -24,7 +25,8 @@ class DiagnosisService(
     private val diagnosisRepository: DiagnosisRepository,
     private val medicationRepository: MedicationRepository,
     private val doctorRepository: DoctorRepository,
-    private val patientRepository: PatientRepository
+    private val patientRepository: PatientRepository,
+    private val cryptoUtility: CryptoUtility
 ) {
 
     fun search(
@@ -81,6 +83,7 @@ class DiagnosisService(
             Diagnosis(
                 id = 0,
                 disease = request.disease,
+                diseaseHash = cryptoUtility.generateBlindIndex(request.disease),
                 medication = medication,
                 diagnosedBy = doctor,
                 diagnosedPatient = patient,
@@ -119,6 +122,7 @@ class DiagnosisService(
             Diagnosis(
                 id = id,
                 disease = request.disease,
+                diseaseHash = cryptoUtility.generateBlindIndex(request.disease),
                 medication = medication,
                 diagnosedBy = doctor,
                 diagnosedPatient = patient,
@@ -141,6 +145,7 @@ class DiagnosisService(
             Diagnosis(
                 id,
                 diagnosis.disease,
+                diagnosis.diseaseHash,
                 diagnosis.medication,
                 diagnosis.diagnosedBy,
                 diagnosis.diagnosedPatient,
@@ -150,3 +155,4 @@ class DiagnosisService(
         )
     }
 }
+
