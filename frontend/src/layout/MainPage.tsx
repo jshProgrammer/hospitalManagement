@@ -75,7 +75,7 @@ export default function MainPage<T>({
                   </div>
 
                   {detailsPanel && (
-                    <aside className="border-border bg-elevated w-[420px] shrink-0 border-l">
+                    <aside className="border-border bg-elevated w-105 shrink-0 border-l">
                       {detailsPanel}
                     </aside>
                   )}
