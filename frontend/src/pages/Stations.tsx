@@ -26,9 +26,12 @@ export function Stations() {
       loading={loading}
       error={error}
       onRetry={reload}
-      page={page}
-      totalPages={totalPages}
-      onPageChange={setPage}
+      pagination={{
+        type: 'page',
+        page,
+        totalPages,
+        onPageChange: setPage,
+      }}
       filters={<TableFilters fields={stationFilters} values={filters} onChange={setFilters} />}
     />
   )
