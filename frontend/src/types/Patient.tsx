@@ -3,7 +3,7 @@ export type PersonApi = {
   gender: string
   firstName: string
   lastName: string
-  plz: string
+  plz: number
   city: string
   street: string
   streetNo: number
