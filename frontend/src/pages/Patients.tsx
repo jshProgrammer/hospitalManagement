@@ -14,6 +14,10 @@ export function Patients() {
   const { data, loading, error, reload, page, hasMore, canGoBack, goToNextPage, goToPreviousPage } =
     useCursorPageData<PatientApi, Patient, 'patients'>(url, 'patients', mapPatient)
 
+  function handlePatientClick(patient: Patient) {
+    console.log('Patient angeklickt:', patient)
+  }
+
   return (
     <MainPage
       title="Patients"
@@ -22,6 +26,8 @@ export function Patients() {
       loading={loading}
       error={error}
       onRetry={reload}
+      onRowClick={handlePatientClick}
+      getRowKey={patient => patient.id}
       pagination={{
         type: 'cursor',
         page,
