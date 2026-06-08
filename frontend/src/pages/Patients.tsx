@@ -52,6 +52,7 @@ export function Patients() {
       detailsPanel={
         patientId !== null ? (
           <PatientDetailsPanel
+            key={patientId}
             diagnoses={diagnoses}
             bookings={bookings}
             loading={detailsLoading}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Button from './Button'
 import LoadingIcon from './LoadingIcon'
 import ErrorComponent from './ErrorComponent'
@@ -25,10 +25,6 @@ export default function PatientDetailsPanel({
   onClose,
 }: PatientDetailsPanelProps) {
   const [activeTab, setActiveTab] = useState<ActiveTab>('diagnoses')
-
-  useEffect(() => {
-    setActiveTab('diagnoses')
-  }, [diagnoses, bookings])
 
   return (
     <div className="flex h-full flex-col">
@@ -82,7 +78,6 @@ export default function PatientDetailsPanel({
             {bookings.length === 0 && (
               <p className="text-muted text-sm">Keine Bookings vorhanden.</p>
             )}
-
             {bookings.map(booking => (
               <div key={booking.id} className="border-border bg-surface rounded-lg border p-3">
                 <p className="text-dark font-semibold">Room {booking.room.number}</p>
