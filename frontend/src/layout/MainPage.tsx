@@ -34,6 +34,7 @@ type MainPageProps<T> = {
   pagination: PagePagination | CursorPagePagination
   onRowClick?: (row: T) => void
   getRowKey?: (row: T) => Key
+  detailsPanel?: ReactNode
 }
 export default function MainPage<T>({
   title,
@@ -46,6 +47,7 @@ export default function MainPage<T>({
   pagination,
   onRowClick,
   getRowKey,
+  detailsPanel,
 }: MainPageProps<T>) {
   const hasData = data.length > 0
   const page = pagination.page
@@ -61,13 +63,23 @@ export default function MainPage<T>({
           {hasData && (
             <>
               <div className="min-h-0 flex-1 overflow-hidden">
-                <Table
-                  columns={columns}
-                  data={data}
-                  rowStart={page * DEFAULT_PAGE_SIZE}
-                  onRowClick={onRowClick}
-                  getRowKey={getRowKey}
-                />
+                <div className="flex h-full min-w-0">
+                  <div className="min-w-0 flex-1 overflow-hidden">
+                    <Table
+                      columns={columns}
+                      data={data}
+                      rowStart={page * DEFAULT_PAGE_SIZE}
+                      onRowClick={onRowClick}
+                      getRowKey={getRowKey}
+                    />
+                  </div>
+
+                  {detailsPanel && (
+                    <aside className="border-border bg-elevated w-[420px] shrink-0 border-l">
+                      {detailsPanel}
+                    </aside>
+                  )}
+                </div>
               </div>
               {loading && (
                 <div className="border-border border-t py-3">
