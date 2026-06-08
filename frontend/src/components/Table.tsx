@@ -60,7 +60,7 @@ export default function Table<T>({
                   'bg-elevated even:bg-background',
                   onRowClick ? 'hover:bg-highlight cursor-pointer' : '',
                   isSelected
-                    ? 'bg-accent/20! even:bg-accent/20! outline-accent outline-2 outline-offset-[-2px]'
+                    ? 'bg-accent/20! even:bg-accent/20! outline-accent outline-2 -outline-offset-2'
                     : '',
                 ].join(' ')}
               >
