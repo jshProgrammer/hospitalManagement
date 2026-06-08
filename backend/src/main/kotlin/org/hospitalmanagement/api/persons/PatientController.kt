@@ -14,8 +14,10 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
+import jakarta.validation.Valid
 import java.util.*
 
 @RestController
@@ -27,7 +29,7 @@ class PatientController(
 
     // Step 1: POST new person data → returns matches or created patient
     @PostMapping("/new")
-    fun createPatient(@RequestBody personData: PersonCreateRequest): PatientCreationResponse =
+    fun createPatient(@Valid @RequestBody personData: PersonCreateRequest): PatientCreationResponse =
         patientService.createPatientWithSearch(personData)
 
     // Step 2: POST existing personId → creates patient from existing person
@@ -54,8 +56,8 @@ class PatientController(
         @RequestParam(required = false) gender: Gender?,
         @RequestParam(required = false) city: String?,
         @RequestParam(required = false) country: String?,
-        @RequestParam(required = false) birthday: Date?,
-        @RequestParam(required = false) plz: Int?,
+        @RequestParam(required = false) birthday: String?,
+        @RequestParam(required = false) plz: String?,
         @RequestParam(required = false) street: String?,
         @RequestParam(required = false) streetNo: Int?
     ): ResponseEntity<Map<String, Any>> {

@@ -6,23 +6,27 @@ import org.hospitalmanagement.dbRepositories.persons.EmployeeRepository
 import org.hospitalmanagement.dbRepositories.persons.PatientRepository
 import org.hospitalmanagement.dbRepositories.persons.PersonRepository
 import org.hospitalmanagement.models.classes.persons.Person
+import org.hospitalmanagement.services.CryptoUtility
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
-import java.util.*
 
 @Service
 class PersonService(
     private val personRepository: PersonRepository,
     private val patientRepository: PatientRepository,
-    private val employeeRepository: EmployeeRepository
+    private val employeeRepository: EmployeeRepository,
+    private val cryptoUtility: CryptoUtility
 ) {
     fun findSimilarPersons(personData: PersonCreateRequest): List<PersonSearchResultRequest> {
-        //TODO: We can also add more search criteria here, like city or stuff like that
-        val matches = personRepository.findByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndBirthday(
-            personData.firstName,
-            personData.lastName,
-            personData.birthday
+        val firstNameHash = cryptoUtility.generateBlindIndex(personData.firstName)
+        val lastNameHash = cryptoUtility.generateBlindIndex(personData.lastName)
+        val birthdayHash = cryptoUtility.generateBlindIndex(personData.birthday)
+
+        val matches = personRepository.findByFirstNameHashAndLastNameHashAndBirthdayHash(
+            firstNameHash,
+            lastNameHash,
+            birthdayHash
         )
 
         return matches.map { person ->
@@ -42,14 +46,22 @@ class PersonService(
             gender = personData.gender,
             firstName = personData.firstName,
             lastName = personData.lastName,
+            firstNameHash = cryptoUtility.generateBlindIndex(personData.firstName),
+            lastNameHash = cryptoUtility.generateBlindIndex(personData.lastName),
             plz = personData.plz,
+            plzHash = cryptoUtility.generateBlindIndex(personData.plz),
             city = personData.city,
+            cityHash = cryptoUtility.generateBlindIndex(personData.city),
             street = personData.street,
+            streetHash = cryptoUtility.generateBlindIndex(personData.street),
             streetNo = personData.houseNumber.toIntOrNull() ?: 0,
             country = personData.country,
             birthday = personData.birthday,
+            birthdayHash = cryptoUtility.generateBlindIndex(personData.birthday),
             phone = personData.phoneNumber,
-            email = personData.email
+            phoneHash = cryptoUtility.generateBlindIndex(personData.phoneNumber),
+            email = personData.email,
+            emailHash = cryptoUtility.generateBlindIndex(personData.email)
         )
         return personRepository.save(person)
     }
@@ -57,5 +69,5 @@ class PersonService(
     fun findById(personId: Long): Person =
         personRepository.findById(personId)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Person with id $personId not found") }
-
 }
+
