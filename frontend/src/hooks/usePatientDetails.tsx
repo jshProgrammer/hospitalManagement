@@ -22,7 +22,7 @@ async function fetchJson<T>(url: string, signal: AbortSignal): Promise<T> {
   const response = await fetch(url, { signal })
 
   if (!response.ok) {
-    throw new Error(`Request fehlgeschlagen: ${response.status} ${response.statusText}`)
+    throw new Error(`Request failed: ${response.status} ${response.statusText}`)
   }
 
   return (await response.json()) as Promise<T>
@@ -83,10 +83,7 @@ export function usePatientDetails() {
         diagnoses: [],
         bookings: [],
         loading: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Die Patientendetails konnten nicht geladen werden.',
+        error: error instanceof Error ? error.message : 'Error Loading Patient Details',
       })
 
       return null

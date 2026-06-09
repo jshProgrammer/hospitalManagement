@@ -55,9 +55,7 @@ export default function PatientDetailsPanel({
 
         {!loading && !error && activeTab === 'diagnoses' && (
           <div className="space-y-3">
-            {diagnoses.length === 0 && (
-              <p className="text-muted text-sm">Keine Diagnosen vorhanden.</p>
-            )}
+            {diagnoses.length === 0 && <p className="text-muted text-sm">No diagnoses available</p>}
 
             {diagnoses.map(diagnosis => (
               <div key={diagnosis.id} className="border-border bg-surface rounded-lg border p-3">
@@ -75,9 +73,7 @@ export default function PatientDetailsPanel({
 
         {!loading && !error && activeTab === 'bookings' && (
           <div className="space-y-3">
-            {bookings.length === 0 && (
-              <p className="text-muted text-sm">Keine Bookings vorhanden.</p>
-            )}
+            {bookings.length === 0 && <p className="text-muted text-sm">No bookings available</p>}
             {bookings.map(booking => (
               <div key={booking.id} className="border-border bg-surface rounded-lg border p-3">
                 <p className="text-dark font-semibold">Room {booking.room.number}</p>
