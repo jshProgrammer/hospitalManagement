@@ -2,7 +2,7 @@ import PageHeader from './PageHeader.tsx'
 import Table from '../components/Table.tsx'
 import LoadingIcon from '../components/LoadingIcon.tsx'
 import ErrorComponent from '../components/ErrorComponent.tsx'
-import type { ReactNode } from 'react'
+import type { Key, ReactNode } from 'react'
 import Pagination from '../components/Pagination.tsx'
 import { DEFAULT_PAGE_SIZE } from '../hooks/usePageData.tsx'
 import CursorPagination from '../components/CursorPagination.tsx'
@@ -32,6 +32,9 @@ type MainPageProps<T> = {
   onRetry: () => void
   filters?: ReactNode
   pagination: PagePagination | CursorPagePagination
+  onRowClick?: (row: T) => void
+  getRowKey?: (row: T) => Key
+  detailsPanel?: ReactNode
 }
 export default function MainPage<T>({
   title,
@@ -42,6 +45,9 @@ export default function MainPage<T>({
   onRetry,
   filters,
   pagination,
+  onRowClick,
+  getRowKey,
+  detailsPanel,
 }: MainPageProps<T>) {
   const hasData = data.length > 0
   const page = pagination.page
@@ -57,7 +63,23 @@ export default function MainPage<T>({
           {hasData && (
             <>
               <div className="min-h-0 flex-1 overflow-hidden">
-                <Table columns={columns} data={data} rowStart={page * DEFAULT_PAGE_SIZE} />
+                <div className="flex h-full min-w-0">
+                  <div className="min-w-0 flex-1 overflow-hidden">
+                    <Table
+                      columns={columns}
+                      data={data}
+                      rowStart={page * DEFAULT_PAGE_SIZE}
+                      onRowClick={onRowClick}
+                      getRowKey={getRowKey}
+                    />
+                  </div>
+
+                  {detailsPanel && (
+                    <aside className="border-border bg-elevated w-105 shrink-0 border-l">
+                      {detailsPanel}
+                    </aside>
+                  )}
+                </div>
               </div>
               {loading && (
                 <div className="border-border border-t py-3">

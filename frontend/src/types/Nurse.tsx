@@ -1,21 +1,10 @@
+import type { PersonApi } from './Patient.tsx'
+
 export type NurseApi = {
   id: number
   employee: {
     id: number
-    person: {
-      id: number
-      gender: string
-      firstName: string
-      lastName: string
-      plz: number
-      city: string
-      street: string
-      streetNo: number
-      country: string
-      birthday: string
-      phone: string
-      email: string
-    }
+    person: PersonApi
     department: number
   }
   station?: {
