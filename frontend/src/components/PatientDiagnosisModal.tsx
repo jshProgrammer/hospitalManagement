@@ -1,6 +1,6 @@
 import { type FormEvent, useState } from 'react'
 import { ClipboardPlus } from 'lucide-react'
-import { createDiagnosis, createMedication } from '../api/medicationActions'
+import { createDiagnosis, createDose, createMedication } from '../api/medicationActions'
 import { useMedicationOptions } from '../hooks/useMedicationOptions'
 import ActionFeedback from './ActionFeedback'
 import Button from './Button'
@@ -21,7 +21,10 @@ const initialForm = {
   diagnosedAt: today,
   noMedication: false,
   drugId: '',
-  doseId: '',
+  doseUnit: 'TABLET',
+  doseAmount: '1',
+  doseFrequency: 'X_WEEKLY',
+  doseFrequencyAmount: '1',
   started: today,
   ended: '',
 }
@@ -59,8 +62,15 @@ export default function PatientDiagnosisModal({
     setSubmitting(true)
 
     try {
+      const dose = await createDose({
+        unit: form.doseUnit,
+        amount: Number(form.doseAmount),
+        frequency: form.doseFrequency,
+        frequencyAmount: Number(form.doseFrequencyAmount),
+      })
+
       const medication = await createMedication({
-        dose_id: Number(form.doseId),
+        dose_id: dose.id,
         drug_id: Number(form.drugId),
         started: form.started || null,
         ended: form.ended || null,
@@ -146,16 +156,40 @@ export default function PatientDiagnosisModal({
                 disabled={busy}
               />
               <FormField
-                label="Dose"
+                label="Dose unit"
                 type="select"
-                value={form.doseId}
-                onChange={event => updateField('doseId', event.target.value)}
-                options={options.doses.map(dose => ({
-                  label: formatDoseLabel(dose),
-                  value: String(dose.id),
-                }))}
+                value={form.doseUnit}
+                onChange={event => updateField('doseUnit', event.target.value)}
+                options={doseUnitOptions}
                 required
                 disabled={busy}
+              />
+              <FormField
+                label="Dose amount"
+                type="number"
+                min="1"
+                value={form.doseAmount}
+                onChange={event => updateField('doseAmount', event.target.value)}
+                required
+                disabled={submitting}
+              />
+              <FormField
+                label="Frequency"
+                type="select"
+                value={form.doseFrequency}
+                onChange={event => updateField('doseFrequency', event.target.value)}
+                options={doseFrequencyOptions}
+                required
+                disabled={busy}
+              />
+              <FormField
+                label="Frequency amount"
+                type="number"
+                min="1"
+                value={form.doseFrequencyAmount}
+                onChange={event => updateField('doseFrequencyAmount', event.target.value)}
+                required
+                disabled={submitting}
               />
               <FormField
                 label="Medication started"
@@ -191,34 +225,26 @@ export default function PatientDiagnosisModal({
   )
 }
 
-function formatDoseLabel(dose: {
-  amount: number
-  unit: string
-  frequency: string
-  frequencyAmount: number
-}) {
-  return `${dose.amount} ${dose.unit.toLowerCase()} · ${formatDoseFrequency(
-    dose.frequency,
-    dose.frequencyAmount
-  )}`
-}
+const doseUnitOptions = [
+  { label: 'mg', value: 'MG' },
+  { label: 'g', value: 'G' },
+  { label: 'mcg', value: 'MCG' },
+  { label: 'ml', value: 'ML' },
+  { label: 'l', value: 'L' },
+  { label: 'tablet', value: 'TABLET' },
+  { label: 'capsule', value: 'CAPSULE' },
+  { label: 'drop', value: 'DROP' },
+  { label: 'puff', value: 'PUFF' },
+  { label: 'unit', value: 'UNIT' },
+]
 
-function formatDoseFrequency(frequency: string, amount: number) {
-  switch (frequency.toUpperCase().replaceAll(' ', '_')) {
-    case 'EVERY_X_DAYS':
-      return `every ${amount} ${amount === 1 ? 'day' : 'days'}`
-    case 'EVERY_X_HOURS':
-      return `every ${amount} ${amount === 1 ? 'hour' : 'hours'}`
-    case 'EVERY_X_WEEKS':
-      return `every ${amount} ${amount === 1 ? 'week' : 'weeks'}`
-    case 'X_DAILY':
-      return `${amount} ${amount === 1 ? 'time' : 'times'} daily`
-    case 'X_WEEKLY':
-      return `${amount} ${amount === 1 ? 'time' : 'times'} weekly`
-    default:
-      return formatEnumValue(frequency)
-  }
-}
+const doseFrequencyOptions = [
+  { label: 'Every X days', value: 'EVERY_X_DAYS' },
+  { label: 'X times daily', value: 'X_DAILY' },
+  { label: 'Every X hours', value: 'EVERY_X_HOURS' },
+  { label: 'X times weekly', value: 'X_WEEKLY' },
+  { label: 'Every X weeks', value: 'EVERY_X_WEEKS' },
+]
 
 function formatEnumValue(value: string) {
   return value

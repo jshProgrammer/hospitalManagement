@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { requestJson } from '../api/http'
 import type { DoctorApi } from '../types/Doctor'
-import type { DoseApi } from '../types/Diagnosis'
 import type { DrugApi } from '../types/Drug'
 
 type PageResponse<T> = {
@@ -14,7 +13,6 @@ type DoctorsResponse = {
 
 type MedicationOptionsState = {
   doctors: DoctorApi[]
-  doses: DoseApi[]
   drugs: DrugApi[]
   loading: boolean
   error: string | null
@@ -22,7 +20,6 @@ type MedicationOptionsState = {
 
 const initialState: MedicationOptionsState = {
   doctors: [],
-  doses: [],
   drugs: [],
   loading: true,
   error: null,
@@ -38,11 +35,8 @@ export function useMedicationOptions() {
       try {
         setState(current => ({ ...current, loading: true, error: null }))
 
-        const [doctorsResponse, dosesResponse, drugsResponse] = await Promise.all([
+        const [doctorsResponse, drugsResponse] = await Promise.all([
           requestJson<DoctorsResponse>('/api/doctors?limit=100', { signal: controller.signal }),
-          requestJson<PageResponse<DoseApi>>('/api/doses?page=0&size=100&sort=id,asc', {
-            signal: controller.signal,
-          }),
           requestJson<PageResponse<DrugApi>>('/api/drugs?page=0&size=100&sort=name,asc', {
             signal: controller.signal,
           }),
@@ -54,7 +48,6 @@ export function useMedicationOptions() {
 
         setState({
           doctors: doctorsResponse.doctors,
-          doses: dosesResponse.content,
           drugs: drugsResponse.content,
           loading: false,
           error: null,
@@ -66,7 +59,6 @@ export function useMedicationOptions() {
 
         setState({
           doctors: [],
-          doses: [],
           drugs: [],
           loading: false,
           error: error instanceof Error ? error.message : 'Could not load medication options.',

@@ -39,6 +39,13 @@ export type MedicationCreateRequest = {
   ended: string | null
 }
 
+export type DoseCreateRequest = {
+  unit: string
+  amount: number
+  frequency: string
+  frequencyAmount: number
+}
+
 export type DiagnosisCreateRequest = {
   disease: string
   medication_id: number
