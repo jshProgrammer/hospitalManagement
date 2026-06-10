@@ -50,6 +50,16 @@ export const employeePersonFilters: FilterField[] = [
 
 export const patientFilters = patientPersonFilters
 
+export const patientFiltersWithStatus: FilterField[] = [
+  ...patientPersonFilters,
+  {
+    name: 'currentlyStationary',
+    label: 'Room status',
+    type: 'select',
+    options: [{ label: 'Currently in room', value: 'true' }],
+  },
+]
+
 export const doctorFilters: FilterField[] = [
   ...employeePersonFilters,
   { name: 'type', label: 'Doctor type', type: 'select', options: doctorTypeOptions },

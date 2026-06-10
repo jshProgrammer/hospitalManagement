@@ -36,6 +36,7 @@ type MainPageProps<T> = {
   getRowKey?: (row: T) => Key
   detailsPanel?: ReactNode
   headerActions?: ReactNode
+  children?: ReactNode
 }
 export default function MainPage<T>({
   title,
@@ -50,6 +51,7 @@ export default function MainPage<T>({
   getRowKey,
   detailsPanel,
   headerActions,
+  children,
 }: MainPageProps<T>) {
   const hasData = data.length > 0
   const page = pagination.page
@@ -111,6 +113,7 @@ export default function MainPage<T>({
           )}
         </div>
       </div>
+      {children}
     </div>
   )
 }

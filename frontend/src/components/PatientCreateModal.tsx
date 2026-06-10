@@ -1,4 +1,5 @@
 import { type FormEvent, useState } from 'react'
+import { Plus } from 'lucide-react'
 import { createPatient, createPatientFromPerson } from '../api/patientActions'
 import { ApiRequestError, type ApiFieldErrors } from '../api/http'
 import { genderOptions } from '../constants/filters'
@@ -6,8 +7,9 @@ import type { PatientCreateRequest, PersonSearchResult } from '../types/Patient'
 import ActionFeedback from './ActionFeedback'
 import Button from './Button'
 import FormField from './FormField'
+import Modal from './Modal'
 
-type PatientCreatePanelProps = {
+type PatientCreateModalProps = {
   onClose: () => void
   onCreated: () => void
 }
@@ -28,7 +30,7 @@ const initialFormState: FormState = {
   birthday: '',
 }
 
-export default function PatientCreatePanel({ onClose, onCreated }: PatientCreatePanelProps) {
+export default function PatientCreateModal({ onClose, onCreated }: PatientCreateModalProps) {
   const [form, setForm] = useState<FormState>(initialFormState)
   const [potentialMatches, setPotentialMatches] = useState<PersonSearchResult[]>([])
   const [submitting, setSubmitting] = useState(false)
@@ -105,17 +107,12 @@ export default function PatientCreatePanel({ onClose, onCreated }: PatientCreate
   }
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="border-border flex items-center justify-between border-b px-4 py-3">
-        <h2 className="text-dark font-semibold">Add Patient</h2>
-        <Button label="Close" variant="secondary" onClick={onClose} className="px-3" />
-      </div>
-
-      <form onSubmit={submitPatient} className="min-h-0 flex-1 overflow-auto p-4">
+    <Modal title="Add Patient" onClose={onClose}>
+      <form onSubmit={submitPatient} className="min-h-0 flex-1 overflow-auto p-5">
         <div className="space-y-4">
           {message && <ActionFeedback type={message.type} message={message.text} />}
 
-          <div className="grid grid-cols-1 gap-3">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             <FormField
               label="Gender"
               type="select"
@@ -249,11 +246,12 @@ export default function PatientCreatePanel({ onClose, onCreated }: PatientCreate
               label={submitting ? 'Creating...' : 'Create patient'}
               type="submit"
               variant="primary"
+              icon={<Plus className="size-4" />}
               disabled={submitting}
             />
           </div>
         </div>
       </form>
-    </div>
+    </Modal>
   )
 }

@@ -50,15 +50,27 @@ async function readJson(response: Response): Promise<unknown> {
 }
 
 function getErrorMessage(response: Response, payload: unknown) {
-  if (isObject(payload) && typeof payload.message === 'string' && payload.message.trim()) {
-    return payload.message
-  }
-
   if (isObject(payload) && payload.fields && isObject(payload.fields)) {
     return 'Please check the highlighted fields.'
   }
 
-  return `Request failed: ${response.status} ${response.statusText}`
+  if (response.status === 409) {
+    return 'The request conflicts with existing data.'
+  }
+
+  if (response.status === 404) {
+    return 'The requested record was not found.'
+  }
+
+  if (response.status === 429) {
+    return 'Too many requests. Please wait before trying again.'
+  }
+
+  if (response.status >= 400 && response.status < 500) {
+    return 'Please check the submitted data.'
+  }
+
+  return 'The server could not complete the request.'
 }
 
 function getFieldErrors(payload: unknown): ApiFieldErrors | undefined {

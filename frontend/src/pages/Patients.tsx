@@ -4,22 +4,25 @@ import { mapPatient } from '../mapper/patientMapper.tsx'
 import { useCursorPageData } from '../hooks/useCursorPageData.tsx'
 import { useTableFilters } from '../hooks/useTableFilters.tsx'
 import TableFilters from '../components/TableFilters.tsx'
-import { patientFilters } from '../constants/filters.ts'
+import { patientFiltersWithStatus } from '../constants/filters.ts'
 import { personColumns } from '../constants/columns.ts'
 import { usePatientDetails } from '../hooks/usePatientDetails.tsx'
 import PatientDetailsPanel from '../components/PatientsDetailsPanel.tsx'
-import PatientCreatePanel from '../components/PatientCreatePanel.tsx'
+import PatientCreateModal from '../components/PatientCreateModal.tsx'
 import Button from '../components/Button.tsx'
 import { useState } from 'react'
+import { Plus } from 'lucide-react'
+import { useCurrentRoomPatientFilter } from '../hooks/useCurrentRoomPatientFilter.tsx'
 
 const columns = [...personColumns] satisfies (keyof Patient)[]
-type PanelMode = 'create' | 'details' | null
+const clientOnlyFilterKeys = ['currentlyStationary']
 
 export function Patients() {
-  const [panelMode, setPanelMode] = useState<PanelMode>(null)
-  const { filters, setFilters, url } = useTableFilters(`/api/patients`)
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const { filters, setFilters, url } = useTableFilters(`/api/patients`, clientOnlyFilterKeys)
   const { data, loading, error, reload, page, hasMore, canGoBack, goToNextPage, goToPreviousPage } =
     useCursorPageData<PatientApi, Patient, 'patients'>(url, 'patients', mapPatient)
+  const currentRoomFilter = useCurrentRoomPatientFilter(data, filters.currentlyStationary === 'true')
 
   const {
     diagnoses,
@@ -33,18 +36,15 @@ export function Patients() {
   } = usePatientDetails()
 
   function handlePatientClick(patient: Patient) {
-    setPanelMode('details')
     void loadPatientDetails(patient.id)
   }
 
   function openCreatePanel() {
-    clearPatientDetails()
-    setPanelMode('create')
+    setShowCreateModal(true)
   }
 
   function closePanel() {
     clearPatientDetails()
-    setPanelMode(null)
   }
 
   function handlePatientCreated() {
@@ -55,13 +55,20 @@ export function Patients() {
     <MainPage
       title="Patients"
       columns={columns}
-      data={data}
-      loading={loading}
-      error={error}
+      data={currentRoomFilter.data}
+      loading={loading || currentRoomFilter.loading}
+      error={error ?? currentRoomFilter.error}
       onRetry={reload}
       onRowClick={handlePatientClick}
       getRowKey={patient => patient.id}
-      headerActions={<Button label="Add patient" variant="primary" onClick={openCreatePanel} />}
+      headerActions={
+        <Button
+          label="Add patient"
+          variant="primary"
+          icon={<Plus className="size-4" />}
+          onClick={openCreatePanel}
+        />
+      }
       pagination={{
         type: 'cursor',
         page,
@@ -70,22 +77,31 @@ export function Patients() {
         onNextPage: goToNextPage,
         onPreviousPage: goToPreviousPage,
       }}
-      filters={<TableFilters fields={patientFilters} values={filters} onChange={setFilters} />}
+      filters={
+        <TableFilters fields={patientFiltersWithStatus} values={filters} onChange={setFilters} />
+      }
       detailsPanel={
-        panelMode === 'create' ? (
-          <PatientCreatePanel onClose={closePanel} onCreated={handlePatientCreated} />
-        ) : patientId !== null ? (
+        patientId !== null ? (
           <PatientDetailsPanel
             key={patientId}
+            patientId={patientId}
             diagnoses={diagnoses}
             bookings={bookings}
             loading={detailsLoading}
             error={detailsError}
             onRetry={reloadPatientDetails}
             onClose={closePanel}
+            onActionCompleted={reloadPatientDetails}
           />
         ) : undefined
       }
-    />
+    >
+      {showCreateModal && (
+        <PatientCreateModal
+          onClose={() => setShowCreateModal(false)}
+          onCreated={handlePatientCreated}
+        />
+      )}
+    </MainPage>
   )
 }
