@@ -12,17 +12,14 @@ import PatientCreateModal from '../components/PatientCreateModal.tsx'
 import Button from '../components/Button.tsx'
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
-import { useCurrentRoomPatientFilter } from '../hooks/useCurrentRoomPatientFilter.tsx'
 
 const columns = [...personColumns] satisfies (keyof Patient)[]
-const clientOnlyFilterKeys = ['currentlyStationary']
 
 export function Patients() {
   const [showCreateModal, setShowCreateModal] = useState(false)
-  const { filters, setFilters, url } = useTableFilters(`/api/patients`, clientOnlyFilterKeys)
+  const { filters, setFilters, url } = useTableFilters(`/api/patients`)
   const { data, loading, error, reload, page, hasMore, canGoBack, goToNextPage, goToPreviousPage } =
     useCursorPageData<PatientApi, Patient, 'patients'>(url, 'patients', mapPatient)
-  const currentRoomFilter = useCurrentRoomPatientFilter(data, filters.currentlyStationary === 'true')
 
   const {
     diagnoses,
@@ -55,9 +52,9 @@ export function Patients() {
     <MainPage
       title="Patients"
       columns={columns}
-      data={currentRoomFilter.data}
-      loading={loading || currentRoomFilter.loading}
-      error={error ?? currentRoomFilter.error}
+      data={data}
+      loading={loading}
+      error={error}
       onRetry={reload}
       onRowClick={handlePatientClick}
       getRowKey={patient => patient.id}

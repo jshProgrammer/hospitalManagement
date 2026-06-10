@@ -1,6 +1,7 @@
 import { type SubmitEvent, useState } from 'react'
 import { ChevronDown, ListFilter } from 'lucide-react'
 import Button from './Button'
+import MultiSelectDropdown from './MultiSelectDropdown'
 
 type BaseFilterField = {
   name: string
@@ -17,7 +18,12 @@ type SelectFilterField = BaseFilterField & {
   options: { label: string; value: string }[]
 }
 
-export type FilterField = TextFilterField | SelectFilterField
+type MultiSelectFilterField = BaseFilterField & {
+  type: 'multiselect'
+  options: { label: string; value: string }[]
+}
+
+export type FilterField = TextFilterField | SelectFilterField | MultiSelectFilterField
 
 type FilterValues = Record<string, string>
 
@@ -100,6 +106,12 @@ export default function TableFilters({ fields, values, onChange }: TableFiltersP
                         </option>
                       ))}
                     </select>
+                  ) : field.type === 'multiselect' ? (
+                    <MultiSelectDropdown
+                      value={draft[field.name] ?? ''}
+                      onChange={value => updateDraft(field.name, value)}
+                      options={field.options}
+                    />
                   ) : (
                     <input
                       type={field.type ?? 'text'}

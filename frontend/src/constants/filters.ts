@@ -53,10 +53,13 @@ export const patientFilters = patientPersonFilters
 export const patientFiltersWithStatus: FilterField[] = [
   ...patientPersonFilters,
   {
-    name: 'currentlyStationary',
-    label: 'Room status',
-    type: 'select',
-    options: [{ label: 'Currently in room', value: 'true' }],
+    name: 'bookingStatus',
+    label: 'Booking status',
+    type: 'multiselect',
+    options: [
+      { label: 'Checked in now', value: 'CHECKED_IN' },
+      { label: 'Upcoming booking', value: 'UPCOMING' },
+    ],
   },
 ]
 
