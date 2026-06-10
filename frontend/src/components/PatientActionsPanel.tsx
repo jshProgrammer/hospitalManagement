@@ -1,11 +1,12 @@
 import { type FormEvent, useState } from 'react'
-import { Bed, LogOut, MoveRight } from 'lucide-react'
+import { Bed, ClipboardPlus, LogOut, MoveRight } from 'lucide-react'
 import { createBooking, dischargePatient, relocatePatient } from '../api/patientActions'
 import { ApiRequestError } from '../api/http'
 import type { BookingCreateRequest, BookingState } from '../types/Bookings'
 import ActionFeedback from './ActionFeedback'
 import Button from './Button'
 import FormField from './FormField'
+import PatientDiagnosisModal from './PatientDiagnosisModal'
 
 type PatientActionsPanelProps = {
   patientId: number
@@ -44,6 +45,7 @@ export default function PatientActionsPanel({
   onCompleted,
 }: PatientActionsPanelProps) {
   const [bookingForm, setBookingForm] = useState(initialBookingForm)
+  const [showDiagnosisModal, setShowDiagnosisModal] = useState(false)
   const [relocateRoomId, setRelocateRoomId] = useState('')
   const [pendingAction, setPendingAction] = useState<string | null>(null)
   const [feedback, setFeedback] = useState<Feedback | null>(null)
@@ -117,6 +119,23 @@ export default function PatientActionsPanel({
   return (
     <div className="space-y-4">
       {feedback && <ActionFeedback type={feedback.type} message={feedback.message} />}
+
+      <div className="border-border bg-surface rounded-lg border p-3">
+        <div className="flex flex-col gap-3">
+          <div>
+            <h3 className="text-dark text-sm font-semibold">Add Diagnosis</h3>
+          </div>
+
+          <div className="flex justify-end">
+            <Button
+              label="Add diagnosis"
+              variant="primary"
+              icon={<ClipboardPlus className="size-4" />}
+              onClick={() => setShowDiagnosisModal(true)}
+            />
+          </div>
+        </div>
+      </div>
 
       <form onSubmit={submitBooking} className="border-border bg-surface rounded-lg border p-3">
         <div className="space-y-3">
@@ -227,6 +246,14 @@ export default function PatientActionsPanel({
           </div>
         </div>
       </div>
+
+      {showDiagnosisModal && (
+        <PatientDiagnosisModal
+          patientId={patientId}
+          onClose={() => setShowDiagnosisModal(false)}
+          onCreated={onCompleted}
+        />
+      )}
     </div>
   )
 }

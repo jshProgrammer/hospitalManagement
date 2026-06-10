@@ -7,6 +7,8 @@ import type { DiagnosisApi } from '../types/Diagnosis'
 import type { BookingApi } from '../types/Bookings'
 import PatientActionsPanel from './PatientActionsPanel'
 import { hasCurrentRoomBooking } from '../utils/bookings'
+import { terminateDiagnosis } from '../api/medicationActions'
+import ActionFeedback from './ActionFeedback'
 
 type ActiveTab = 'diagnoses' | 'bookings' | 'actions'
 
@@ -32,7 +34,23 @@ export default function PatientDetailsPanel({
   onActionCompleted,
 }: PatientDetailsPanelProps) {
   const [activeTab, setActiveTab] = useState<ActiveTab>('diagnoses')
+  const [pendingDiagnosisId, setPendingDiagnosisId] = useState<number | null>(null)
+  const [diagnosisActionError, setDiagnosisActionError] = useState<string | null>(null)
   const hasCurrentBooking = hasCurrentRoomBooking(bookings)
+
+  async function handleTerminateDiagnosis(diagnosisId: number) {
+    setPendingDiagnosisId(diagnosisId)
+    setDiagnosisActionError(null)
+
+    try {
+      await terminateDiagnosis(diagnosisId)
+      onActionCompleted()
+    } catch {
+      setDiagnosisActionError('Could not terminate diagnosis.')
+    } finally {
+      setPendingDiagnosisId(null)
+    }
+  }
 
   return (
     <div className="flex h-full flex-col">
@@ -69,6 +87,10 @@ export default function PatientDetailsPanel({
 
         {!loading && !error && activeTab === 'diagnoses' && (
           <div className="space-y-3">
+            {diagnosisActionError && (
+              <ActionFeedback type="error" message={diagnosisActionError} />
+            )}
+
             {diagnoses.length === 0 && <p className="text-muted text-sm">No diagnoses available</p>}
 
             {diagnoses.map(diagnosis => (
@@ -80,6 +102,20 @@ export default function PatientDetailsPanel({
                   Doctor: {diagnosis.diagnosedBy.employee.person.firstName}{' '}
                   {diagnosis.diagnosedBy.employee.person.lastName}
                 </p>
+                <div className="mt-3 flex justify-end">
+                  <Button
+                    label={
+                      diagnosis.diagnosedEnd
+                        ? 'Terminated'
+                        : pendingDiagnosisId === diagnosis.id
+                          ? 'Terminating...'
+                          : 'Terminate'
+                    }
+                    variant="secondary"
+                    disabled={Boolean(diagnosis.diagnosedEnd) || pendingDiagnosisId !== null}
+                    onClick={() => void handleTerminateDiagnosis(diagnosis.id)}
+                  />
+                </div>
               </div>
             ))}
           </div>
