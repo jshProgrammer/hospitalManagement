@@ -1,6 +1,7 @@
 package org.hospitalmanagement.service.persons
 
 import org.hospitalmanagement.api.persons.requestModels.PatientCreationResponse
+import org.hospitalmanagement.api.persons.requestModels.PatientBookingStatusFilter
 import org.hospitalmanagement.api.persons.requestModels.PatientRequest
 import org.hospitalmanagement.api.persons.requestModels.PersonCreateRequest
 import org.hospitalmanagement.dbRepositories.facilities.BookingsRepository
@@ -172,7 +173,8 @@ class PatientService(
         birthday: String?,
         plz: String?,
         street: String?,
-        streetNo: Int?
+        streetNo: Int?,
+        bookingStatus: List<PatientBookingStatusFilter>?
     ): List<Patient> {
         var spec = Specification.where<Patient>(null)
 
@@ -188,6 +190,9 @@ class PatientService(
         if (plz != null) spec = spec.and(patientSpecifications.hasPlz(plz))
         if (!street.isNullOrBlank()) spec = spec.and(patientSpecifications.hasStreet(street))
         if (streetNo != null) spec = spec.and(patientSpecifications.hasStreetNo(streetNo))
+        if (!bookingStatus.isNullOrEmpty()) {
+            spec = spec.and(patientSpecifications.hasBookingStatus(bookingStatus))
+        }
 
         val pageable = PageRequest.of(0, limit, Sort.by(Sort.Order.asc("id")))
         return patientRepository.findAll(spec, pageable).content

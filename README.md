@@ -1,6 +1,6 @@
-<p align="center">
+<p1 align="center">
   <h1 align="center">Hospital Management System</h1>
-</p>
+</p1>
 
 <p align="center">
   A fullstack hospital management platform focused on secure handling of sensitive medical data, scalable backend architecture, and optimized database operations.
