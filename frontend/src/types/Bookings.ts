@@ -21,3 +21,25 @@ export type BookingApi = {
 export type BookingsResponse = {
   bookings: BookingApi[]
 }
+
+export type BookingState =
+  | 'PENDING'
+  | 'CONFIRMED'
+  | 'CHECKED_IN'
+  | 'COMPLETED'
+  | 'CANCELLED'
+  | 'RELOCATED'
+  | 'NO_SHOW'
+  | 'CHECKED_OUT_EARLY'
+
+export type BookingCreateRequest = {
+  from: string
+  until: string | null
+  state: BookingState
+  room_id: number
+  patient_id: number
+}
+
+export type RelocateRequest = {
+  room_id: number
+}

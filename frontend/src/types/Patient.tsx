@@ -41,3 +41,36 @@ export type PatientPage = {
   numberOfElements: number
   size: number
 }
+
+export type PatientCreateRequest = {
+  gender: string
+  firstName: string
+  lastName: string
+  email: string
+  phoneNumber: string
+  plz: string
+  city: string
+  street: string
+  houseNumber: string
+  country: string
+  birthday: string
+}
+
+export type PersonSearchResult = {
+  id: number
+  firstName: string
+  lastName: string
+  birthday: string
+  isEmployee: boolean
+  isPatient: boolean
+}
+
+export type PatientRequest = {
+  id: number
+  personId: number
+}
+
+export type PatientCreationResponse = {
+  potentialMatches?: PersonSearchResult[] | null
+  createdPatient?: PatientRequest | null
+}
