@@ -403,6 +403,7 @@ Response: `{ "nurses": [...], "nextCursor": <long>, "hasMore": <bool> }`
 | --- | --- | --- |
 | `GET` | `/api/doses` | List/search doses. |
 | `GET` | `/api/doses/{id}` | Get one dose by id. |
+| `POST` | `/api/doses` | Create a dose. |
 
 `GET /api/doses` query parameters:
 
@@ -412,6 +413,17 @@ Response: `{ "nurses": [...], "nextCursor": <long>, "hasMore": <bool> }`
 | `frequency` | `DoseFrequency` | no | Filter by frequency. |
 | `amount` | long | no | Filter by amount. |
 | `frequencyAmount` | long | no | Filter by frequency amount. |
+
+`POST /api/doses` request body (`DoseRequest` Object):
+
+```json
+{
+  "unit": "TABLET",
+  "amount": 2,
+  "frequency": "X_WEEKLY",
+  "frequencyAmount": 1
+}
+```
 
 ### Medications
 

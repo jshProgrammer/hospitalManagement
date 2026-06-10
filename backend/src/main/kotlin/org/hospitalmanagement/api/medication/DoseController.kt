@@ -1,5 +1,6 @@
 package org.hospitalmanagement.api.medication
 
+import org.hospitalmanagement.api.medication.requestModels.DoseRequest
 import org.hospitalmanagement.models.classes.medication.Dose
 import org.hospitalmanagement.models.enums.DoseUnit
 import org.hospitalmanagement.models.enums.DoseFrequency
@@ -29,5 +30,9 @@ class DoseController(private val doseService: DoseService) {
         doseService.findById(id)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Dose with id $id not found")
 
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    fun create(@RequestBody request: DoseRequest): Dose =
+        doseService.create(request)
 
 }
