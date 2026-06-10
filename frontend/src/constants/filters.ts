@@ -50,6 +50,19 @@ export const employeePersonFilters: FilterField[] = [
 
 export const patientFilters = patientPersonFilters
 
+export const patientFiltersWithStatus: FilterField[] = [
+  ...patientPersonFilters,
+  {
+    name: 'bookingStatus',
+    label: 'Booking status',
+    type: 'multiselect',
+    options: [
+      { label: 'Checked in now', value: 'CHECKED_IN' },
+      { label: 'Upcoming booking', value: 'UPCOMING' },
+    ],
+  },
+]
+
 export const doctorFilters: FilterField[] = [
   ...employeePersonFilters,
   { name: 'type', label: 'Doctor type', type: 'select', options: doctorTypeOptions },

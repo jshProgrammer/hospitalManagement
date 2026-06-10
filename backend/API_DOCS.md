@@ -166,6 +166,8 @@ Invalid values return `400 Bad Request` with a structured error body — see [Co
 
 Response: `{ "bookings": [...], "nextCursor": <long>, "hasMore": <bool> }`
 
+Bookings are returned newest first by `from` date, then by id.
+
 `POST /api/bookings` request body (`BookingRequest` Object):
 (until is optional)
 
@@ -211,6 +213,7 @@ Response: `{ "bookings": [...], "nextCursor": <long>, "hasMore": <bool> }`
 | `plz` | string | no | Postal code (e.g. `"97070"`). Matched via blind index — only exact matches. |
 | `street` | string | no | Exact street. Matched via blind index — only exact matches. |
 | `streetNo` | int | no | House number. |
+| `bookingStatus` | `PatientBookingStatusFilter` | no | Repeatable filter for booking state groups. Supported values: `CHECKED_IN` for bookings with state `CHECKED_IN` whose date range includes today, `UPCOMING` for future bookings with state `PENDING` or `CONFIRMED`. Example: `?bookingStatus=CHECKED_IN&bookingStatus=UPCOMING`. |
 
 > **Note on encrypted fields:** `firstName`, `lastName`, `plz`, `city`, `street`, `birthday`, `phone`, and `email` are stored encrypted. Each field is accompanied by a corresponding `*Hash` field (e.g. `firstNameHash`, `plzHash`) used for blind-index filtering. 
 > All these fields are returned in plaintext in the response alongside their hash. 
@@ -218,7 +221,9 @@ Response: `{ "bookings": [...], "nextCursor": <long>, "hasMore": <bool> }`
 
 Response: `{ "patients": [...], "nextCursor": <long>, "hasMore": <bool> }`
 
-`GET /api/patients/{id}/bookings` and `GET /api/patients/{id}/diagnoses` accept `after` (long) and `limit` (int, default `10`) and return the same cursor envelope with keys `bookings`/`diagnoses`.
+Patient booking status filters are evaluated through the booking-patient relationship and do not use encrypted person fields.
+
+`GET /api/patients/{id}/bookings` and `GET /api/patients/{id}/diagnoses` accept `after` (long) and `limit` (int, default `10`) and return the same cursor envelope with keys `bookings`/`diagnoses`. Patient bookings are returned newest first by `from` date, then by id.
 
 `POST /api/patients/new` request body (`PersonCreateRequest` Object):
 
@@ -398,6 +403,7 @@ Response: `{ "nurses": [...], "nextCursor": <long>, "hasMore": <bool> }`
 | --- | --- | --- |
 | `GET` | `/api/doses` | List/search doses. |
 | `GET` | `/api/doses/{id}` | Get one dose by id. |
+| `POST` | `/api/doses` | Create a dose. |
 
 `GET /api/doses` query parameters:
 
@@ -407,6 +413,17 @@ Response: `{ "nurses": [...], "nextCursor": <long>, "hasMore": <bool> }`
 | `frequency` | `DoseFrequency` | no | Filter by frequency. |
 | `amount` | long | no | Filter by amount. |
 | `frequencyAmount` | long | no | Filter by frequency amount. |
+
+`POST /api/doses` request body (`DoseRequest` Object):
+
+```json
+{
+  "unit": "TABLET",
+  "amount": 2,
+  "frequency": "X_WEEKLY",
+  "frequencyAmount": 1
+}
+```
 
 ### Medications
 

@@ -1,10 +1,11 @@
-import { type ButtonHTMLAttributes } from 'react'
+import { type ButtonHTMLAttributes, type ReactNode } from 'react'
 
 type ButtonVariant = 'default' | 'primary' | 'secondary'
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   label: string
   variant?: ButtonVariant
+  icon?: ReactNode
 }
 
 const buttonVariants: Record<ButtonVariant, string> = {
@@ -19,14 +20,16 @@ export default function Button({
   variant = 'default',
   type = 'button',
   className = '',
+  icon,
   ...props
 }: ButtonProps) {
   return (
     <button
       type={type}
-      className={`rounded-md text-sm transition-colors ${buttonVariants[variant]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-md text-sm transition-colors ${buttonVariants[variant]} ${className}`}
       {...props}
     >
+      {icon}
       {label}
     </button>
   )

@@ -1,6 +1,7 @@
 package org.hospitalmanagement.api.persons
 
 import org.hospitalmanagement.api.facilities.requestModels.RelocateRequest
+import org.hospitalmanagement.api.persons.requestModels.PatientBookingStatusFilter
 import org.hospitalmanagement.api.persons.requestModels.PatientCreationResponse
 import org.hospitalmanagement.api.persons.requestModels.PatientRequest
 import org.hospitalmanagement.api.persons.requestModels.PersonCreateRequest
@@ -59,12 +60,13 @@ class PatientController(
         @RequestParam(required = false) birthday: String?,
         @RequestParam(required = false) plz: String?,
         @RequestParam(required = false) street: String?,
-        @RequestParam(required = false) streetNo: Int?
+        @RequestParam(required = false) streetNo: Int?,
+        @RequestParam(required = false) bookingStatus: List<PatientBookingStatusFilter>?
     ): ResponseEntity<Map<String, Any>> {
         val raw = patientService.searchPatientsPaginated(
             after, limit + 1,
             firstName, lastName, email, phone, gender,
-            city, country, birthday, plz, street, streetNo
+            city, country, birthday, plz, street, streetNo, bookingStatus
         )
         val hasMore = raw.size > limit
         val patients = if (hasMore) raw.dropLast(1) else raw

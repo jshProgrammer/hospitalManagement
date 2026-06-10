@@ -35,6 +35,8 @@ type MainPageProps<T> = {
   onRowClick?: (row: T) => void
   getRowKey?: (row: T) => Key
   detailsPanel?: ReactNode
+  headerActions?: ReactNode
+  children?: ReactNode
 }
 export default function MainPage<T>({
   title,
@@ -48,13 +50,15 @@ export default function MainPage<T>({
   onRowClick,
   getRowKey,
   detailsPanel,
+  headerActions,
+  children,
 }: MainPageProps<T>) {
   const hasData = data.length > 0
   const page = pagination.page
 
   return (
     <div className="flex h-full flex-col">
-      <PageHeader title={title} />
+      <PageHeader title={title} actions={headerActions} />
       {filters}
       <div className="min-h-0 flex-1">
         <div className="border-border bg-surface flex h-full w-full flex-col overflow-hidden rounded-lg border shadow-sm">
@@ -109,6 +113,7 @@ export default function MainPage<T>({
           )}
         </div>
       </div>
+      {children}
     </div>
   )
 }

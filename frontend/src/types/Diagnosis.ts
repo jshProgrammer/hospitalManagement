@@ -31,3 +31,25 @@ export type DiagnosisApi = {
 export type DiagnosesResponse = {
   diagnoses: DiagnosisApi[]
 }
+
+export type MedicationCreateRequest = {
+  dose_id: number
+  drug_id: number
+  started: string | null
+  ended: string | null
+}
+
+export type DoseCreateRequest = {
+  unit: string
+  amount: number
+  frequency: string
+  frequencyAmount: number
+}
+
+export type DiagnosisCreateRequest = {
+  disease: string
+  medication_id: number
+  diagnosed_by: number
+  diagnosed_patient: number
+  diagnosed_at: string
+}
