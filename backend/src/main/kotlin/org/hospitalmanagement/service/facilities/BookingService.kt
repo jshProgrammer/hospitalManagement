@@ -37,14 +37,22 @@ class BookingService(
         var spec = Specification.where<Booking>(null)
         if (after != null) spec = spec.and(BookingSpecification.afterId(after))
         if (state != null) spec = spec.and(BookingSpecification.hasState(state))
-        val pageable = PageRequest.of(0, limit, Sort.by(Sort.Order.asc("id")))
+        val pageable = PageRequest.of(
+            0,
+            limit,
+            Sort.by(Sort.Order.desc("from"), Sort.Order.desc("id"))
+        )
         return bookingsRepository.findAll(spec, pageable).content
     }
 
     fun getPatientBookingsPaginated(patientId: Long, after: Long?, limit: Int): List<Booking> {
         var spec = Specification.where(BookingSpecification.hasPatientId(patientId))
         if (after != null) spec = spec.and(BookingSpecification.afterId(after))
-        val pageable = PageRequest.of(0, limit, Sort.by(Sort.Order.asc("id")))
+        val pageable = PageRequest.of(
+            0,
+            limit,
+            Sort.by(Sort.Order.desc("from"), Sort.Order.desc("id"))
+        )
         return bookingsRepository.findAll(spec, pageable).content
     }
 

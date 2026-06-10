@@ -1,10 +1,14 @@
 package org.hospitalmanagement.dbRepositories.persons
 
+import org.hospitalmanagement.api.persons.requestModels.PatientBookingStatusFilter
+import org.hospitalmanagement.models.classes.facilities.Booking
 import org.hospitalmanagement.models.classes.persons.Patient
+import org.hospitalmanagement.models.enums.BookingState
 import org.hospitalmanagement.models.enums.Gender
 import org.hospitalmanagement.services.CryptoUtility
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Component
+import java.time.LocalDate
 import java.util.*
 
 @Component
@@ -82,4 +86,53 @@ class PatientSpecifications(private val cryptoUtility: CryptoUtility) {
 
     fun afterId(id: Long): Specification<Patient> =
         Specification { root, _, cb -> cb.greaterThan(root.get("id"), id) }
+
+    fun hasBookingStatus(statuses: Collection<PatientBookingStatusFilter>): Specification<Patient> {
+        val uniqueStatuses = statuses.toSet()
+        val today = java.sql.Date.valueOf(LocalDate.now())
+
+        return uniqueStatuses
+            .map { status ->
+                when (status) {
+                    PatientBookingStatusFilter.CHECKED_IN -> hasActiveCheckedInBooking(today)
+                    PatientBookingStatusFilter.UPCOMING -> hasUpcomingBooking(today)
+                }
+            }
+            .reduce { combined, next -> combined.or(next) }
+    }
+
+    private fun hasActiveCheckedInBooking(today: Date): Specification<Patient> =
+        Specification { root, query, cb ->
+            val subquery = query.subquery(Long::class.java)
+            val booking = subquery.from(Booking::class.java)
+
+            subquery.select(cb.literal(1L)).where(
+                cb.equal(booking.get<Patient>("patient"), root),
+                cb.equal(booking.get<BookingState>("state"), BookingState.CHECKED_IN),
+                cb.lessThanOrEqualTo(booking.get("from"), today),
+                cb.or(
+                    cb.isNull(booking.get<Date>("until")),
+                    cb.greaterThanOrEqualTo(booking.get("until"), today)
+                )
+            )
+
+            cb.exists(subquery)
+        }
+
+    private fun hasUpcomingBooking(today: Date): Specification<Patient> =
+        Specification { root, query, cb ->
+            val subquery = query.subquery(Long::class.java)
+            val booking = subquery.from(Booking::class.java)
+
+            subquery.select(cb.literal(1L)).where(
+                cb.equal(booking.get<Patient>("patient"), root),
+                booking.get<BookingState>("state").`in`(
+                    BookingState.PENDING,
+                    BookingState.CONFIRMED
+                ),
+                cb.greaterThan(booking.get("from"), today)
+            )
+
+            cb.exists(subquery)
+        }
 }
