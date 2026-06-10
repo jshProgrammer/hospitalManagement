@@ -1,7 +1,5 @@
 import { type ReactNode, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { X } from 'lucide-react'
-import Button from './Button'
 
 type ModalProps = {
   title: string
@@ -45,12 +43,6 @@ export default function Modal({
           <h2 id="modal-title" className="text-dark text-lg font-semibold">
             {title}
           </h2>
-          <Button
-            label="Close"
-            variant="secondary"
-            icon={<X className="size-4" />}
-            onClick={onClose}
-          />
         </div>
         {children}
       </section>
