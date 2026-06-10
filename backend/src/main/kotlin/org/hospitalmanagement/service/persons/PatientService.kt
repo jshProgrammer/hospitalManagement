@@ -32,7 +32,8 @@ class PatientService(
     private val personRepository: PersonRepository,
     private val bookingsRepository: BookingsRepository,
     private val diagnosisRepository: DiagnosisRepository,
-    private val patientSpecifications: PatientSpecifications
+    private val patientSpecifications: PatientSpecifications,
+    private val diagnosisSpecification: DiagnosisSpecification
 ) {
     fun getAll(pageable: Pageable): Page<Patient> =
         patientRepository.findAll(pageable)
@@ -196,8 +197,8 @@ class PatientService(
         bookingsRepository.findByPatientId(personID, pageable)
 
     fun getDiagnosesPaginated(patientID: Long, after: Long?, limit: Int): List<Diagnosis> {
-        var spec = DiagnosisSpecification.hasDiagnosedPatientId(patientID)
-        if (after != null) spec = spec.and(DiagnosisSpecification.afterId(after))
+        var spec = diagnosisSpecification.hasDiagnosedPatientId(patientID)
+        if (after != null) spec = spec.and(diagnosisSpecification.afterId(after))
         val pageable = PageRequest.of(0, limit, Sort.by(Sort.Order.asc("id")))
         return diagnosisRepository.findAll(spec, pageable).content
     }

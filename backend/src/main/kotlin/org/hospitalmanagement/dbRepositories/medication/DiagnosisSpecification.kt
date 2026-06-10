@@ -2,19 +2,22 @@ package org.hospitalmanagement.specifications.medication
 
 import org.hospitalmanagement.models.classes.medication.Diagnosis
 import org.hospitalmanagement.models.enums.DrugsType
+import org.hospitalmanagement.services.CryptoUtility
 import org.springframework.data.jpa.domain.Specification
+import org.springframework.stereotype.Component
 import java.util.Date
 
-object DiagnosisSpecification {
+@Component
+class DiagnosisSpecification(private val cryptoUtility: CryptoUtility) {
 
     fun hasDisease(disease: String?): Specification<Diagnosis> =
         Specification { root, _, cb ->
-            disease?.let { cb.equal(cb.lower(root.get("disease")), it.lowercase()) }
-        }
-
-    fun diseaseContains(disease: String?): Specification<Diagnosis> =
-        Specification { root, _, cb ->
-            disease?.let { cb.like(cb.lower(root.get("disease")), "%${it.lowercase()}%") }
+            if (disease == null) {
+                cb.conjunction()   // = TRUE
+            } else {
+                val blindIndex = cryptoUtility.generateBlindIndex(disease)
+                cb.equal(root.get<String>("diseaseHash"), blindIndex)
+            }
         }
 
     fun hasMedicationId(medicationId: Long?): Specification<Diagnosis> =
@@ -53,7 +56,6 @@ object DiagnosisSpecification {
 
     fun build(
         disease: String?,
-        diseaseContains: String?,
         medicationId: Long?,
         drugType: DrugsType?,
         diagnosedByDoctorId: Long?,
@@ -62,7 +64,6 @@ object DiagnosisSpecification {
         diagnosedBefore: Date?
     ): Specification<Diagnosis> =
         Specification.where(hasDisease(disease))
-            .and(diseaseContains(diseaseContains))
             .and(hasMedicationId(medicationId))
             .and(hasDrugType(drugType))
             .and(hasDiagnosedByDoctorId(diagnosedByDoctorId))

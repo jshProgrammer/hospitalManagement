@@ -26,13 +26,13 @@ class DiagnosisService(
     private val medicationRepository: MedicationRepository,
     private val doctorRepository: DoctorRepository,
     private val patientRepository: PatientRepository,
-    private val cryptoUtility: CryptoUtility
+    private val cryptoUtility: CryptoUtility,
+    private val diagnosisSpecification: DiagnosisSpecification
 ) {
 
     fun search(
         pageable: Pageable,
         disease: String?,
-        diseaseContains: String?,
         medicationId: Long?,
         drugType: DrugsType?,
         diagnosedByDoctorId: Long?,
@@ -40,8 +40,8 @@ class DiagnosisService(
         diagnosedAfter: Date?,
         diagnosedBefore: Date?
     ): Page<Diagnosis> {
-        val spec = DiagnosisSpecification.build(
-            disease, diseaseContains, medicationId, drugType,
+        val spec = diagnosisSpecification.build(
+            disease, medicationId, drugType,
             diagnosedByDoctorId, diagnosedPatientId, diagnosedAfter, diagnosedBefore
         )
         return diagnosisRepository.findAll(spec, pageable)
@@ -59,11 +59,11 @@ class DiagnosisService(
         diagnosedAfter: Date?,
         diagnosedBefore: Date?
     ): List<Diagnosis> {
-        var spec = DiagnosisSpecification.build(
-            disease, diseaseContains, medicationId, drugType,
+        var spec = diagnosisSpecification.build(
+            disease, medicationId, drugType,
             diagnosedByDoctorId, diagnosedPatientId, diagnosedAfter, diagnosedBefore
         )
-        if (after != null) spec = spec.and(DiagnosisSpecification.afterId(after))
+        if (after != null) spec = spec.and(diagnosisSpecification.afterId(after))
         val pageable = PageRequest.of(0, limit, Sort.by(Sort.Order.asc("id")))
         return diagnosisRepository.findAll(spec, pageable).content
     }
