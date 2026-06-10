@@ -24,7 +24,8 @@ import java.util.*
 class DoctorService(
     private val doctorRepository: DoctorRepository,
     private val employeeRepository: EmployeeRepository,
-    private val personService: PersonService
+    private val personService: PersonService,
+    private val doctorSpecifications: DoctorSpecifications
 ) {
     // Step 1: Search for existing persons, or create new person + employee + doctor directly
     fun createDoctorWithSearch(
@@ -83,8 +84,8 @@ class DoctorService(
         gender: Gender?,
         city: String?,
         country: String?,
-        birthday: Date?,
-        plz: Int?,
+        birthday: String?,
+        plz: String?,
         street: String?,
         streetNo: Int?,
         Type: DoctorsType?,
@@ -95,72 +96,72 @@ class DoctorService(
 
         if (firstName != null) {
             spec = (spec ?: Specification.where(null))
-                .and(DoctorSpecifications.hasFirstName(firstName))
+                .and(doctorSpecifications.hasFirstName(firstName))
         }
 
         if (lastName != null) {
             spec = (spec ?: Specification.where(null))
-                .and(DoctorSpecifications.hasLastName(lastName))
+                .and(doctorSpecifications.hasLastName(lastName))
         }
 
         if (email != null) {
             spec = (spec ?: Specification.where(null))
-                .and(DoctorSpecifications.hasEmail(email))
+                .and(doctorSpecifications.hasEmail(email))
         }
 
         if (phone != null) {
             spec = (spec ?: Specification.where(null))
-                .and(DoctorSpecifications.hasPhone(phone))
+                .and(doctorSpecifications.hasPhone(phone))
         }
 
         if (gender != null) {
             spec = (spec ?: Specification.where(null))
-                .and(DoctorSpecifications.hasGender(gender))
+                .and(doctorSpecifications.hasGender(gender))
         }
 
         if (city != null) {
             spec = (spec ?: Specification.where(null))
-                .and(DoctorSpecifications.hasCity(city))
+                .and(doctorSpecifications.hasCity(city))
         }
 
         if (country != null) {
             spec = (spec ?: Specification.where(null))
-                .and(DoctorSpecifications.hasCountry(country))
+                .and(doctorSpecifications.hasCountry(country))
         }
 
         if (birthday != null) {
             spec = (spec ?: Specification.where(null))
-                .and(DoctorSpecifications.hasBirthday(birthday))
+                .and(doctorSpecifications.hasBirthday(birthday))
         }
 
         if (plz != null) {
             spec = (spec ?: Specification.where(null))
-                .and(DoctorSpecifications.hasPlz(plz))
+                .and(doctorSpecifications.hasPlz(plz))
         }
 
         if (street != null) {
             spec = (spec ?: Specification.where(null))
-                .and(DoctorSpecifications.hasStreet(street))
+                .and(doctorSpecifications.hasStreet(street))
         }
 
         if (streetNo != null) {
             spec = (spec ?: Specification.where(null))
-                .and(DoctorSpecifications.hasStreetNo(streetNo))
+                .and(doctorSpecifications.hasStreetNo(streetNo))
         }
 
         if (departmentId != null) {
             spec = (spec ?: Specification.where(null))
-                .and(DoctorSpecifications.hasDepartmentId(departmentId))
+                .and(doctorSpecifications.hasDepartmentId(departmentId))
         }
 
         if (Type != null) {
             spec = (spec ?: Specification.where(null))
-                .and(DoctorSpecifications.hasType(Type))
+                .and(doctorSpecifications.hasType(Type))
         }
 
         if (workphone != null) {
             spec = (spec ?: Specification.where(null))
-                .and(DoctorSpecifications.hasWorkphone(workphone))
+                .and(doctorSpecifications.hasWorkphone(workphone))
         }
 
         return if (spec != null) {
@@ -180,8 +181,8 @@ class DoctorService(
         gender: Gender?,
         city: String?,
         country: String?,
-        birthday: Date?,
-        plz: Int?,
+        birthday: String?,
+        plz: String?,
         street: String?,
         streetNo: Int?,
         type: DoctorsType?,
@@ -190,21 +191,21 @@ class DoctorService(
     ): List<Doctor> {
         var spec = Specification.where<Doctor>(null)
 
-        if (after != null) spec = spec.and(DoctorSpecifications.afterId(after))
-        if (!firstName.isNullOrBlank()) spec = spec.and(DoctorSpecifications.hasFirstName(firstName))
-        if (!lastName.isNullOrBlank()) spec = spec.and(DoctorSpecifications.hasLastName(lastName))
-        if (!email.isNullOrBlank()) spec = spec.and(DoctorSpecifications.hasEmail(email))
-        if (!phone.isNullOrBlank()) spec = spec.and(DoctorSpecifications.hasPhone(phone))
-        if (gender != null) spec = spec.and(DoctorSpecifications.hasGender(gender))
-        if (!city.isNullOrBlank()) spec = spec.and(DoctorSpecifications.hasCity(city))
-        if (!country.isNullOrBlank()) spec = spec.and(DoctorSpecifications.hasCountry(country))
-        if (birthday != null) spec = spec.and(DoctorSpecifications.hasBirthday(birthday))
-        if (plz != null) spec = spec.and(DoctorSpecifications.hasPlz(plz))
-        if (!street.isNullOrBlank()) spec = spec.and(DoctorSpecifications.hasStreet(street))
-        if (streetNo != null) spec = spec.and(DoctorSpecifications.hasStreetNo(streetNo))
-        if (type != null) spec = spec.and(DoctorSpecifications.hasType(type))
-        if (departmentId != null) spec = spec.and(DoctorSpecifications.hasDepartmentId(departmentId))
-        if (!workPhone.isNullOrBlank()) spec = spec.and(DoctorSpecifications.hasWorkphone(workPhone))
+        if (after != null) spec = spec.and(doctorSpecifications.afterId(after))
+        if (!firstName.isNullOrBlank()) spec = spec.and(doctorSpecifications.hasFirstName(firstName))
+        if (!lastName.isNullOrBlank()) spec = spec.and(doctorSpecifications.hasLastName(lastName))
+        if (!email.isNullOrBlank()) spec = spec.and(doctorSpecifications.hasEmail(email))
+        if (!phone.isNullOrBlank()) spec = spec.and(doctorSpecifications.hasPhone(phone))
+        if (gender != null) spec = spec.and(doctorSpecifications.hasGender(gender))
+        if (!city.isNullOrBlank()) spec = spec.and(doctorSpecifications.hasCity(city))
+        if (!country.isNullOrBlank()) spec = spec.and(doctorSpecifications.hasCountry(country))
+        if (birthday != null) spec = spec.and(doctorSpecifications.hasBirthday(birthday))
+        if (plz != null) spec = spec.and(doctorSpecifications.hasPlz(plz))
+        if (!street.isNullOrBlank()) spec = spec.and(doctorSpecifications.hasStreet(street))
+        if (streetNo != null) spec = spec.and(doctorSpecifications.hasStreetNo(streetNo))
+        if (type != null) spec = spec.and(doctorSpecifications.hasType(type))
+        if (departmentId != null) spec = spec.and(doctorSpecifications.hasDepartmentId(departmentId))
+        if (!workPhone.isNullOrBlank()) spec = spec.and(doctorSpecifications.hasWorkphone(workPhone))
 
         val pageable = PageRequest.of(0, limit, Sort.by(Sort.Order.asc("id")))
         return doctorRepository.findAll(spec, pageable).content
