@@ -1,32 +1,29 @@
 import { type FormEvent, useMemo, useState } from 'react'
-import { Bed, ClipboardPlus, LogOut, MoveRight } from 'lucide-react'
-import { createBooking, dischargePatient, relocatePatient } from '../api/patientActions'
+import { Bed, LogOut, MoveRight } from 'lucide-react'
+import {
+  completeBooking,
+  createBooking,
+  relocateBooking,
+} from '../api/patientActions'
 import { ApiRequestError } from '../api/http'
-import type { BookingApi, BookingCreateRequest, BookingState } from '../types/Bookings'
-import type { BookingChangeOptions } from '../hooks/usePatientDetails'
+import type { BookingApi, BookingCreateRequest, BookingState, RoomApi } from '../types/Bookings'
 import { useRoomOptions } from '../hooks/useRoomOptions'
+import { isCurrentRoomBooking } from '../utils/bookings'
 import ActionFeedback from './ActionFeedback'
 import Button from './Button'
 import FormField from './FormField'
-import PatientDiagnosisModal from './PatientDiagnosisModal'
 import SearchableSelect from './SearchableSelect'
 
-type PatientActionsPanelProps = {
+type PatientBookingsPanelProps = {
   patientId: number
-  hasCurrentBooking: boolean
-  onCompleted: (booking?: BookingApi, options?: BookingChangeOptions) => void
+  bookings: BookingApi[]
+  onBookingChanged: (booking: BookingApi) => void
 }
 
 type Feedback = {
   type: 'success' | 'error'
   message: string
 }
-
-const bookingStateOptions: { label: string; value: BookingState }[] = [
-  { label: 'Pending', value: 'PENDING' },
-  { label: 'Confirmed', value: 'CONFIRMED' },
-  { label: 'Checked in', value: 'CHECKED_IN' },
-]
 
 type BookingFormState = {
   from: string
@@ -42,14 +39,20 @@ const initialBookingForm: BookingFormState = {
   roomId: '',
 }
 
-export default function PatientActionsPanel({
+const bookingStateOptions: { label: string; value: BookingState }[] = [
+  { label: 'Pending', value: 'PENDING' },
+  { label: 'Confirmed', value: 'CONFIRMED' },
+  { label: 'Checked in', value: 'CHECKED_IN' },
+]
+
+export default function PatientBookingsPanel({
   patientId,
-  hasCurrentBooking,
-  onCompleted,
-}: PatientActionsPanelProps) {
+  bookings,
+  onBookingChanged,
+}: PatientBookingsPanelProps) {
   const [bookingForm, setBookingForm] = useState(initialBookingForm)
   const [bookingRoomQuery, setBookingRoomQuery] = useState('')
-  const [showDiagnosisModal, setShowDiagnosisModal] = useState(false)
+  const [relocatingBookingId, setRelocatingBookingId] = useState<number | null>(null)
   const [relocateRoomId, setRelocateRoomId] = useState('')
   const [relocateRoomQuery, setRelocateRoomQuery] = useState('')
   const [pendingAction, setPendingAction] = useState<string | null>(null)
@@ -81,7 +84,7 @@ export default function PatientActionsPanel({
       return
     }
 
-    setPendingAction('booking')
+    setPendingAction('create')
     setFeedback(null)
 
     const payload: BookingCreateRequest = {
@@ -97,7 +100,7 @@ export default function PatientActionsPanel({
       setBookingForm(initialBookingForm)
       setBookingRoomQuery('')
       setFeedback({ type: 'success', message: 'Booking created.' })
-      onCompleted(booking)
+      onBookingChanged(booking)
     } catch (error) {
       setFeedback({ type: 'error', message: getActionError(error, 'Could not create booking.') })
     } finally {
@@ -107,72 +110,54 @@ export default function PatientActionsPanel({
 
   async function submitRelocation(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!relocateRoomId) {
+    if (relocatingBookingId === null || !relocateRoomId) {
       setFeedback({ type: 'error', message: 'Choose a room from the list.' })
       return
     }
 
-    setPendingAction('relocate')
+    setPendingAction(`relocate-${relocatingBookingId}`)
     setFeedback(null)
 
     try {
-      const booking = await relocatePatient(patientId, { room_id: Number(relocateRoomId) })
+      const booking = await relocateBooking(relocatingBookingId, { room_id: Number(relocateRoomId) })
+      setRelocatingBookingId(null)
       setRelocateRoomId('')
       setRelocateRoomQuery('')
-      setFeedback({ type: 'success', message: 'Patient relocated.' })
-      onCompleted(booking, { replaceCurrentBooking: true })
+      setFeedback({ type: 'success', message: 'Room changed.' })
+      onBookingChanged(booking)
     } catch (error) {
-      setFeedback({ type: 'error', message: getActionError(error, 'Could not relocate patient.') })
+      setFeedback({ type: 'error', message: getActionError(error, 'Could not change room.') })
     } finally {
       setPendingAction(null)
     }
   }
 
-  async function handleDischarge() {
-    setPendingAction('discharge')
+  async function endBooking(bookingId: number) {
+    setPendingAction(`complete-${bookingId}`)
     setFeedback(null)
 
     try {
-      const booking = await dischargePatient(patientId)
-      setFeedback({ type: 'success', message: 'Patient discharged.' })
-      onCompleted(booking)
+      const booking = await completeBooking(bookingId)
+      setFeedback({ type: 'success', message: 'Booking ended.' })
+      onBookingChanged(booking)
     } catch (error) {
-      setFeedback({ type: 'error', message: getActionError(error, 'Could not discharge patient.') })
+      setFeedback({ type: 'error', message: getActionError(error, 'Could not end booking.') })
     } finally {
       setPendingAction(null)
     }
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {feedback && <ActionFeedback type={feedback.type} message={feedback.message} />}
       {bookingRoomOptions.error && <ActionFeedback type="error" message={bookingRoomOptions.error} />}
       {relocateRoomOptions.error && (
         <ActionFeedback type="error" message={relocateRoomOptions.error} />
       )}
 
-      <div className="border-border bg-surface rounded-lg border p-3">
-        <div className="flex flex-col gap-3">
-          <div>
-            <h3 className="text-dark text-sm font-semibold">Add Diagnosis</h3>
-          </div>
-
-          <div className="flex justify-end">
-            <Button
-              label="Add diagnosis"
-              variant="primary"
-              icon={<ClipboardPlus className="size-4" />}
-              onClick={() => setShowDiagnosisModal(true)}
-            />
-          </div>
-        </div>
-      </div>
-
       <form onSubmit={submitBooking} className="border-border bg-surface rounded-lg border p-3">
         <div className="space-y-3">
-          <div>
-            <h3 className="text-dark text-sm font-semibold">Create Booking</h3>
-          </div>
+          <h3 className="text-dark text-sm font-semibold">Create Booking</h3>
 
           <SearchableSelect
             label="Room"
@@ -214,7 +199,7 @@ export default function PatientActionsPanel({
 
           <div className="flex justify-end">
             <Button
-              label={pendingAction === 'booking' ? 'Creating...' : 'Create booking'}
+              label={pendingAction === 'create' ? 'Creating...' : 'Create booking'}
               type="submit"
               variant="primary"
               icon={<Bed className="size-4" />}
@@ -224,88 +209,89 @@ export default function PatientActionsPanel({
         </div>
       </form>
 
-      <form onSubmit={submitRelocation} className="border-border bg-surface rounded-lg border p-3">
-        <div className="space-y-3">
-          <div>
-            <h3 className="text-dark text-sm font-semibold">Relocate Patient</h3>
+      {bookings.length === 0 && <p className="text-muted text-sm">No bookings available</p>}
+
+      {bookings.map(booking => {
+        const canChangeBooking = isCurrentRoomBooking(booking)
+
+        return (
+          <div key={booking.id} className="border-border bg-surface rounded-lg border p-3">
+            <p className="text-dark font-semibold">Room {booking.room.number}</p>
+            <p className="text-muted text-sm">State: {booking.state}</p>
+            <p className="text-muted text-sm">From: {booking.from}</p>
+            <p className="text-muted text-sm">Until: {booking.until ?? '—'}</p>
+            <p className="text-muted text-sm">
+              Floor {booking.room.floor}, {booking.room.beds} beds
+            </p>
+            <p className="text-muted text-sm">
+              Station: {booking.room.station.name} ({booking.room.station.department.name})
+            </p>
+
+            {relocatingBookingId === booking.id && (
+              <form onSubmit={submitRelocation} className="mt-3 space-y-3">
+                <SearchableSelect
+                  label="New room"
+                  value={relocateRoomId}
+                  onChange={setRelocateRoomId}
+                  query={relocateRoomQuery}
+                  onQueryChange={setRelocateRoomQuery}
+                  options={relocationRooms}
+                  placeholder="Type room number, floor, or station"
+                  emptyMessage="No rooms found"
+                  loading={relocateRoomOptions.loading}
+                  required
+                  disabled={busy}
+                />
+                <div className="flex justify-end gap-2">
+                  <Button
+                    label="Cancel"
+                    variant="secondary"
+                    onClick={() => {
+                      setRelocatingBookingId(null)
+                      setRelocateRoomId('')
+                      setRelocateRoomQuery('')
+                    }}
+                    disabled={busy}
+                  />
+                  <Button
+                    label={
+                      pendingAction === `relocate-${booking.id}` ? 'Changing...' : 'Change room'
+                    }
+                    type="submit"
+                    variant="primary"
+                    icon={<MoveRight className="size-4" />}
+                    disabled={busy}
+                  />
+                </div>
+              </form>
+            )}
+
+            {relocatingBookingId !== booking.id && (
+              <div className="mt-3 flex flex-wrap justify-end gap-2">
+                <Button
+                  label="Change room"
+                  variant="primary"
+                  icon={<MoveRight className="size-4" />}
+                  onClick={() => setRelocatingBookingId(booking.id)}
+                  disabled={busy || !canChangeBooking}
+                />
+                <Button
+                  label={pendingAction === `complete-${booking.id}` ? 'Ending...' : 'End booking'}
+                  variant="secondary"
+                  icon={<LogOut className="size-4" />}
+                  onClick={() => void endBooking(booking.id)}
+                  disabled={busy || !canChangeBooking}
+                />
+              </div>
+            )}
           </div>
-
-          <SearchableSelect
-            label="New room"
-            value={relocateRoomId}
-            onChange={setRelocateRoomId}
-            query={relocateRoomQuery}
-            onQueryChange={setRelocateRoomQuery}
-            options={relocationRooms}
-            placeholder="Type room number, floor, or station"
-            emptyMessage="No rooms found"
-            loading={relocateRoomOptions.loading}
-            required
-            disabled={busy || !hasCurrentBooking}
-          />
-
-          <div className="flex justify-end">
-            <Button
-              label={
-                !hasCurrentBooking
-                  ? 'No current booking'
-                  : pendingAction === 'relocate'
-                    ? 'Moving...'
-                    : 'Relocate'
-              }
-              type="submit"
-              variant="primary"
-              icon={<MoveRight className="size-4" />}
-              disabled={busy || !hasCurrentBooking}
-            />
-          </div>
-        </div>
-      </form>
-
-      <div className="border-border bg-surface rounded-lg border p-3">
-        <div className="flex flex-col gap-3">
-          <div>
-            <h3 className="text-dark text-sm font-semibold">Discharge Patient</h3>
-          </div>
-
-          <div className="flex justify-end">
-            <Button
-              label={
-                !hasCurrentBooking
-                  ? 'No current booking'
-                  : pendingAction === 'discharge'
-                    ? 'Discharging...'
-                    : 'Discharge'
-              }
-              variant="secondary"
-              icon={<LogOut className="size-4" />}
-              onClick={() => void handleDischarge()}
-              disabled={busy || !hasCurrentBooking}
-            />
-          </div>
-        </div>
-      </div>
-
-      {showDiagnosisModal && (
-        <PatientDiagnosisModal
-          patientId={patientId}
-          onClose={() => setShowDiagnosisModal(false)}
-          onCreated={onCompleted}
-        />
-      )}
+        )
+      })}
     </div>
   )
 }
 
-function getActionError(error: unknown, fallback: string) {
-  if (error instanceof ApiRequestError) {
-    return error.message
-  }
-
-  return fallback
-}
-
-function roomToSelectOption(room: BookingApi['room']) {
+function roomToSelectOption(room: RoomApi) {
   const station = room.station
   const department = station.department
 
@@ -315,4 +301,12 @@ function roomToSelectOption(room: BookingApi['room']) {
     description: `Floor ${room.floor} - ${station.name}, ${department.name} (${department.building}) - ${room.beds} beds`,
     searchText: `${room.number} floor ${room.floor} ${station.name} ${department.name} ${department.building} ${room.beds} beds`,
   }
+}
+
+function getActionError(error: unknown, fallback: string) {
+  if (error instanceof ApiRequestError) {
+    return error.message
+  }
+
+  return fallback
 }

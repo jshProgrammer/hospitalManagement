@@ -1,18 +1,18 @@
 import { useState } from 'react'
-import { Pill, X } from 'lucide-react'
+import { ClipboardPlus, Pill, X } from 'lucide-react'
 import Button from './Button'
 import LoadingIcon from './LoadingIcon'
 import ErrorComponent from './ErrorComponent'
 import type { DiagnosisApi } from '../types/Diagnosis'
 import type { BookingApi } from '../types/Bookings'
 import type { BookingChangeOptions } from '../hooks/usePatientDetails'
-import PatientActionsPanel from './PatientActionsPanel'
-import { hasCurrentRoomBooking } from '../utils/bookings'
+import PatientBookingsPanel from './PatientBookingsPanel'
+import PatientDiagnosisModal from './PatientDiagnosisModal'
 import { terminateDiagnosis } from '../api/medicationActions'
 import ActionFeedback from './ActionFeedback'
 import Modal from './Modal'
 
-type ActiveTab = 'diagnoses' | 'bookings' | 'actions'
+type ActiveTab = 'diagnoses' | 'bookings'
 
 type PatientDetailsPanelProps = {
   patientId: number
@@ -39,7 +39,7 @@ export default function PatientDetailsPanel({
   const [pendingDiagnosisId, setPendingDiagnosisId] = useState<number | null>(null)
   const [diagnosisActionError, setDiagnosisActionError] = useState<string | null>(null)
   const [selectedDiagnosis, setSelectedDiagnosis] = useState<DiagnosisApi | null>(null)
-  const hasCurrentBooking = hasCurrentRoomBooking(bookings)
+  const [showDiagnosisModal, setShowDiagnosisModal] = useState(false)
 
   async function handleTerminateDiagnosis(diagnosisId: number) {
     setPendingDiagnosisId(diagnosisId)
@@ -75,12 +75,6 @@ export default function PatientDetailsPanel({
           variant={activeTab === 'bookings' ? 'primary' : 'secondary'}
           onClick={() => setActiveTab('bookings')}
         />
-
-        <Button
-          label="Actions"
-          variant={activeTab === 'actions' ? 'primary' : 'secondary'}
-          onClick={() => setActiveTab('actions')}
-        />
       </div>
 
       <div className="min-h-0 flex-1 overflow-auto p-4">
@@ -93,6 +87,15 @@ export default function PatientDetailsPanel({
             {diagnosisActionError && (
               <ActionFeedback type="error" message={diagnosisActionError} />
             )}
+
+            <div className="flex justify-end">
+              <Button
+                label="Add diagnosis"
+                variant="primary"
+                icon={<ClipboardPlus className="size-4" />}
+                onClick={() => setShowDiagnosisModal(true)}
+              />
+            </div>
 
             {diagnoses.length === 0 && <p className="text-muted text-sm">No diagnoses available</p>}
 
@@ -142,25 +145,10 @@ export default function PatientDetailsPanel({
         )}
 
         {!loading && !error && activeTab === 'bookings' && (
-          <div className="space-y-3">
-            {bookings.length === 0 && <p className="text-muted text-sm">No bookings available</p>}
-            {bookings.map(booking => (
-              <div key={booking.id} className="border-border bg-surface rounded-lg border p-3">
-                <p className="text-dark font-semibold">Room {booking.room.number}</p>
-                <p className="text-muted text-sm">State: {booking.state}</p>
-                <p className="text-muted text-sm">From: {booking.from}</p>
-                <p className="text-muted text-sm">Until: {booking.until}</p>
-                <p className="text-muted text-sm">Station: {booking.room.station.name}</p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {!loading && !error && activeTab === 'actions' && (
-          <PatientActionsPanel
+          <PatientBookingsPanel
             patientId={patientId}
-            hasCurrentBooking={hasCurrentBooking}
-            onCompleted={onActionCompleted}
+            bookings={bookings}
+            onBookingChanged={booking => onActionCompleted(booking)}
           />
         )}
       </div>
@@ -169,6 +157,14 @@ export default function PatientDetailsPanel({
         <DiagnosisTreatmentModal
           diagnosis={selectedDiagnosis}
           onClose={() => setSelectedDiagnosis(null)}
+        />
+      )}
+
+      {showDiagnosisModal && (
+        <PatientDiagnosisModal
+          patientId={patientId}
+          onClose={() => setShowDiagnosisModal(false)}
+          onCreated={onActionCompleted}
         />
       )}
     </div>

@@ -147,6 +147,7 @@ Invalid values return `400 Bad Request` with a structured error body — see [Co
 | --- | --- | --- | --- |
 | `stationID` | long | no | Filter by station id. |
 | `number` | long | no | Filter by room number. |
+| `floor` | long | no | Filter by floor. |
 
 ### Bookings
 
@@ -155,6 +156,8 @@ Invalid values return `400 Bad Request` with a structured error body — see [Co
 | `GET` | `/api/bookings` | List bookings. |
 | `GET` | `/api/bookings/{id}` | Get one booking by id. |
 | `POST` | `/api/bookings` | Create a booking. |
+| `POST` | `/api/bookings/{id}/relocate` | Change the room on an existing booking. |
+| `POST` | `/api/bookings/{id}/complete` | End an existing booking. |
 
 `GET /api/bookings` query parameters:
 
