@@ -1,4 +1,4 @@
-import { type FormEvent, useState } from 'react'
+import { type FormEvent, useMemo, useState } from 'react'
 import { ClipboardPlus } from 'lucide-react'
 import { createDiagnosis, createDose, createMedication } from '../api/medicationActions'
 import { useMedicationOptions } from '../hooks/useMedicationOptions'
@@ -6,6 +6,7 @@ import ActionFeedback from './ActionFeedback'
 import Button from './Button'
 import FormField from './FormField'
 import Modal from './Modal'
+import SearchableSelect from './SearchableSelect'
 
 type PatientDiagnosisModalProps = {
   patientId: number
@@ -36,12 +37,39 @@ export default function PatientDiagnosisModal({
   onClose,
   onCreated,
 }: PatientDiagnosisModalProps) {
-  const options = useMedicationOptions()
   const [form, setForm] = useState<FormState>(initialForm)
+  const [doctorQuery, setDoctorQuery] = useState('')
+  const [drugQuery, setDrugQuery] = useState('')
+  const options = useMedicationOptions(drugQuery)
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
-  const busy = submitting || options.loading
+  const busy = submitting || options.doctorsLoading
+  const doctorOptions = useMemo(
+    () =>
+      options.doctors.map(doctor => {
+        const person = doctor.employee.person
+        const name = `${person.firstName} ${person.lastName}`
+
+        return {
+          label: name,
+          value: String(doctor.id),
+          description: `${formatEnumValue(doctor.type)} - ID ${doctor.id}`,
+          searchText: `${name} ${doctor.type} ${doctor.id}`,
+        }
+      }),
+    [options.doctors]
+  )
+  const drugOptions = useMemo(
+    () =>
+      options.drugs.map(drug => ({
+        label: drug.name,
+        value: String(drug.id),
+        description: `${formatEnumValue(drug.type)}, stock ${drug.stock}`,
+        searchText: `${drug.name} ${drug.activeIngredient} ${drug.type} ${drug.id}`,
+      })),
+    [options.drugs]
+  )
 
   function updateField<Key extends keyof FormState>(name: Key, value: FormState[Key]) {
     setForm(current => ({ ...current, [name]: value }))
@@ -56,6 +84,16 @@ export default function PatientDiagnosisModal({
         type: 'error',
         text: 'This backend requires a medication for each diagnosis.',
       })
+      return
+    }
+
+    if (!form.doctorId) {
+      setMessage({ type: 'error', text: 'Choose a doctor from the list.' })
+      return
+    }
+
+    if (!form.drugId) {
+      setMessage({ type: 'error', text: 'Choose a drug from the list.' })
       return
     }
 
@@ -108,15 +146,16 @@ export default function PatientDiagnosisModal({
               required
               disabled={busy}
             />
-            <FormField
+            <SearchableSelect
               label="Doctor"
-              type="select"
               value={form.doctorId}
-              onChange={event => updateField('doctorId', event.target.value)}
-              options={options.doctors.map(doctor => ({
-                label: `${doctor.employee.person.firstName} ${doctor.employee.person.lastName} (${formatEnumValue(doctor.type)})`,
-                value: String(doctor.id),
-              }))}
+              onChange={value => updateField('doctorId', value)}
+              query={doctorQuery}
+              onQueryChange={setDoctorQuery}
+              options={doctorOptions}
+              placeholder="Type doctor name"
+              emptyMessage="No doctors found"
+              loading={options.doctorsLoading}
               required
               disabled={busy}
             />
@@ -143,17 +182,19 @@ export default function PatientDiagnosisModal({
 
           {!form.noMedication && (
             <div className="border-border bg-surface grid grid-cols-1 gap-3 rounded-lg border p-3 md:grid-cols-2">
-              <FormField
+              <SearchableSelect
                 label="Drug"
-                type="select"
                 value={form.drugId}
-                onChange={event => updateField('drugId', event.target.value)}
-                options={options.drugs.map(drug => ({
-                  label: `${drug.name} (${formatEnumValue(drug.type)}, stock ${drug.stock})`,
-                  value: String(drug.id),
-                }))}
+                onChange={value => updateField('drugId', value)}
+                query={drugQuery}
+                onQueryChange={setDrugQuery}
+                options={drugOptions}
+                placeholder="Type drug name"
+                emptyMessage={drugQuery.trim() ? 'No drugs found' : 'Start typing to search drugs'}
+                loading={options.drugsLoading}
+                filterOptions={false}
                 required
-                disabled={busy}
+                disabled={submitting}
               />
               <FormField
                 label="Dose unit"

@@ -25,7 +25,7 @@ class Diagnosis(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long? = null,
 
     @Column(name = "disease_encrypted")
     @Convert(converter = EncryptedStringConverter::class)
@@ -54,4 +54,3 @@ class Diagnosis(
     @Transient
     val diagnosedEnd: Date?
 )
-

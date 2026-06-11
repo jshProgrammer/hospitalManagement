@@ -14,62 +14,123 @@ type DoctorsResponse = {
 type MedicationOptionsState = {
   doctors: DoctorApi[]
   drugs: DrugApi[]
-  loading: boolean
+  doctorsLoading: boolean
+  drugsLoading: boolean
   error: string | null
 }
 
 const initialState: MedicationOptionsState = {
   doctors: [],
   drugs: [],
-  loading: true,
+  doctorsLoading: true,
+  drugsLoading: true,
   error: null,
 }
 
-export function useMedicationOptions() {
+export function useMedicationOptions(drugQuery: string) {
   const [state, setState] = useState<MedicationOptionsState>(initialState)
+  const debouncedDrugQuery = useDebouncedValue(drugQuery.trim(), 250)
 
   useEffect(() => {
     const controller = new AbortController()
 
-    async function loadOptions() {
+    async function loadDoctors() {
       try {
-        setState(current => ({ ...current, loading: true, error: null }))
+        setState(current => ({ ...current, doctorsLoading: true, error: null }))
 
-        const [doctorsResponse, drugsResponse] = await Promise.all([
-          requestJson<DoctorsResponse>('/api/doctors?limit=100', { signal: controller.signal }),
-          requestJson<PageResponse<DrugApi>>('/api/drugs?page=0&size=100&sort=name,asc', {
-            signal: controller.signal,
-          }),
-        ])
+        const doctorsResponse = await requestJson<DoctorsResponse>('/api/doctors?limit=500', {
+          signal: controller.signal,
+        })
 
         if (controller.signal.aborted) {
           return
         }
 
-        setState({
+        setState(current => ({
+          ...current,
           doctors: doctorsResponse.doctors,
-          drugs: drugsResponse.content,
-          loading: false,
+          doctorsLoading: false,
           error: null,
-        })
+        }))
       } catch (error) {
         if (controller.signal.aborted) {
           return
         }
 
-        setState({
+        setState(current => ({
+          ...current,
           doctors: [],
-          drugs: [],
-          loading: false,
+          doctorsLoading: false,
           error: error instanceof Error ? error.message : 'Could not load medication options.',
-        })
+        }))
       }
     }
 
-    void loadOptions()
+    void loadDoctors()
 
     return () => controller.abort()
   }, [])
 
+  useEffect(() => {
+    const controller = new AbortController()
+
+    async function loadDrugs() {
+      try {
+        setState(current => ({ ...current, drugsLoading: true, error: null }))
+
+        const params = new URLSearchParams({
+          page: '0',
+          size: '20',
+          sort: 'name,asc',
+        })
+
+        if (debouncedDrugQuery) {
+          params.set('nameContains', debouncedDrugQuery)
+        }
+
+        const drugsResponse = await requestJson<PageResponse<DrugApi>>(`/api/drugs?${params}`, {
+          signal: controller.signal,
+        })
+
+        if (controller.signal.aborted) {
+          return
+        }
+
+        setState(current => ({
+          ...current,
+          drugs: drugsResponse.content,
+          drugsLoading: false,
+          error: null,
+        }))
+      } catch (error) {
+        if (controller.signal.aborted) {
+          return
+        }
+
+        setState(current => ({
+          ...current,
+          drugs: [],
+          drugsLoading: false,
+          error: error instanceof Error ? error.message : 'Could not load medication options.',
+        }))
+      }
+    }
+
+    void loadDrugs()
+
+    return () => controller.abort()
+  }, [debouncedDrugQuery])
+
   return state
+}
+
+function useDebouncedValue(value: string, delayMs: number) {
+  const [debouncedValue, setDebouncedValue] = useState(value)
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => setDebouncedValue(value), delayMs)
+    return () => window.clearTimeout(timeout)
+  }, [delayMs, value])
+
+  return debouncedValue
 }

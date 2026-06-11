@@ -81,14 +81,13 @@ class DiagnosisService(
 
         return diagnosisRepository.save(
             Diagnosis(
-                id = 0,
                 disease = request.disease,
                 diseaseHash = cryptoUtility.generateBlindIndex(request.disease),
                 medication = medication,
                 diagnosedBy = doctor,
                 diagnosedPatient = patient,
                 diagnosedAt = request.diagnosedAt,
-                null
+                diagnosedEnd = null
             )
         )
     }
@@ -155,4 +154,3 @@ class DiagnosisService(
         )
     }
 }
-

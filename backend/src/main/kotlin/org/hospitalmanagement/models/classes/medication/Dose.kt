@@ -17,7 +17,8 @@ import jakarta.persistence.*
 )
 class Dose(
     @Id
-    val id: Long,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
 
     @Convert(converter = DoseUnit.DoseUnitConverter::class)
     @ColumnTransformer(read = "unit::text", write = "?::dose_unit")

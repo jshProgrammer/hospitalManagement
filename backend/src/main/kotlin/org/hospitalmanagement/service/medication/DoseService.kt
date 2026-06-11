@@ -39,7 +39,6 @@ class DoseService(private val doseRepository: DoseRepository) {
 
         return doseRepository.save(
             Dose(
-                id = 0,
                 unit = request.unit,
                 amount = request.amount,
                 frequency = request.frequency,
