@@ -1,17 +1,20 @@
-import { type FormEvent, useState } from 'react'
+import { type FormEvent, useMemo, useState } from 'react'
 import { Bed, ClipboardPlus, LogOut, MoveRight } from 'lucide-react'
 import { createBooking, dischargePatient, relocatePatient } from '../api/patientActions'
 import { ApiRequestError } from '../api/http'
-import type { BookingCreateRequest, BookingState } from '../types/Bookings'
+import type { BookingApi, BookingCreateRequest, BookingState } from '../types/Bookings'
+import type { BookingChangeOptions } from '../hooks/usePatientDetails'
+import { useRoomOptions } from '../hooks/useRoomOptions'
 import ActionFeedback from './ActionFeedback'
 import Button from './Button'
 import FormField from './FormField'
 import PatientDiagnosisModal from './PatientDiagnosisModal'
+import SearchableSelect from './SearchableSelect'
 
 type PatientActionsPanelProps = {
   patientId: number
   hasCurrentBooking: boolean
-  onCompleted: () => void
+  onCompleted: (booking?: BookingApi, options?: BookingChangeOptions) => void
 }
 
 type Feedback = {
@@ -45,12 +48,24 @@ export default function PatientActionsPanel({
   onCompleted,
 }: PatientActionsPanelProps) {
   const [bookingForm, setBookingForm] = useState(initialBookingForm)
+  const [bookingRoomQuery, setBookingRoomQuery] = useState('')
   const [showDiagnosisModal, setShowDiagnosisModal] = useState(false)
   const [relocateRoomId, setRelocateRoomId] = useState('')
+  const [relocateRoomQuery, setRelocateRoomQuery] = useState('')
   const [pendingAction, setPendingAction] = useState<string | null>(null)
   const [feedback, setFeedback] = useState<Feedback | null>(null)
+  const bookingRoomOptions = useRoomOptions(bookingRoomQuery)
+  const relocateRoomOptions = useRoomOptions(relocateRoomQuery)
 
   const busy = pendingAction !== null
+  const bookingRooms = useMemo(
+    () => bookingRoomOptions.rooms.map(roomToSelectOption),
+    [bookingRoomOptions.rooms]
+  )
+  const relocationRooms = useMemo(
+    () => relocateRoomOptions.rooms.map(roomToSelectOption),
+    [relocateRoomOptions.rooms]
+  )
 
   function updateBookingField<Key extends keyof BookingFormState>(
     name: Key,
@@ -61,6 +76,11 @@ export default function PatientActionsPanel({
 
   async function submitBooking(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (!bookingForm.roomId) {
+      setFeedback({ type: 'error', message: 'Choose a room from the list.' })
+      return
+    }
+
     setPendingAction('booking')
     setFeedback(null)
 
@@ -73,10 +93,11 @@ export default function PatientActionsPanel({
     }
 
     try {
-      await createBooking(payload)
+      const booking = await createBooking(payload)
       setBookingForm(initialBookingForm)
+      setBookingRoomQuery('')
       setFeedback({ type: 'success', message: 'Booking created.' })
-      onCompleted()
+      onCompleted(booking)
     } catch (error) {
       setFeedback({ type: 'error', message: getActionError(error, 'Could not create booking.') })
     } finally {
@@ -86,14 +107,20 @@ export default function PatientActionsPanel({
 
   async function submitRelocation(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (!relocateRoomId) {
+      setFeedback({ type: 'error', message: 'Choose a room from the list.' })
+      return
+    }
+
     setPendingAction('relocate')
     setFeedback(null)
 
     try {
-      await relocatePatient(patientId, { room_id: Number(relocateRoomId) })
+      const booking = await relocatePatient(patientId, { room_id: Number(relocateRoomId) })
       setRelocateRoomId('')
+      setRelocateRoomQuery('')
       setFeedback({ type: 'success', message: 'Patient relocated.' })
-      onCompleted()
+      onCompleted(booking, { replaceCurrentBooking: true })
     } catch (error) {
       setFeedback({ type: 'error', message: getActionError(error, 'Could not relocate patient.') })
     } finally {
@@ -106,9 +133,9 @@ export default function PatientActionsPanel({
     setFeedback(null)
 
     try {
-      await dischargePatient(patientId)
+      const booking = await dischargePatient(patientId)
       setFeedback({ type: 'success', message: 'Patient discharged.' })
-      onCompleted()
+      onCompleted(booking)
     } catch (error) {
       setFeedback({ type: 'error', message: getActionError(error, 'Could not discharge patient.') })
     } finally {
@@ -119,6 +146,10 @@ export default function PatientActionsPanel({
   return (
     <div className="space-y-4">
       {feedback && <ActionFeedback type={feedback.type} message={feedback.message} />}
+      {bookingRoomOptions.error && <ActionFeedback type="error" message={bookingRoomOptions.error} />}
+      {relocateRoomOptions.error && (
+        <ActionFeedback type="error" message={relocateRoomOptions.error} />
+      )}
 
       <div className="border-border bg-surface rounded-lg border p-3">
         <div className="flex flex-col gap-3">
@@ -143,12 +174,16 @@ export default function PatientActionsPanel({
             <h3 className="text-dark text-sm font-semibold">Create Booking</h3>
           </div>
 
-          <FormField
-            label="Room ID"
-            type="number"
-            min="1"
+          <SearchableSelect
+            label="Room"
             value={bookingForm.roomId}
-            onChange={event => updateBookingField('roomId', event.target.value)}
+            onChange={value => updateBookingField('roomId', value)}
+            query={bookingRoomQuery}
+            onQueryChange={setBookingRoomQuery}
+            options={bookingRooms}
+            placeholder="Type room number, floor, or station"
+            emptyMessage="No rooms found"
+            loading={bookingRoomOptions.loading}
             required
             disabled={busy}
           />
@@ -195,12 +230,16 @@ export default function PatientActionsPanel({
             <h3 className="text-dark text-sm font-semibold">Relocate Patient</h3>
           </div>
 
-          <FormField
-            label="New room ID"
-            type="number"
-            min="1"
+          <SearchableSelect
+            label="New room"
             value={relocateRoomId}
-            onChange={event => setRelocateRoomId(event.target.value)}
+            onChange={setRelocateRoomId}
+            query={relocateRoomQuery}
+            onQueryChange={setRelocateRoomQuery}
+            options={relocationRooms}
+            placeholder="Type room number, floor, or station"
+            emptyMessage="No rooms found"
+            loading={relocateRoomOptions.loading}
             required
             disabled={busy || !hasCurrentBooking}
           />
@@ -264,4 +303,16 @@ function getActionError(error: unknown, fallback: string) {
   }
 
   return fallback
+}
+
+function roomToSelectOption(room: BookingApi['room']) {
+  const station = room.station
+  const department = station.department
+
+  return {
+    label: `Room ${room.number}`,
+    value: String(room.id),
+    description: `Floor ${room.floor} - ${station.name}, ${department.name} (${department.building}) - ${room.beds} beds`,
+    searchText: `${room.number} floor ${room.floor} ${station.name} ${department.name} ${department.building} ${room.beds} beds`,
+  }
 }

@@ -13,4 +13,9 @@ object RoomsSpecifications{
         Specification { root, _, cb ->
             cb.equal(root.get<Long>("number"), number)
         }
+
+    fun hasFloor(floor: Long): Specification<Room> =
+        Specification { root, _, cb ->
+            cb.equal(root.get<Long>("floor"), floor)
+        }
 }

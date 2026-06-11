@@ -12,6 +12,8 @@ import PatientCreateModal from '../components/PatientCreateModal.tsx'
 import Button from '../components/Button.tsx'
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
+import type { BookingApi } from '../types/Bookings.ts'
+import type { BookingChangeOptions } from '../hooks/usePatientDetails.tsx'
 
 const columns = [...personColumns] satisfies (keyof Patient)[]
 
@@ -28,6 +30,7 @@ export function Patients() {
     error: detailsError,
     loadPatientDetails,
     reloadPatientDetails,
+    applyBookingChange,
     clearPatientDetails,
     patientId,
   } = usePatientDetails()
@@ -46,6 +49,15 @@ export function Patients() {
 
   function handlePatientCreated() {
     void reload()
+  }
+
+  function handleDetailsActionCompleted(booking?: BookingApi, options?: BookingChangeOptions) {
+    if (booking) {
+      applyBookingChange(booking, options)
+      return
+    }
+
+    reloadPatientDetails()
   }
 
   return (
@@ -88,7 +100,7 @@ export function Patients() {
             error={detailsError}
             onRetry={reloadPatientDetails}
             onClose={closePanel}
-            onActionCompleted={reloadPatientDetails}
+            onActionCompleted={handleDetailsActionCompleted}
           />
         ) : undefined
       }

@@ -85,29 +85,36 @@ class BookingService(
     }
 
     fun relocate(patientId: Long, roomId: Long): Booking {
+        val existing = findCurrentBooking(patientId)
+        return relocateBooking(existing.id ?: throw RuntimeException("Booking id is missing"), roomId)
+    }
+
+    fun relocateBooking(bookingId: Long, roomId: Long): Booking {
+        val existing = bookingsRepository.findById(bookingId)
+            .orElseThrow { RuntimeException("Booking with id $bookingId not found") }
+        val room = roomRepository.findById(roomId)
+            .orElseThrow { RuntimeException("Room with id $roomId not found") }
+
+        return bookingsRepository.save(existing.copy(room = room))
+    }
+
+    fun completeBooking(bookingId: Long): Booking {
         val now = LocalDateTime.now()
         val date = Date.from(now.atZone(ZoneId.systemDefault()).toInstant())
+        val existing = bookingsRepository.findById(bookingId)
+            .orElseThrow { RuntimeException("Booking with id $bookingId not found") }
 
-        // close old booking
-        update(patientId, date, BookingState.RELOCATED)
-
-        // create new booking
-        return create(BookingRequest(
-            date,
-            null,
-            BookingState.CONFIRMED,
-            roomId,
-            patientId,
-        ))
+        return bookingsRepository.save(
+            existing.copy(
+                until = date,
+                state = BookingState.COMPLETED
+            )
+        )
     }
 
     private fun update(id: Long, until: Date?, state: BookingState?): Booking {
         // TODO: is it ensured that we really have only one ongoing booking in the DB?
-        val existing = bookingsRepository.findFirstByPatientIdAndStateIn(
-            id,
-            listOf(BookingState.CONFIRMED, BookingState.CHECKED_IN)
-        )
-            .orElseThrow { RuntimeException("No checked-in or confirmed booking with patient id $id found") }
+        val existing = findCurrentBooking(id)
 
         val updated = existing.copy(
             until = until ?: existing.until,
@@ -116,5 +123,12 @@ class BookingService(
 
         return bookingsRepository.save(updated)
     }
+
+    private fun findCurrentBooking(patientId: Long): Booking =
+        bookingsRepository.findFirstByPatientIdAndStateIn(
+            patientId,
+            listOf(BookingState.CONFIRMED, BookingState.CHECKED_IN)
+        )
+            .orElseThrow { RuntimeException("No checked-in or confirmed booking with patient id $patientId found") }
 
 }

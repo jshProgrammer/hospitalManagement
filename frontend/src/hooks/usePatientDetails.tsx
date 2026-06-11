@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { DiagnosesResponse, DiagnosisApi } from '../types/Diagnosis'
 import type { BookingApi, BookingsResponse } from '../types/Bookings.ts'
+import { isCurrentRoomBooking } from '../utils/bookings'
 
 type PatientDetailsState = {
   patientId: number | null
@@ -8,6 +9,10 @@ type PatientDetailsState = {
   bookings: BookingApi[]
   loading: boolean
   error: string | null
+}
+
+export type BookingChangeOptions = {
+  replaceCurrentBooking?: boolean
 }
 
 const initialState: PatientDetailsState = {
@@ -62,7 +67,7 @@ export function usePatientDetails() {
 
       const details = {
         diagnoses: diagnosesResponse.diagnoses,
-        bookings: bookingsResponse.bookings,
+        bookings: sortBookingsForDetails(bookingsResponse.bookings),
       }
 
       setState({
@@ -104,6 +109,44 @@ export function usePatientDetails() {
     void loadPatientDetails(state.patientId)
   }, [loadPatientDetails, state.patientId])
 
+  const applyBookingChange = useCallback(
+    (booking: BookingApi, options: BookingChangeOptions = {}) => {
+      setState(current => {
+        if (current.patientId !== booking.patient.id) {
+          return current
+        }
+
+        let found = false
+        const bookings = current.bookings.map(existing => {
+          if (existing.id === booking.id) {
+            found = true
+            return booking
+          }
+
+          if (options.replaceCurrentBooking && isCurrentRoomBooking(existing)) {
+            return {
+              ...existing,
+              until: booking.from,
+              state: 'RELOCATED',
+            }
+          }
+
+          return existing
+        })
+
+        if (!found) {
+          bookings.push(booking)
+        }
+
+        return {
+          ...current,
+          bookings: sortBookingsForDetails(bookings),
+        }
+      })
+    },
+    []
+  )
+
   useEffect(() => {
     return () => {
       controllerRef.current?.abort()
@@ -114,6 +157,25 @@ export function usePatientDetails() {
     ...state,
     loadPatientDetails,
     reloadPatientDetails,
+    applyBookingChange,
     clearPatientDetails,
   }
+}
+
+function sortBookingsForDetails(bookings: BookingApi[]) {
+  return [...bookings].sort((left, right) => {
+    const currentPriority = Number(isCurrentRoomBooking(right)) - Number(isCurrentRoomBooking(left))
+
+    if (currentPriority !== 0) {
+      return currentPriority
+    }
+
+    const datePriority = new Date(right.from).getTime() - new Date(left.from).getTime()
+
+    if (datePriority !== 0) {
+      return datePriority
+    }
+
+    return right.id - left.id
+  })
 }

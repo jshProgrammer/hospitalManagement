@@ -5,6 +5,7 @@ import LoadingIcon from './LoadingIcon'
 import ErrorComponent from './ErrorComponent'
 import type { DiagnosisApi } from '../types/Diagnosis'
 import type { BookingApi } from '../types/Bookings'
+import type { BookingChangeOptions } from '../hooks/usePatientDetails'
 import PatientActionsPanel from './PatientActionsPanel'
 import { hasCurrentRoomBooking } from '../utils/bookings'
 import { terminateDiagnosis } from '../api/medicationActions'
@@ -21,7 +22,7 @@ type PatientDetailsPanelProps = {
   error: string | null
   onRetry: () => void
   onClose: () => void
-  onActionCompleted: () => void
+  onActionCompleted: (booking?: BookingApi, options?: BookingChangeOptions) => void
 }
 
 export default function PatientDetailsPanel({

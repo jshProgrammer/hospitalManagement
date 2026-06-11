@@ -12,7 +12,7 @@ export type RoomApi = {
 export type BookingApi = {
   id: number
   from: string
-  until: string
+  until: string | null
   state: string
   room: RoomApi
   patient: PatientApi

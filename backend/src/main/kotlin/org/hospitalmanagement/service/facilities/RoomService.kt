@@ -15,7 +15,8 @@ class RoomsService(private val roomsRepository: RoomsRepository) {
     fun search(
         pageable: Pageable,
         stationID: Long?,
-        number: Long?
+        number: Long?,
+        floor: Long?
     ): Page<Room> {
         var spec: Specification<Room>? = null
 
@@ -26,6 +27,11 @@ class RoomsService(private val roomsRepository: RoomsRepository) {
         if (number != null) {
             spec = (spec ?: Specification.where(null))
                 .and(RoomsSpecifications.hasNumber(number))
+        }
+
+        if (floor != null) {
+            spec = (spec ?: Specification.where(null))
+                .and(RoomsSpecifications.hasFloor(floor))
         }
 
         return if (spec != null) {

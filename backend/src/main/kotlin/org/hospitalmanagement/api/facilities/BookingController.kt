@@ -44,6 +44,14 @@ class BookingController(
     fun create(@RequestBody bookingRequest: BookingRequest): Booking =
         bookingService.create(bookingRequest)
 
+    @PostMapping("/{id}/relocate")
+    fun relocate(@PathVariable id: Long, @RequestBody request: RelocateRequest): Booking =
+        bookingService.relocateBooking(id, request.roomId)
+
+    @PostMapping("/{id}/complete")
+    fun complete(@PathVariable id: Long): Booking =
+        bookingService.completeBooking(id)
+
     /*
     // not yet necessary as discharge and relocate are separate POST-calls
     @PatchMapping("/{id}")

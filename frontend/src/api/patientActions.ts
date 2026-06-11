@@ -38,3 +38,16 @@ export function relocatePatient(patientId: number, payload: RelocateRequest) {
     body: payload,
   })
 }
+
+export function relocateBooking(bookingId: number, payload: RelocateRequest) {
+  return requestJson<BookingApi>(`/api/bookings/${bookingId}/relocate`, {
+    method: 'POST',
+    body: payload,
+  })
+}
+
+export function completeBooking(bookingId: number) {
+  return requestJson<BookingApi>(`/api/bookings/${bookingId}/complete`, {
+    method: 'POST',
+  })
+}

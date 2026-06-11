@@ -21,11 +21,13 @@ class RoomsController(
         pageable: Pageable,
         @RequestParam(required = false) stationID: Long?,
         @RequestParam(required = false) number: Long?,
+        @RequestParam(required = false) floor: Long?,
     ): Page<Room> =
         roomsService.search(
             pageable,
             stationID,
-            number
+            number,
+            floor
         )
 
     @GetMapping("/{id}")
